@@ -67,3 +67,13 @@ target_link_libraries(demo_full_example
 target_link_libraries(demo_simple_shape_detection
         ${OpenCV_LIBRARIES}
         )
+
+## Add match template executable
+add_executable(demo_match_template
+        src/match_template.cpp
+        )
+# Link with libraries
+target_link_libraries(demo_match_template
+        ${OpenCV_LIBRARIES}
+        )
+
