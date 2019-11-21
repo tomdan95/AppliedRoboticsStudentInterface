@@ -4,7 +4,24 @@
 #include "temp.h"
 #include "primitives.h"
 
-void dubinsCurve(RobotPosition start, DubinsCurve curve);
+
+
+class DubinsArc {
+public:
+    double x0, y0, th0;
+    double xf, yf, thf;
+    double k, L;
+};
+
+class DubinsCurve {
+public:
+    DubinsArc a1, a2, a3;
+    double L;
+};
+
+
+
+DubinsCurve dubinsCurve(double x0, double y0, double th0, double s1, double s2, double s3, double k0, double k1, double k2);
 
 //void dubinsArc(RobotPosition start, );
 

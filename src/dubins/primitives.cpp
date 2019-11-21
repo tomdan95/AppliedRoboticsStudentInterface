@@ -1,11 +1,12 @@
 #include "primitives.h"
+#include <cstdlib>
 
-double DubinsCurve::length() {
+double DubinsResult::length() {
     return sc_s1 + sc_s2 + sc_s3;
 }
 
-DubinsCurve DubinsCurve::scaleFromStandard(double lambda) {
-    DubinsCurve res;
+DubinsResult DubinsResult::scaleFromStandard(double lambda) {
+    DubinsResult res;
     res.ok = ok;
     res.sc_s1 = sc_s1 * lambda;
     res.sc_s2 = sc_s2 * lambda;
@@ -13,7 +14,7 @@ DubinsCurve DubinsCurve::scaleFromStandard(double lambda) {
     return res;
 }
 
-DubinsCurve LSL::solve(ScaledRobotPosition scale) {
+DubinsResult LSL::solve(ScaledRobotPosition scale) {
     double invK = 1.0 / scale.kMax;
     double C = cos(scale.thetaEnd) - cos(scale.thetaStart);
     double S = 2.0 * scale.kMax + sin(scale.thetaStart) - sin(scale.thetaEnd);
@@ -22,7 +23,7 @@ DubinsCurve LSL::solve(ScaledRobotPosition scale) {
     double temp2 = 2.0 + 4.0 * pow(scale.kMax, 2) - 2 * cos(scale.thetaStart - scale.thetaEnd) +
                    4.0 * scale.kMax * (sin(scale.thetaStart) - sin(scale.thetaEnd));
 
-    DubinsCurve res;
+    DubinsResult res;
     if (temp2 < 0) {
         res.ok = false;
     } else {
@@ -34,7 +35,7 @@ DubinsCurve LSL::solve(ScaledRobotPosition scale) {
     return res;
 }
 
-DubinsCurve RSR::solve(ScaledRobotPosition scale) {
+DubinsResult RSR::solve(ScaledRobotPosition scale) {
     double invK = 1.0 / scale.kMax;
     double C = cos(scale.thetaStart) - cos(scale.thetaEnd);
     double S = 2 * scale.kMax - sin(scale.thetaStart) + sin(scale.thetaEnd);
@@ -42,7 +43,7 @@ DubinsCurve RSR::solve(ScaledRobotPosition scale) {
     double sc_s1 = invK * mod2pi(scale.thetaStart - temp1);
     double temp2 = 2 + 4 * pow(scale.kMax, 2) - 2 * cos(scale.thetaStart - scale.thetaEnd) -
                    4 * scale.kMax * (sin(scale.thetaStart) - sin(scale.thetaEnd));
-    DubinsCurve res;
+    DubinsResult res;
     if (temp2 < 0) {
         res.ok = false;
     } else {
@@ -54,14 +55,14 @@ DubinsCurve RSR::solve(ScaledRobotPosition scale) {
     return res;
 }
 
-DubinsCurve LSR::solve(ScaledRobotPosition scale) {
+DubinsResult LSR::solve(ScaledRobotPosition scale) {
     double invK = 1.0 / scale.kMax;
     double C = cos(scale.thetaStart) + cos(scale.thetaEnd);
     double S = 2 * scale.kMax + sin(scale.thetaStart) + sin(scale.thetaEnd);
     double temp1 = atan2(-C, S);
     double temp3 = 4 * pow(scale.kMax, 2) - 2 + 2 * cos(scale.thetaStart - scale.thetaEnd) +
                    4 * scale.kMax * (sin(scale.thetaStart) + sin(scale.thetaEnd));
-    DubinsCurve res;
+    DubinsResult res;
     if (temp3 < 0) {
         res.ok = false;
     } else {
@@ -75,14 +76,14 @@ DubinsCurve LSR::solve(ScaledRobotPosition scale) {
     return res;
 }
 
-DubinsCurve RSL::solve(ScaledRobotPosition scale) {
+DubinsResult RSL::solve(ScaledRobotPosition scale) {
     double invK = 1.0 / scale.kMax;
     double C = cos(scale.thetaStart) + cos(scale.thetaEnd);
     double S = 2 * scale.kMax - sin(scale.thetaStart) - sin(scale.thetaEnd);
     double temp1 = atan2(C, S);
     double temp3 = 4 * pow(scale.kMax, 2) - 2 + 2 * cos(scale.thetaStart - scale.thetaEnd) -
                    4 * scale.kMax * (sin(scale.thetaStart) + sin(scale.thetaEnd));
-    DubinsCurve res;
+    DubinsResult res;
     if (temp3 < 0) {
         res.ok = false;
     } else {
@@ -96,14 +97,14 @@ DubinsCurve RSL::solve(ScaledRobotPosition scale) {
     return res;
 }
 
-DubinsCurve RLR::solve(ScaledRobotPosition scale) {
+DubinsResult RLR::solve(ScaledRobotPosition scale) {
     double invK = 1.0 / scale.kMax;
     double C = cos(scale.thetaStart) - cos(scale.thetaEnd);
     double S = 2 * scale.kMax - sin(scale.thetaStart) + sin(scale.thetaEnd);
     double temp1 = atan2(C, S);
     double temp2 = 0.125 * (6 - 4 * pow(scale.kMax, 2) + 2 * cos(scale.thetaStart - scale.thetaEnd) +
                                                  4 * scale.kMax * (sin(scale.thetaStart) - sin(scale.thetaEnd)));
-    DubinsCurve res;
+    DubinsResult res;
     if (abs(temp2) > 1) {
         res.ok = false;
     } else {
@@ -117,14 +118,14 @@ DubinsCurve RLR::solve(ScaledRobotPosition scale) {
     return res;
 }
 
-DubinsCurve LRL::solve(ScaledRobotPosition scale) {
+DubinsResult LRL::solve(ScaledRobotPosition scale) {
     double invK = 1.0 / scale.kMax;
     double C = cos(scale.thetaEnd) - cos(scale.thetaStart);
     double S = 2 * scale.kMax + sin(scale.thetaStart) - sin(scale.thetaEnd);
     double temp1 = atan2(C, S);
     double temp2 = 0.125 * (6 - 4 * pow(scale.kMax, 2) + 2 * cos(scale.thetaStart - scale.thetaEnd) -
                                                  4 * scale.kMax * (sin(scale.thetaStart) - sin(scale.thetaEnd)));
-    DubinsCurve res;
+    DubinsResult res;
     if (abs(temp2) > 1) {
         res.ok = false;
     } else {
