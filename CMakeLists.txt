@@ -17,6 +17,18 @@ include_directories(
 ## CREATE EXECUTABLE LIBRARY
 add_library(student SHARED
         src/student_interface.cpp
+        src/dubins/curve.cpp
+        src/dubins/curve.h
+        src/dubins/primitives.cpp
+        src/dubins/primitives.h
+        src/dubins/scale.cpp
+        src/dubins/scale.h
+        src/dubins/temp.cpp
+        src/dubins/temp.h
+        src/dubins/utils.cpp
+        src/dubins/utils.h
+        src/dubins/dubins.cpp
+        src/dubins/dubins.h
         )
 
 target_link_libraries(student
@@ -77,3 +89,17 @@ target_link_libraries(demo_match_template
         ${OpenCV_LIBRARIES}
         )
 
+
+add_executable(dubins_main
+        src/dubins/curve.cpp
+        src/dubins/curve.h
+        src/dubins/main.cpp
+        src/dubins/primitives.cpp
+        src/dubins/primitives.h
+        src/dubins/scale.cpp
+        src/dubins/scale.h
+        src/dubins/temp.cpp
+        src/dubins/temp.h
+        src/dubins/utils.cpp
+        src/dubins/utils.h
+        src/dubins/dubins.cpp src/dubins/dubins.h)

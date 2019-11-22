@@ -20,7 +20,7 @@ public:
 };
 
 
-
+void circleLine(double s, double x0, double y0, double th0, double k, DubinsArc * result);
 DubinsCurve dubinsCurve(double x0, double y0, double th0, double s1, double s2, double s3, double k0, double k1, double k2);
 
 //void dubinsArc(RobotPosition start, );

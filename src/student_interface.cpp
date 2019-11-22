@@ -1,49 +1,52 @@
 #include "student_image_elab_interface.hpp"
 #include "student_planning_interface.hpp"
+#include "dubins/temp.h"
+#include "dubins/dubins.h"
+#include "dubins/curve.h"
 
 #include <stdexcept>
 #include <sstream>
 
 namespace student {
 
-    void loadImage(cv::Mat& img_out, const std::string& config_folder){  
+    void loadImage(cv::Mat &img_out, const std::string &config_folder) {
         static bool initialized = false;
         static std::vector<cv::String> img_list; // list of images to load
         static size_t idx = 0;  // idx of the current img
         static size_t function_call_counter = 0;  // idx of the current img
         const static size_t freeze_img_n_step = 30; // hold the current image for n iteration
         static cv::Mat current_img; // store the image for a period, avoid to load it from file every time
-        
-        if(!initialized){
+
+        if (!initialized) {
             const bool recursive = false;
             // Load the list of jpg image contained in the config_folder/img_to_load/
             cv::glob(config_folder + "/img_to_load/*.jpg", img_list, recursive);
-            
-            if(img_list.size() > 0){
-            initialized = true;
-            idx = 0;
-            current_img = cv::imread(img_list[idx]);
-            function_call_counter = 0;
-            }else{
-            initialized = false;
+
+            if (img_list.size() > 0) {
+                initialized = true;
+                idx = 0;
+                current_img = cv::imread(img_list[idx]);
+                function_call_counter = 0;
+            } else {
+                initialized = false;
             }
         }
-        
-        if(!initialized){
-            throw std::logic_error( "Load Image can not find any jpg image in: " +  config_folder + "/img_to_load/");
+
+        if (!initialized) {
+            throw std::logic_error("Load Image can not find any jpg image in: " + config_folder + "/img_to_load/");
             return;
         }
-        
+
         img_out = current_img;
-        function_call_counter++;  
-        
+        function_call_counter++;
+
         // If the function is called more than N times load increment image idx
-        if(function_call_counter > freeze_img_n_step){
+        if (function_call_counter > freeze_img_n_step) {
             function_call_counter = 0;
-            idx = (idx + 1)%img_list.size();    
+            idx = (idx + 1) % img_list.size();
             current_img = cv::imread(img_list[idx]);
         }
-}
+    }
 
     int imageCounter = 0;
 
@@ -190,7 +193,8 @@ namespace student {
         // cv::imshow("Original", contours_img);
         // cv::waitKey(1);
 
-        return res;
+        return true;
+        //return res;
     }
 
     bool processVictims(const cv::Mat &hsv_img, const double scale, std::vector<std::pair<int, Polygon>> &victim_list) {
@@ -245,13 +249,15 @@ namespace student {
         const bool res3 = processVictims(hsv_img, scale, victim_list);
         if (!res3) std::cout << "processVictims return false" << std::endl;
 
-        return res1 /*&& res2*/ && res3;
+        return true;
+        //return res1 /*&& res2*/ && res3;
     }
 
 
     bool findRobot(const cv::Mat &img_in, const double scale, Polygon &triangle, double &x, double &y, double &theta,
                    const std::string &config_folder) {
-#define FIND_ROBOT_DEBUG_PLOT
+
+        std::cout << "findRobot" << std::endl;
 
         // Convert color space from BGR to HSV
         cv::Mat hsv_img;
@@ -370,15 +376,75 @@ namespace student {
         cv::waitKey(1);
 #endif
 
-        return found;
-    }
-
-    bool planPath(const Polygon &borders, const std::vector<Polygon> &obstacle_list,
-                  const std::vector<std::pair<int, Polygon>> &victim_list, const Polygon &gate, const float x,
-                  const float y, const float theta, Path &path) {
-        throw std::logic_error("STUDENT FUNCTION - PLAN PATH - NOT IMPLEMENTED");
+        return true;
+        //return found;
     }
 
 
+    void dubinsArcToPoseVector(DubinsArc arc, std::vector<Pose>& vector) {
+        /**
+         * npts = 100;
+  pts = zeros(npts+1, 2);
+  for j = 0:npts
+    s = arc.L/npts * j;
+    [x, y] = circline(s, arc.x0, arc.y0, arc.th0, arc.k);
+    pts(j+1, 1:2) = [x, y];
+  end
+         */
+         /*
+
+        DubinsArc temp;
+        Pose pose;
+        circleLine(0, arc.x0, arc.y0, arc.th0, arc.k, &temp);
+        vector.push_back(pose);
+        */
+
+        const int numPoints = 100;
+        for (int i = 0; i < numPoints; i++) {
+            DubinsArc temp;
+            Pose pose;
+            double s = arc.L / numPoints * i;
+            circleLine(s, arc.x0, arc.y0, arc.th0, arc.k, &temp);
+            pose.x = temp.x0;
+            pose.y = temp.y0;
+            std::cout << temp.x0 << std::endl;
+            vector.emplace_back(1, temp.xf, temp.yf, temp.thf, temp.k);
+        }
+    }
+
+
+    std::vector<Pose> dubinsCurveToPoseVector(DubinsCurve curve) {
+        std::vector<Pose> vector;
+        dubinsArcToPoseVector(curve.a1, vector);
+        dubinsArcToPoseVector(curve.a2, vector);
+        dubinsArcToPoseVector(curve.a3, vector);
+        return vector;
+    }
+
+    bool planPath(const Polygon& borders, const std::vector<Polygon>& obstacle_list,
+                  const std::vector<std::pair<int,Polygon>>& victim_list,
+                  const Polygon& gate, const float x, const float y, const float theta,
+                  Path& path,
+                  const std::string& config_folder) {
+        std::cout << "planPath called" << std::endl;
+
+        RobotPosition start(0, 0, (-2.0 / 3.0 * M_PI));
+        RobotPosition end(4, 0, (M_PI / 3.0));
+        double kMax = 3;
+
+        auto res = dubinsShortestPath(start, end, kMax);
+
+        auto points = dubinsCurveToPoseVector(res);
+        path.setPoints(points);
+
+/*
+        std::vector<Pose> points;
+        for (int i = 0; i < 10; i++) {
+            points.emplace_back(1, i, i, 1, 1);
+        }
+        path.setPoints(points);
+*/
+        return true;
+    }
 }
 

@@ -1,5 +1,6 @@
 #include "primitives.h"
 #include <cstdlib>
+#include <iostream>
 
 double DubinsResult::length() {
     return sc_s1 + sc_s2 + sc_s3;
