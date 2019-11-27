@@ -17,19 +17,24 @@ include_directories(
 ## CREATE EXECUTABLE LIBRARY
 add_library(student SHARED
         src/student_interface.cpp
-        src/dubins/curve.cpp
-        src/dubins/curve.h
-        src/dubins/primitives.cpp
-        src/dubins/primitives.h
-        src/dubins/scale.cpp
-        src/dubins/scale.h
-        src/dubins/temp.cpp
-        src/dubins/temp.h
-        src/dubins/utils.cpp
-        src/dubins/utils.h
-        src/dubins/dubins.cpp
-        src/dubins/dubins.h
-        )
+        src/pipeline/image_undistort.cpp
+        src/pipeline/extrinsic_calibration.cpp
+        src/pipeline/unwrap.cpp
+        src/pipeline/detection/find_robot.cpp
+        src/pipeline/detection/process_map.cpp
+        src/pipeline/planning/planning.cpp
+        src/pipeline/planning/dubins/curve.cpp
+        src/pipeline/planning/dubins/curve.h
+        src/pipeline/planning/dubins/primitives.cpp
+        src/pipeline/planning/dubins/primitives.h
+        src/pipeline/planning/dubins/scale.cpp
+        src/pipeline/planning/dubins/scale.h
+        src/pipeline/planning/dubins/temp.cpp
+        src/pipeline/planning/dubins/temp.h
+        src/pipeline/planning/dubins/utils.cpp
+        src/pipeline/planning/dubins/utils.h
+        src/pipeline/planning/dubins/dubins.cpp
+        src/pipeline/planning/dubins/dubins.h)
 
 target_link_libraries(student
         ${OpenCV_LIBRARIES}
@@ -91,15 +96,16 @@ target_link_libraries(demo_match_template
 
 
 add_executable(dubins_main
-        src/dubins/curve.cpp
-        src/dubins/curve.h
-        src/dubins/main.cpp
-        src/dubins/primitives.cpp
-        src/dubins/primitives.h
-        src/dubins/scale.cpp
-        src/dubins/scale.h
-        src/dubins/temp.cpp
-        src/dubins/temp.h
-        src/dubins/utils.cpp
-        src/dubins/utils.h
-        src/dubins/dubins.cpp src/dubins/dubins.h)
+        src/pipeline/planning/dubins/curve.cpp
+        src/pipeline/planning/dubins/curve.h
+        src/pipeline/planning/dubins/primitives.cpp
+        src/pipeline/planning/dubins/primitives.h
+        src/pipeline/planning/dubins/scale.cpp
+        src/pipeline/planning/dubins/scale.h
+        src/pipeline/planning/dubins/temp.cpp
+        src/pipeline/planning/dubins/temp.h
+        src/pipeline/planning/dubins/utils.cpp
+        src/pipeline/planning/dubins/utils.h
+        src/pipeline/planning/dubins/dubins.cpp
+        src/pipeline/planning/dubins/dubins.h
+        src/pipeline/planning/dubins/main.cpp)
