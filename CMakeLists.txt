@@ -14,7 +14,7 @@ include_directories(
         ${project_interface_INCLUDE_DIRS}
 )
 
-## CREATE EXECUTABLE LIBRARY
+###### START OF STRUDENT LIBRARY #####
 add_library(student SHARED
         src/student_interface.cpp
         src/pipeline/image_undistort.cpp
@@ -34,68 +34,98 @@ add_library(student SHARED
         src/pipeline/planning/dubins/utils.cpp
         src/pipeline/planning/dubins/utils.h
         src/pipeline/planning/dubins/dubins.cpp
-        src/pipeline/planning/dubins/dubins.h)
+        src/pipeline/planning/dubins/dubins.h src/pipeline/detection/find_robot.hpp)
 
 target_link_libraries(student
         ${OpenCV_LIBRARIES}
         )
 
-## COMPILE DEMO EXECUTABLE
+###### END OF STRUDENT LIBRARY #####
+
+##### START OF demo_dilatation_erosion #####
 add_executable(demo_dilatation_erosion
-        src/demo_shape_detection/demo_dilatation_erosion.cpp
-        )
-add_executable(demo_hsv_filter
-        src/demo_shape_detection/demo_hsv_filter.cpp
-        )
-add_executable(demo_smoothing
-        src/demo_shape_detection/demo_smoothing.cpp
-        )
-add_executable(demo_filters
-        src/demo_shape_detection/demo_filters.cpp
-        )
-add_executable(demo_rgb_filter
-        src/demo_shape_detection/demo_rgb_filter.cpp
-        )
-add_executable(demo_full_example
-        src/demo_shape_detection/demo_full_example.cpp
-        )
-add_executable(demo_simple_shape_detection
-        src/demo_shape_detection/demo_simple_shape_detection.cpp
+        src/demos/demo_shape_detection/demo_dilatation_erosion.cpp
         )
 
 target_link_libraries(demo_dilatation_erosion
         ${OpenCV_LIBRARIES}
         )
+##### END OF demo_dilatation_erosion #####
+
+##### START OF demo_hsv_filter #####
+add_executable(demo_hsv_filter
+        src/demos/demo_shape_detection/demo_hsv_filter.cpp
+        )
+
 target_link_libraries(demo_hsv_filter
         ${OpenCV_LIBRARIES}
+        )
+##### START OF demo_hsv_filter #####
+
+##### START OF demo_smoothing #####
+add_executable(demo_smoothing
+        src/demos/demo_shape_detection/demo_smoothing.cpp
         )
 target_link_libraries(demo_smoothing
         ${OpenCV_LIBRARIES}
         )
+##### END OF demo_smoothing #####
+
+##### START OF demo_filters #####
+add_executable(demo_filters
+        src/demos/demo_shape_detection/demo_filters.cpp
+        )
+
 target_link_libraries(demo_filters
         ${OpenCV_LIBRARIES}
         )
+
+##### END OF demo_filters #####
+
+
+
+##### START OF demo_rgb_filter #####
+add_executable(demo_rgb_filter
+        src/demos/demo_shape_detection/demo_rgb_filter.cpp
+        )
+
 target_link_libraries(demo_rgb_filter
         ${OpenCV_LIBRARIES}
         )
+##### END OF demo_rgb_filter #####
+
+##### START OF demo_full_example #####
+add_executable(demo_full_example
+        src/demos/demo_shape_detection/demo_full_example.cpp
+        )
+
 target_link_libraries(demo_full_example
         ${OpenCV_LIBRARIES}
+        )
+
+##### END OF demo_full_example #####
+
+##### START OF demo_simple_shape_detection #####
+add_executable(demo_simple_shape_detection
+        src/demos/demo_shape_detection/demo_simple_shape_detection.cpp
         )
 target_link_libraries(demo_simple_shape_detection
         ${OpenCV_LIBRARIES}
         )
+##### END OF demo_simple_shape_detection #####
 
-## Add match template executable
+##### START OF demo_match_template #####
 add_executable(demo_match_template
         src/match_template.cpp
         )
-# Link with libraries
 target_link_libraries(demo_match_template
         ${OpenCV_LIBRARIES}
         )
+##### END OF demo_match_template #####
 
 
-add_executable(dubins_main
+##### START OF duins_demo #####
+add_executable(dubins_demo
         src/pipeline/planning/dubins/curve.cpp
         src/pipeline/planning/dubins/curve.h
         src/pipeline/planning/dubins/primitives.cpp
@@ -108,4 +138,17 @@ add_executable(dubins_main
         src/pipeline/planning/dubins/utils.h
         src/pipeline/planning/dubins/dubins.cpp
         src/pipeline/planning/dubins/dubins.h
-        src/pipeline/planning/dubins/main.cpp)
+        src/demos/debins.cpp)
+##### END OF duins_demo #####
+
+
+##### START of find_robot_demo ####
+add_executable(find_robot_demo
+        src/demos/find_robot.cpp
+        src/pipeline/detection/find_robot.cpp
+        src/pipeline/detection/find_robot.hpp)
+target_link_libraries(find_robot_demo
+        ${OpenCV_LIBRARIES}
+        )
+##### END of find_robot_demo ####
+

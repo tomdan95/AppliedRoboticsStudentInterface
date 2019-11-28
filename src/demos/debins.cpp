@@ -1,10 +1,10 @@
 #include <iostream>
 #include <cmath>
-#include "scale.h"
-#include "temp.h"
-#include "primitives.h"
-#include "curve.h"
-#include "dubins.h"
+#include "../pipeline/planning/dubins/scale.h"
+#include "../pipeline/planning/dubins/temp.h"
+#include "../pipeline/planning/dubins/primitives.h"
+#include "../pipeline/planning/dubins/curve.h"
+#include "../pipeline/planning/dubins/dubins.h"
 
 using namespace std;
 

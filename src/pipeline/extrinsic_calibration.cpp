@@ -11,6 +11,8 @@
 #include <zconf.h>
 #include <experimental/filesystem>
 
+using namespace std;
+
 namespace student {
 
     //-------------------------------------------------------------------------
@@ -21,9 +23,9 @@ namespace student {
     // The function pickNPoints is used to display a window with a background
     // image, and to prompt the user to select n points on this image.
     static cv::Mat bg_img;
-    static std::vector<cv::Point2f> result;
-    static std::string name;
-    static std::atomic<bool> done;
+    static vector<cv::Point2f> result;
+    static string name;
+    static atomic<bool> done;
     static int n;
     static double show_scale = 1.0;
 
@@ -40,15 +42,15 @@ namespace student {
         }
     }
 
-    std::vector<cv::Point2f> pickNPoints(int n0, const cv::Mat &img) {
+    vector<cv::Point2f> askUserToClickArenaEdges(const cv::Mat &img) {
         result.clear();
         cv::Size small_size(img.cols / show_scale, img.rows / show_scale);
         cv::resize(img, bg_img, small_size);
         //bg_img = img.clone();
-        name = "Pick " + std::to_string(n0) + " points";
+        name = "Pick 4 points";
         cv::imshow(name.c_str(), bg_img);
         cv::namedWindow(name.c_str());
-        n = n0;
+        n = 4;
 
         done.store(false);
 
@@ -61,53 +63,61 @@ namespace student {
         return result;
     }
 
-    bool extrinsicCalib(const cv::Mat &img_in, std::vector<cv::Point3f> object_points, const cv::Mat &camera_matrix,
-                        cv::Mat &rvec, cv::Mat &tvec, const std::string &config_folder) {
+    bool alreadyDidExtrinsicCalibBefore(string fileName) {
+        return experimental::filesystem::exists(fileName);
+    }
 
-        std::string file_path = config_folder + "/extrinsicCalib.csv";
+    void storeArenaEdgesToFile (string configFolder, string fileName, vector<cv::Point2f> edges) {
+        experimental::filesystem::create_directories(configFolder);
+        // SAVE POINT TO FILE
+        // cout << "IMAGE POINTS: " << endl;
+        // for (const auto pt: image_points) {
+        //   cout << pt << endl;
+        // }
+        ofstream output(fileName);
+        if (!output.is_open()) {
+            throw runtime_error("Cannot write file: " + fileName);
+        }
+        for (const auto pt: edges) {
+            output << pt.x << " " << pt.y << endl;
+        }
+        output.close();
+    }
 
-        std::vector<cv::Point2f> image_points;
-
-        if (!std::experimental::filesystem::exists(file_path)) {
-
-            std::experimental::filesystem::create_directories(config_folder);
-
-            image_points = pickNPoints(4, img_in);
-            // SAVE POINT TO FILE
-            // std::cout << "IMAGE POINTS: " << std::endl;
-            // for (const auto pt: image_points) {
-            //   std::cout << pt << std::endl;
-            // }
-            std::ofstream output(file_path);
-            if (!output.is_open()) {
-                throw std::runtime_error("Cannot write file: " + file_path);
-            }
-            for (const auto pt: image_points) {
-                output << pt.x << " " << pt.y << std::endl;
-            }
-            output.close();
-        } else {
-            // LOAD POINT FROM FILE
-            std::ifstream input(file_path);
-            if (!input.is_open()) {
-                throw std::runtime_error("Cannot read file: " + file_path);
-            }
-            while (!input.eof()) {
-                double x, y;
-                if (!(input >> x >> y)) {
-                    if (input.eof()) break;
-                    else {
-                        throw std::runtime_error("Malformed file: " + file_path);
-                    }
+    vector<cv::Point2f> loadArenaEdgesFromFile (string fileName) {
+        vector<cv::Point2f> edges;
+        ifstream input(fileName);
+        if (!input.is_open()) {
+            throw runtime_error("Cannot read file: " + fileName);
+        }
+        while (!input.eof()) {
+            double x, y;
+            if (!(input >> x >> y)) {
+                if (input.eof()) break;
+                else {
+                    throw runtime_error("Malformed file: " + fileName);
                 }
-                image_points.emplace_back(x, y);
             }
-            input.close();
+            edges.emplace_back(x, y);
+        }
+        input.close();
+        return edges;
+    }
+
+    bool extrinsicCalib(const cv::Mat &img_in, vector<cv::Point3f> object_points, const cv::Mat &camera_matrix,
+                        cv::Mat &rvec, cv::Mat &tvec, const string &config_folder) {
+        string file_path = config_folder + "/extrinsicCalib.csv";
+        vector<cv::Point2f> edges;
+        if (!alreadyDidExtrinsicCalibBefore(file_path)) {
+            edges = askUserToClickArenaEdges(img_in);
+            storeArenaEdgesToFile(config_folder, file_path, edges);
+        } else {
+            edges = loadArenaEdgesFromFile(file_path);
         }
 
         cv::Mat dist_coeffs;
         dist_coeffs = (cv::Mat1d(1, 4) << 0, 0, 0, 0, 0);
-        bool ok = cv::solvePnP(object_points, image_points, camera_matrix, dist_coeffs, rvec, tvec);
+        bool ok = cv::solvePnP(object_points, edges, camera_matrix, dist_coeffs, rvec, tvec);
 
         // cv::Mat Rt;
         // cv::Rodrigues(rvec_, Rt);
@@ -115,7 +125,7 @@ namespace student {
         // auto pos = -R * tvec_;
 
         if (!ok) {
-            std::cerr << "FAILED SOLVE_PNP" << std::endl;
+            cerr << "FAILED SOLVE_PNP" << endl;
         }
 
         return ok;
