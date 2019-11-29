@@ -6,15 +6,46 @@
 
 using namespace std;
 
+
+
+
 namespace student {
 
-    cv::Mat convertRGBToHSV(const cv::Mat &rgb);
+    cv::Mat RobotDetector::applyColorMask(cv::Mat &hsvImage) {
+        return getBlueMask(hsvImage);
+    }
 
-    bool
-    processRobot(const cv::Mat &hsvImage, const double scale, Polygon &triangle, double &x, double &y, double &theta);
+    // TODO: Do we really need this?
+    vector<cv::Point> getPoints(Polygon &polygon) {
+        vector<cv::Point> points;
+        for (auto &p : polygon) {
+            points.emplace_back(p.x, p.y);
+        }
+        return points;
+    }
 
-    cv::Mat getBlueMask(const cv::Mat &hsv);
 
+
+    vector<Polygon> RobotDetector::filterPolygons(vector<Polygon> polygons) {
+        vector<Polygon> filtered;
+        for (auto &polygon : polygons) {
+            if (polygon.size() == 3) {
+                vector<cv::Point> points = getPoints(polygon);
+                double area = cv::contourArea(points);
+                if (area >= 300 && area <= 3000) {
+                    filtered.push_back(polygon);
+                }
+            }
+        }
+        return filtered;
+    }
+
+
+    cv::Mat convertRGBToHSV(const cv::Mat &rgb) {
+        cv::Mat hsv;
+        cv::cvtColor(rgb, hsv, cv::COLOR_BGR2HSV);
+        return hsv;
+    }
 
     /*!
      * Process the image to detect the robot position
@@ -28,13 +59,17 @@ namespace student {
     */
     bool findRobot(const cv::Mat &rgbImage, const double scale, Polygon &triangle, double &x, double &y, double &theta,
                    const std::string &config_folder) {
-        return processRobot(convertRGBToHSV(rgbImage), scale, triangle, x, y, theta);
-    }
+        cv::Mat hsv = convertRGBToHSV(rgbImage);
+        RobotDetector detector;
+        vector<Polygon> robots = detector.findPolygons(hsv, scale);
+        if (robots.size() != 1) {
+            return false;
+        }
+        Polygon robot = robots[0];
 
-    cv::Mat convertRGBToHSV(const cv::Mat &rgb) {
-        cv::Mat hsv;
-        cv::cvtColor(rgb, hsv, cv::COLOR_BGR2HSV);
-        return hsv;
+        // TODO: computeRobotOrientationAndBaricenter(robot, x, y, theta);
+        // TODO: add map abstract method (victim digit)
+        return true;
     }
 
     cv::Mat debugShowBlueFilterAndContours(const cv::Mat &hsvImage, const cv::Mat &blue_mask,
@@ -130,8 +165,8 @@ namespace student {
 
     cv::Mat getBlueMask(const cv::Mat &hsv) {
         cv::Mat blueMask;
-        //cv::inRange(hsv, cv::Scalar(90, 50, 50), cv::Scalar(140, 255, 255), blueMask);
-        cv::inRange(hsv, cv::Scalar(115, 90, 60), cv::Scalar(130, 150, 255), blueMask);
+        cv::inRange(hsv, cv::Scalar(90, 50, 50), cv::Scalar(140, 255, 255), blueMask);
+        //cv::inRange(hsv, cv::Scalar(115, 90, 60), cv::Scalar(130, 150, 255), blueMask);
 
         return blueMask;
     }
@@ -153,5 +188,4 @@ namespace student {
         }
         return false;
     }
-
 }
