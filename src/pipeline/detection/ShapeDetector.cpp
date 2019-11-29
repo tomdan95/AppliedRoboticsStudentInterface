@@ -21,10 +21,7 @@ namespace student {
         vector<cv::Point> approxCurve;
         vector<Polygon> polygons;
         for (int i = 0; i < contours.size(); i++) {
-            //std::cout << (i+1) << ") Contour size: " << contours[i].size() << std::endl;
-            //approxPolyDP(contours[i], approxCurve, 3, true);
-            // TODO: Allow implementation classes to customize this
-            cv::approxPolyDP(contours[i], approxCurve, 10, true);
+            cv::approxPolyDP(contours[i], approxCurve, approxPolyEpsilon, true);
 
             Polygon scaled_contour;
             for (const auto &pt: approxCurve) {
