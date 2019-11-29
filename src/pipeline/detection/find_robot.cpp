@@ -3,49 +3,12 @@
  */
 
 #include "find_robot.hpp"
+#include "utils.h"
 
 using namespace std;
 
 
-
-
 namespace student {
-
-    cv::Mat RobotDetector::applyColorMask(cv::Mat &hsvImage) {
-        return getBlueMask(hsvImage);
-    }
-
-    // TODO: Do we really need this?
-    vector<cv::Point> getPoints(Polygon &polygon) {
-        vector<cv::Point> points;
-        for (auto &p : polygon) {
-            points.emplace_back(p.x, p.y);
-        }
-        return points;
-    }
-
-
-
-    vector<Polygon> RobotDetector::filterPolygons(vector<Polygon> polygons) {
-        vector<Polygon> filtered;
-        for (auto &polygon : polygons) {
-            if (polygon.size() == 3) {
-                vector<cv::Point> points = getPoints(polygon);
-                double area = cv::contourArea(points);
-                if (area >= 300 && area <= 3000) {
-                    filtered.push_back(polygon);
-                }
-            }
-        }
-        return filtered;
-    }
-
-
-    cv::Mat convertRGBToHSV(const cv::Mat &rgb) {
-        cv::Mat hsv;
-        cv::cvtColor(rgb, hsv, cv::COLOR_BGR2HSV);
-        return hsv;
-    }
 
     /*!
      * Process the image to detect the robot position
@@ -65,11 +28,57 @@ namespace student {
         if (robots.size() != 1) {
             return false;
         }
-        Polygon robot = robots[0];
-
-        // TODO: computeRobotOrientationAndBaricenter(robot, x, y, theta);
-        // TODO: add map abstract method (victim digit)
+        computeRobotOrientationAndBaricenter(robots[0], x, y, theta);
         return true;
+    }
+
+    cv::Mat RobotDetector::applyColorMask(cv::Mat &hsvImage) {
+        cv::Mat blueMask;
+        cv::inRange(hsvImage, cv::Scalar(90, 50, 50), cv::Scalar(140, 255, 255), blueMask);
+        return blueMask;
+    }
+
+
+    vector<Polygon> RobotDetector::filterPolygons(vector<Polygon> polygons) {
+        vector<Polygon> filtered;
+        for (auto &polygon : polygons) {
+            if (polygon.size() == 3) {
+                vector<cv::Point> points = getPointsFromPolygon(polygon);
+                double area = cv::contourArea(points);
+                if (area >= 300 && area <= 3000) {
+                    filtered.push_back(polygon);
+                }
+            }
+        }
+        return filtered;
+    }
+
+
+    void computeRobotOrientationAndBaricenter(Polygon robot, double &x, double &y, double &theta) {
+        double cx = 0, cy = 0;
+        for (auto item: robot) {
+            cx += item.x;
+            cy += item.y;
+        }
+        cx /= robot.size();
+        cy /= robot.size();
+
+        double dst = 0;
+        Point vertex;
+        for (auto &item: robot) {
+            double dx = item.x - cx;
+            double dy = item.y - cy;
+            double curr_d = dx * dx + dy * dy;
+            if (curr_d > dst) {
+                dst = curr_d;
+                vertex = item;
+            }
+        }
+        double dx = cx - vertex.x;
+        double dy = cy - vertex.y;
+        x = cx;
+        y = cy;
+        theta = std::atan2(dy, dx);
     }
 
     cv::Mat debugShowBlueFilterAndContours(const cv::Mat &hsvImage, const cv::Mat &blue_mask,
@@ -89,103 +98,4 @@ namespace student {
         return contours_img;
     }
 
-    bool
-    processRobot(const cv::Mat &hsvImage, const double scale, Polygon &triangle, double &x, double &y, double &theta) {
-        cv::Mat blue_mask = getBlueMask(hsvImage);
-
-        // Process blue mask
-        std::vector<std::vector<cv::Point>> contours, contours_approx;
-        std::vector<cv::Point> approx_curve;
-        cv::findContours(blue_mask, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
-
-        // TODO: make debugContoursImage as private attribute
-        cv::Mat debugContoursImage = debugShowBlueFilterAndContours(hsvImage, blue_mask, contours);
-
-        bool found = findRobotTriangle(contours, contours_approx, approx_curve, debugContoursImage);
-        if (!found) {
-            return false;
-        }
-
-        // TODO: A side effect of findRobotTriangle is that it changes approx_curve to the curve of the triangle.
-        // TODO: make it clearer
-
-        for (const auto &pt: approx_curve) {
-            triangle.emplace_back(pt.x / scale, pt.y / scale);
-        }
-
-        // TODO: Extract code to find baricenter into a function
-        double cx = 0, cy = 0;
-        for (auto item: triangle) {
-            cx += item.x;
-            cy += item.y;
-        }
-        cx /= triangle.size();
-        cy /= triangle.size();
-
-        double dst = 0;
-        Point vertex;
-        for (auto &item: triangle) {
-            double dx = item.x - cx;
-            double dy = item.y - cy;
-            double curr_d = dx * dx + dy * dy;
-            if (curr_d > dst) {
-                dst = curr_d;
-                vertex = item;
-            }
-        }
-
-        // cv::Moments m = cv::moments(approx_curve, false);
-        // cv::Point center(m.m10/m.m00, m.m01/m.m00);
-        // cv::Vec4f line;
-        // cv::fitLine(approx_curve, line, cv::DIST_L2, 0, 0.01, 0.01);
-        // cv::line(warpedFrame, cv::Point(line[2], line[3]), cv::Point(line[2]+line(0)*80, line(3)+line(1)*80), (0,255,0), 2);
-
-
-        //cv::line(contours_img, center*scale, vertex*scale, (0,255,0), 2);
-        //cv::circle(contours_img, center*scale, 20, cv::Scalar(0,0,0), -1);
-
-        double dx = cx - vertex.x;
-        double dy = cy - vertex.y;
-
-        x = cx;
-        y = cy;
-        theta = std::atan2(dy, dx);
-
-
-        //covariance = {};
-
-        //std::cout << xc_m << " " << yc_m << " " << theta*180/M_PI << std::endl;
-
-
-        cv::imshow("Original", debugContoursImage);
-        cv::waitKey(0);
-
-        return true;
-    }
-
-    cv::Mat getBlueMask(const cv::Mat &hsv) {
-        cv::Mat blueMask;
-        cv::inRange(hsv, cv::Scalar(90, 50, 50), cv::Scalar(140, 255, 255), blueMask);
-        //cv::inRange(hsv, cv::Scalar(115, 90, 60), cv::Scalar(130, 150, 255), blueMask);
-
-        return blueMask;
-    }
-
-    bool findRobotTriangle(vector<std::vector<cv::Point>> &contours, vector<vector<cv::Point>> &contoursApprox,
-                           vector<cv::Point> &approxCurve, cv::Mat &contoursImg) {
-        for (auto &contour : contours) {
-            cv::approxPolyDP(contour, approxCurve, 10, true);
-            contoursApprox = {approxCurve};
-
-            cv::drawContours(contoursImg, contoursApprox, -1, cv::Scalar(0, 170, 220), 3, cv::LINE_AA);
-
-            if (approxCurve.size() == 3) {
-                double area = cv::contourArea(approxCurve);
-                if (area >= 300 && area <= 3000) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
 }

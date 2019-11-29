@@ -34,7 +34,7 @@ add_library(student SHARED
         src/pipeline/planning/dubins/utils.cpp
         src/pipeline/planning/dubins/utils.h
         src/pipeline/planning/dubins/dubins.cpp
-        src/pipeline/planning/dubins/dubins.h src/pipeline/detection/find_robot.hpp)
+        src/pipeline/planning/dubins/dubins.h src/pipeline/detection/find_robot.hpp src/pipeline/detection/ShapeDetector.cpp src/pipeline/detection/ShapeDetector.h src/pipeline/detection/utils.cpp src/pipeline/detection/utils.h)
 
 target_link_libraries(student
         ${OpenCV_LIBRARIES}
@@ -146,7 +146,12 @@ add_executable(dubins_demo
 add_executable(find_robot_demo
         src/demos/find_robot.cpp
         src/pipeline/detection/find_robot.cpp
-        src/pipeline/detection/find_robot.hpp)
+        src/pipeline/detection/find_robot.hpp
+        src/pipeline/detection/ShapeDetector.cpp
+        src/pipeline/detection/ShapeDetector.h
+        src/pipeline/detection/utils.cpp
+        src/pipeline/detection/utils.h)
+
 target_link_libraries(find_robot_demo
         ${OpenCV_LIBRARIES}
         )
