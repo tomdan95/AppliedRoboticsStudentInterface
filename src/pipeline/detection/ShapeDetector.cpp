@@ -1,5 +1,6 @@
 #include "ShapeDetector.h"
 #include "find_robot.hpp"
+#include "find_victims.hpp"
 
 using namespace std;
 
@@ -50,8 +51,10 @@ namespace student {
     /**
      * Due to compilation units, we need to list all the possible DetectedShape that we'll use inside the program.
      * Otherwise, the implementation won't be generated and when the linker won't be able to link the program.
+     * TODO: This violates OCP, maybe better to move the definition of the template methods in the header file?
      */
     template class ShapeDetector<RobotPose>;
+    template class ShapeDetector<Victim>;
 
 }
 
