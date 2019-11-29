@@ -24,11 +24,14 @@ namespace student {
                    const std::string &config_folder) {
         cv::Mat hsv = convertRGBToHSV(rgbImage);
         RobotDetector detector;
-        vector<Polygon> robots = detector.findPolygons(hsv, scale);
+        vector<RobotPose> robots = detector.findPolygons(hsv, scale);
         if (robots.size() != 1) {
             return false;
         }
-        computeRobotOrientationAndBaricenter(robots[0], x, y, theta);
+        RobotPose robot = robots[0];
+        x = robot.x;
+        y = robot.y;
+        theta = robot.theta;
         return true;
     }
 
@@ -53,8 +56,16 @@ namespace student {
         return filtered;
     }
 
+    vector<RobotPose> RobotDetector::mapPolygons(vector<Polygon> polygons) {
+        vector<RobotPose> poses;
+        for (auto &polygon : polygons) {
+            poses.push_back(getRobotPose(polygon));
+        }
+        return poses;
+    }
 
-    void computeRobotOrientationAndBaricenter(Polygon robot, double &x, double &y, double &theta) {
+
+    RobotPose RobotDetector::getRobotPose(Polygon robot) {
         double cx = 0, cy = 0;
         for (auto item: robot) {
             cx += item.x;
@@ -76,9 +87,9 @@ namespace student {
         }
         double dx = cx - vertex.x;
         double dy = cy - vertex.y;
-        x = cx;
-        y = cy;
-        theta = std::atan2(dy, dx);
+        double theta = std::atan2(dy, dx);
+        RobotPose pose(robot, cx, cy, theta);
+        return pose;
     }
 
     cv::Mat debugShowBlueFilterAndContours(const cv::Mat &hsvImage, const cv::Mat &blue_mask,
@@ -97,5 +108,4 @@ namespace student {
         cv::waitKey(0);
         return contours_img;
     }
-
 }

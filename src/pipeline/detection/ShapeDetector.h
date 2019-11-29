@@ -9,36 +9,30 @@ using namespace std;
  * 1. apply color mask
  * 2. find contours
  */
-namespace  student {
+namespace student {
 
-    //template
+    template<class DetectedShape>
     class ShapeDetector {
-
-    protected:
+    private:
         const int approxPolyEpsilon;
 
-        virtual cv::Mat applyColorMask(cv::Mat &hsvImage) = 0;
-
         vector<vector<cv::Point>> findContours(cv::Mat &filteredImage);
+        vector<Polygon> mapContoursToPolygon(const vector<vector<cv::Point>> &contours, double scale);
+        Polygon mapContourToPolygon(const vector<cv::Point> &contour, double scale);
 
-        vector<Polygon> findAllPolygons(vector<vector<cv::Point>> contours, double scale);
-
+    protected:
+        virtual cv::Mat applyColorMask(cv::Mat &hsvImage) = 0;
         virtual vector<Polygon> filterPolygons(vector<Polygon> polygons) {
             return polygons;
         }
 
-        /*
-        // TODO: map
-        virtual vector<?> mapPolygons(vector<Polygon> polygons) {
-
-        }*/
-
+        virtual vector<DetectedShape> mapPolygons(vector<Polygon> polygons) = 0;
 
     public:
-        ShapeDetector(const int approxPolyEpsilon) : approxPolyEpsilon(approxPolyEpsilon) {};
-        vector<Polygon> findPolygons(cv::Mat &hsvImage, double scale);
-    };
+        explicit ShapeDetector(const int approxPolyEpsilon) : approxPolyEpsilon(approxPolyEpsilon) {};
 
+        vector<DetectedShape> findPolygons(cv::Mat &hsvImage, double scale);
+    };
 }
 
 #endif //STUDENT_PROECT_SHAPEDETECTOR_H
