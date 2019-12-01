@@ -20,11 +20,18 @@ namespace student {
 
     protected:
         virtual cv::Mat applyColorMask(const cv::Mat &hsvImage) = 0;
+
         vector<vector<cv::Point>> findContours(const cv::Mat &filteredImage);
+
         virtual vector<vector<cv::Point>> filterContours(const vector<vector<cv::Point>> &contours);
+
         vector<Polygon> mapContoursToPolygon(const vector<vector<cv::Point>> &contours, double scale);
+
         Polygon mapContourToPolygon(const vector<cv::Point> &contour, double scale);
-        virtual vector<DetectedShape> mapPolygons(vector<Polygon> polygons) = 0;
+
+        virtual vector<DetectedShape>
+        mapPolygons(vector<Polygon> polygons, const vector<vector<cv::Point>> &contour, const cv::Mat &hsvImage,
+                    const cv::Mat &filteredImage) = 0;
 
     public:
         explicit ShapeDetector(const int approxPolyEpsilon) : approxPolyEpsilon(approxPolyEpsilon) {};

@@ -13,7 +13,7 @@ namespace student {
         vector<vector<cv::Point>> contours = findContours(filteredImage);
         vector<vector<cv::Point>> filteredContours = filterContours(contours);
         vector<Polygon> polygons = mapContoursToPolygon(filteredContours, scale);
-        return mapPolygons(polygons);
+        return mapPolygons(polygons, filteredContours, hsvImage, filteredImage);
     }
 
     template<class DetectedShape>

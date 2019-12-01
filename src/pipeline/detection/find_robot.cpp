@@ -55,7 +55,8 @@ namespace student {
         return filtered;
     }
 
-    vector<RobotPose> RobotDetector::mapPolygons(vector<Polygon> polygons) {
+    vector<RobotPose> RobotDetector::mapPolygons(vector<Polygon> polygons, const vector<vector<cv::Point>> &contour,
+                                                 const cv::Mat &hsvImage, const cv::Mat &filteredImage) {
         vector<RobotPose> poses;
         for (auto &polygon : polygons) {
             poses.push_back(getRobotPose(polygon));
@@ -64,7 +65,7 @@ namespace student {
     }
 
 
-    RobotPose RobotDetector::getRobotPose(const Polygon& robot) {
+    RobotPose RobotDetector::getRobotPose(const Polygon &robot) {
         double cx = 0, cy = 0;
         for (auto item: robot) {
             cx += item.x;

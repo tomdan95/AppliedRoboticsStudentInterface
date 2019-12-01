@@ -16,19 +16,23 @@ namespace student {
         const double x, y;
         const double theta;
 
-        RobotPose(Polygon polygon, const double x, const double y, const double theta): polygon(std::move(polygon)),
-                                                                                               x(x), y(y),
-                                                                                               theta(theta) {};
+        RobotPose(Polygon polygon, const double x, const double y, const double theta) : polygon(std::move(polygon)),
+                                                                                         x(x), y(y),
+                                                                                         theta(theta) {};
     };
 
     class RobotDetector : public ShapeDetector<RobotPose> {
     private:
-        RobotPose getRobotPose(const Polygon& robot);
+        RobotPose getRobotPose(const Polygon &robot);
 
     protected:
         cv::Mat applyColorMask(const cv::Mat &hsvImage) override;
+
         vector<vector<cv::Point>> filterContours(const vector<vector<cv::Point>> &contours) override;
-        vector<RobotPose> mapPolygons(vector<Polygon> polygons) override;
+
+        vector<RobotPose>
+        mapPolygons(vector<Polygon> polygons, const vector<vector<cv::Point>> &contour, const cv::Mat &hsvImage,
+                    const cv::Mat &filteredImage) override;
 
     public:
         RobotDetector() : ShapeDetector(10) {}

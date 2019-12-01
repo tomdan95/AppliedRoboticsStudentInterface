@@ -4,10 +4,11 @@
 #include <utility>
 
 #include "ShapeDetector.h"
+#include "digit_classification/DigitClassifier.h"
 
 namespace student {
 
-    class Victim{
+    class Victim {
     public:
         const Polygon polygon;
         const int number;
@@ -16,15 +17,18 @@ namespace student {
     };
 
     class VictimDetector : public ShapeDetector<Victim> {
+    private:
+        const DigitClassifier digitClassifier;
     protected:
         cv::Mat applyColorMask(const cv::Mat &hsvImage) override;
 
         vector<vector<cv::Point>> filterContours(const vector<vector<cv::Point>> &contours) override;
 
-        vector<Victim> mapPolygons(vector<Polygon> polygons) override;
+        vector<Victim> mapPolygons(vector<Polygon> polygons, const vector<vector<cv::Point>> &contours,
+                                   const cv::Mat &hsvImage, const cv::Mat &filteredImage) override;
 
     public:
-        VictimDetector() : ShapeDetector(1) {}
+        VictimDetector() : ShapeDetector(10), digitClassifier() {}
     };
 }
 

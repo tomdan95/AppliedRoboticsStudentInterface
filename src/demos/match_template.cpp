@@ -121,8 +121,8 @@ void processImage(const std::string &filename) {
             cv::Mat rotatedImage = rotateImage(num_template, j * 90);
 
             // Show the loaded template!
-            cv::imshow("Loaded template " + std::to_string(i), num_template);
-            cv::waitKey(0);
+            //cv::imshow("Loaded template " + std::to_string(i), num_template);
+            //cv::waitKey(0);
 
             // Store the template in templROIs (vector of mat)
             templROIs.emplace_back(rotatedImage);
@@ -130,7 +130,8 @@ void processImage(const std::string &filename) {
     }
     std::cout << "Using " << std::to_string(templROIs.size()) << " templates" << std::endl;
 
-    img.copyTo(filtered, green_mask_inv);   // create copy of image without green shapes
+    green_mask.copyTo(filtered);
+    //img.copyTo(filtered, green_mask_inv);   // create copy of image without green shapes
 
 
     // create a 3x3 recttangular kernel for img filtering

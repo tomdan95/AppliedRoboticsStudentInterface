@@ -1,5 +1,4 @@
 #define FIND_ROBOT_DEBUG_PLOT
-#include "../pipeline/detection/find_robot.hpp"
 #include "../utils.h"
 #include "student_image_elab_interface.hpp"
 #include "../pipeline/detection/find_victims.hpp"
@@ -12,7 +11,7 @@ int main() {
     cv::Mat hsv = convertRGBToHSV(img);
     
     VictimDetector detector;
-    auto victims = detector.findPolygons(hsv, 2);
+    auto victims = detector.findPolygons(hsv, 256);
     
     cout << "Found " << victims.size() << " victims" << endl;
 

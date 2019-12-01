@@ -19,10 +19,19 @@ namespace student {
         return filtered;
     }
 
-    vector<Victim> student::VictimDetector::mapPolygons(vector<Polygon> polygons) {
+    vector<Victim>
+    student::VictimDetector::mapPolygons(vector<Polygon> polygons, const vector<vector<cv::Point>> &contours,
+                                         const cv::Mat &hsvImage, const cv::Mat &filteredImage) {
+        vector<cv::Rect> rects;
+        for (const auto &contour:contours) {
+            rects.push_back(boundingRect(cv::Mat(contour)));
+        }
+
+
+        vector<int> digits = digitClassifier.recognizeDigits(hsvImage, filteredImage, rects);
         vector<Victim> victims;
-        for (auto &polygon : polygons) {
-            victims.emplace_back(polygon, -2);
+        for (vector<Polygon>::size_type i = 0; i < polygons.size(); i++) {
+            victims.emplace_back(polygons[i], digits[i]);
         }
         return victims;
     }

@@ -34,7 +34,15 @@ add_library(student SHARED
         src/pipeline/planning/dubins/utils.cpp
         src/pipeline/planning/dubins/utils.h
         src/pipeline/planning/dubins/dubins.cpp
-        src/pipeline/planning/dubins/dubins.h src/pipeline/detection/find_robot.hpp src/pipeline/detection/ShapeDetector.cpp src/pipeline/detection/ShapeDetector.h src/utils.cpp src/utils.h src/pipeline/detection/find_victims.cpp src/pipeline/detection/find_victims.hpp)
+        src/pipeline/planning/dubins/dubins.h
+        src/pipeline/detection/find_robot.hpp
+        src/pipeline/detection/ShapeDetector.cpp
+        src/pipeline/detection/ShapeDetector.h
+        src/utils.cpp src/utils.h
+        src/pipeline/detection/find_victims.cpp
+        src/pipeline/detection/find_victims.hpp
+        src/pipeline/detection/digit_classification/DigitClassifier.cpp
+        src/pipeline/detection/digit_classification/DigitClassifier.h)
 
 target_link_libraries(student
         ${OpenCV_LIBRARIES}
@@ -116,7 +124,7 @@ target_link_libraries(demo_simple_shape_detection
 
 ##### START OF demo_match_template #####
 add_executable(demo_match_template
-        src/match_template.cpp
+        src/demos/match_template.cpp
         )
 target_link_libraries(demo_match_template
         ${OpenCV_LIBRARIES}
@@ -164,6 +172,8 @@ add_executable(find_victim_demo
         src/pipeline/detection/find_victims.hpp
         src/pipeline/detection/ShapeDetector.cpp
         src/pipeline/detection/ShapeDetector.h
+        src/pipeline/detection/digit_classification/DigitClassifier.cpp
+        src/pipeline/detection/digit_classification/DigitClassifier.h
         src/utils.cpp
         src/utils.h)
 
