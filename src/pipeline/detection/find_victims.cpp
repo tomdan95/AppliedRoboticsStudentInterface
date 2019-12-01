@@ -8,14 +8,6 @@ namespace student {
         return greenMask;
     }
 
-    vector<Victim> student::VictimDetector::mapPolygons(vector<Polygon> polygons) {
-        vector<Victim> victims;
-        for (auto &polygon : polygons) {
-            victims.emplace_back(polygon, -2);
-        }
-        return victims;
-    }
-
     vector<vector<cv::Point>> VictimDetector::filterContours(const vector<vector<cv::Point>> &contours) {
         vector<vector<cv::Point>> filtered;
         for (auto &contour : contours) {
@@ -26,4 +18,13 @@ namespace student {
         }
         return filtered;
     }
+
+    vector<Victim> student::VictimDetector::mapPolygons(vector<Polygon> polygons) {
+        vector<Victim> victims;
+        for (auto &polygon : polygons) {
+            victims.emplace_back(polygon, -2);
+        }
+        return victims;
+    }
+
 }
