@@ -1,6 +1,8 @@
 #ifndef STUDENT_PROECT_FIND_VICTIMS_HPP
 #define STUDENT_PROECT_FIND_VICTIMS_HPP
 
+#include <utility>
+
 #include "ShapeDetector.h"
 
 namespace student {
@@ -10,12 +12,12 @@ namespace student {
         const Polygon polygon;
         const int number;
 
-        Victim(const Polygon &polygon, const int number) : polygon(polygon), number(number) {};
+        Victim(Polygon polygon, const int number) : polygon(std::move(polygon)), number(number) {};
     };
 
     class VictimDetector : public ShapeDetector<Victim> {
     protected:
-        cv::Mat applyColorMask(cv::Mat &hsvImage) override;
+        cv::Mat applyColorMask(const cv::Mat &hsvImage) override;
 
         vector<Victim> mapPolygons(vector<Polygon> polygons) override;
 

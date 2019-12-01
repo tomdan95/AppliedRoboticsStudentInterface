@@ -8,44 +8,52 @@ using namespace std;
 namespace student {
 
     template<class DetectedShape>
-    vector<DetectedShape> ShapeDetector<DetectedShape>::findPolygons(cv::Mat &hsvImage, double scale) {
+    vector<DetectedShape> ShapeDetector<DetectedShape>::findPolygons(const cv::Mat &hsvImage, double scale) {
         cv::Mat filteredImage = applyColorMask(hsvImage);
         vector<vector<cv::Point>> contours = findContours(filteredImage);
-        vector<Polygon> polygons = mapContoursToPolygon(contours, scale);
-        vector<Polygon> filteredPolygons = filterPolygons(polygons);
-        return mapPolygons(filteredPolygons);
+        vector<vector<cv::Point>> filteredContours = filterContours(contours);
+        vector<Polygon> polygons = mapContoursToPolygon(filteredContours, scale);
+        return mapPolygons(polygons);
     }
 
     template<class DetectedShape>
-    vector<vector<cv::Point>> ShapeDetector<DetectedShape>::findContours(cv::Mat &filteredImage) {
+    vector<vector<cv::Point>> ShapeDetector<DetectedShape>::findContours(const cv::Mat &filteredImage) {
         vector<vector<cv::Point>> contours;
         cv::findContours(filteredImage, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
-        return contours;
+
+        vector<vector<cv::Point>> approximatedContours;
+
+        for (vector<cv::Point> contour : contours) {
+            vector<cv::Point> approximatedContour;
+            cv::approxPolyDP(contour, approximatedContour, approxPolyEpsilon, true);
+            approximatedContours.push_back(approximatedContour);
+        }
+
+        return approximatedContours;
     }
 
     template<class DetectedShape>
     vector<Polygon> ShapeDetector<DetectedShape>::mapContoursToPolygon(const vector<vector<cv::Point>> &contours, const double scale) {
         vector<Polygon> polygons;
         for (auto &contour : contours) {
-            Polygon scaled_contour = mapContourToPolygon(contour, scale);
-            polygons.push_back(scaled_contour);
+            Polygon polygon = mapContourToPolygon(contour, scale);
+            polygons.emplace_back(polygon);
         }
         return polygons;
     }
 
     template<class DetectedShape>
     Polygon ShapeDetector<DetectedShape>::mapContourToPolygon(const vector<cv::Point> &contour, const double scale) {
-        vector<cv::Point> approxCurve;
-        cv::approxPolyDP(contour, approxCurve, approxPolyEpsilon, true);
-        Polygon scaled_contour;
-        for (const auto &pt: approxCurve) {
-            scaled_contour.emplace_back(pt.x / scale, pt.y / scale);
+        vector<Point> polygonPoints;
+        for (const auto &pt: contour) {
+            polygonPoints.emplace_back(pt.x / scale, pt.y / scale);
         }
-        return scaled_contour;
+        return Polygon(polygonPoints);
     }
 
-    template<> vector<Polygon> ShapeDetector<Polygon>::mapPolygons(vector<Polygon> polygons) {
-        return polygons;
+    template<class DetectedShape>
+    vector<vector<cv::Point>> ShapeDetector<DetectedShape>::filterContours(const vector<vector<cv::Point>> &contours) {
+        return contours;
     }
 
     /**
@@ -55,6 +63,5 @@ namespace student {
      */
     template class ShapeDetector<RobotPose>;
     template class ShapeDetector<Victim>;
-
 }
 

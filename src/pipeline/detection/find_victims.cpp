@@ -2,7 +2,7 @@
 
 
 namespace student {
-    cv::Mat VictimDetector::applyColorMask(cv::Mat &hsvImage) {
+    cv::Mat VictimDetector::applyColorMask(const cv::Mat &hsvImage) {
         cv::Mat greenMask;
         cv::inRange(hsvImage, cv::Scalar(45, 50, 50), cv::Scalar(75, 255, 255), greenMask);
         return greenMask;

@@ -5,10 +5,11 @@
 
 using namespace std;
 
-namespace student {
-    cv::Mat convertRGBToHSV(const cv::Mat &rgb);
 
-    vector<cv::Point> getPointsFromPolygon(Polygon &polygon);
-}
+cv::Mat convertRGBToHSV(const cv::Mat &rgb);
+
+cv::Mat loadImage(string fileName);
+
+void showImageAndWaitKeyPress(cv::Mat &image);
 
 #endif //STUDENT_PROECT_UTILS_H

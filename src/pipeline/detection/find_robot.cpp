@@ -3,7 +3,7 @@
  */
 
 #include "find_robot.hpp"
-#include "utils.h"
+#include "../../utils.h"
 
 using namespace std;
 
@@ -35,21 +35,22 @@ namespace student {
         return true;
     }
 
-    cv::Mat RobotDetector::applyColorMask(cv::Mat &hsvImage) {
+    cv::Mat RobotDetector::applyColorMask(const cv::Mat &hsvImage) {
         cv::Mat blueMask;
         cv::inRange(hsvImage, cv::Scalar(90, 50, 50), cv::Scalar(140, 255, 255), blueMask);
         return blueMask;
     }
 
 
-    vector<Polygon> RobotDetector::filterPolygons(vector<Polygon> polygons) {
-        vector<Polygon> filtered;
-        for (auto &polygon : polygons) {
-            if (polygon.size() == 3) {
-                vector<cv::Point> points = getPointsFromPolygon(polygon);
-                double area = cv::contourArea(points);
+    vector<vector<cv::Point>> RobotDetector::filterContours(const vector<vector<cv::Point>> &contours) {
+        vector<vector<cv::Point>> filtered;
+        for (auto &contour : contours) {
+            if (contour.size() == 3) {
+                double area = cv::contourArea(contour);
+                cout << ">> Triangle with area: " << area << endl;
                 if (area >= 300 && area <= 3000) {
-                    filtered.push_back(polygon);
+                    cout << ">>> Robot found!!!" << endl;
+                    filtered.push_back(contour);
                 }
             }
         }
@@ -65,7 +66,7 @@ namespace student {
     }
 
 
-    RobotPose RobotDetector::getRobotPose(Polygon robot) {
+    RobotPose RobotDetector::getRobotPose(const Polygon& robot) {
         double cx = 0, cy = 0;
         for (auto item: robot) {
             cx += item.x;
@@ -75,18 +76,18 @@ namespace student {
         cy /= robot.size();
 
         double dst = 0;
-        Point vertex;
+        const Point *vertex;
         for (auto &item: robot) {
             double dx = item.x - cx;
             double dy = item.y - cy;
             double curr_d = dx * dx + dy * dy;
             if (curr_d > dst) {
                 dst = curr_d;
-                vertex = item;
+                vertex = &item;
             }
         }
-        double dx = cx - vertex.x;
-        double dy = cy - vertex.y;
+        double dx = cx - vertex->x;
+        double dy = cy - vertex->y;
         double theta = std::atan2(dy, dx);
         RobotPose pose(robot, cx, cy, theta);
         return pose;

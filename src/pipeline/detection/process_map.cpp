@@ -5,7 +5,7 @@
 
 #include "student_image_elab_interface.hpp"
 #include "student_planning_interface.hpp"
-#include "utils.h"
+#include "../../utils.h"
 #include "find_victims.hpp"
 
 
@@ -105,7 +105,7 @@ namespace student {
         if (victims.empty()) {
             return false;
         } else {
-            for(auto &victim : victims) {
+            for(const auto &victim : victims) {
                 victim_list.emplace_back(victim.number, victim.polygon);
             }
             return true;
