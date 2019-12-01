@@ -102,6 +102,7 @@ namespace student {
     bool processVictims(const cv::Mat &hsvImage, const double scale, std::vector<std::pair<int, Polygon>> &victim_list) {
         VictimDetector detector;
         vector<Victim> victims = detector.findPolygons(hsvImage, scale);
+        cout << "[PROCESS_MAP] Found " << victims.size() << " victims" << endl;
         if (victims.empty()) {
             return false;
         } else {

@@ -19,6 +19,8 @@ namespace student {
     protected:
         cv::Mat applyColorMask(const cv::Mat &hsvImage) override;
 
+        vector<vector<cv::Point>> filterContours(const vector<vector<cv::Point>> &contours) override;
+
         vector<Victim> mapPolygons(vector<Polygon> polygons) override;
 
     public:

@@ -47,9 +47,7 @@ namespace student {
         for (auto &contour : contours) {
             if (contour.size() == 3) {
                 double area = cv::contourArea(contour);
-                cout << ">> Triangle with area: " << area << endl;
                 if (area >= 300 && area <= 3000) {
-                    cout << ">>> Robot found!!!" << endl;
                     filtered.push_back(contour);
                 }
             }
