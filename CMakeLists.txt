@@ -10,12 +10,15 @@ find_package(project_interface REQUIRED)
 ## Specify additional locations of header files
 include_directories(
         include
+        libs
         ${OpenCV_INCLUDE_DIRS}
         ${project_interface_INCLUDE_DIRS}
 )
 
 ###### START OF STRUDENT LIBRARY #####
 add_library(student SHARED
+        libs/clipper/clipper.hpp
+        libs/clipper/clipper.cpp
         src/student_interface.cpp
         src/pipeline/image_undistort.cpp
         src/pipeline/extrinsic_calibration.cpp
@@ -38,7 +41,8 @@ add_library(student SHARED
         src/pipeline/detection/find_robot.hpp
         src/pipeline/detection/ShapeDetector.cpp
         src/pipeline/detection/ShapeDetector.h
-        src/utils.cpp src/utils.h
+        src/utils.cpp
+        src/utils.h
         src/pipeline/detection/find_victims.cpp
         src/pipeline/detection/find_victims.hpp
         src/pipeline/detection/find_obstacles.hpp
@@ -46,7 +50,8 @@ add_library(student SHARED
         src/pipeline/detection/find_gate.hpp
         src/pipeline/detection/find_gate.cpp
         src/pipeline/detection/digit_classification/DigitClassifier.cpp
-        src/pipeline/detection/digit_classification/DigitClassifier.h)
+        src/pipeline/detection/digit_classification/DigitClassifier.h
+        src/pipeline/planning/planning.h)
 
 target_link_libraries(student
         ${OpenCV_LIBRARIES}
