@@ -41,6 +41,8 @@ add_library(student SHARED
         src/utils.cpp src/utils.h
         src/pipeline/detection/find_victims.cpp
         src/pipeline/detection/find_victims.hpp
+        src/pipeline/detection/find_obstacles.hpp
+        src/pipeline/detection/find_obstacles.cpp
         src/pipeline/detection/digit_classification/DigitClassifier.cpp
         src/pipeline/detection/digit_classification/DigitClassifier.h)
 

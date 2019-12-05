@@ -63,5 +63,6 @@ namespace student {
      */
     template class ShapeDetector<RobotPose>;
     template class ShapeDetector<Victim>;
+    template class ShapeDetector<Polygon>;
 }
 
