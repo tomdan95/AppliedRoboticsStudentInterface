@@ -8,6 +8,7 @@
 #include "../../utils.h"
 #include "find_victims.hpp"
 #include "find_obstacles.hpp"
+#include "find_gate.hpp"
 
 
 namespace student {
@@ -27,50 +28,15 @@ namespace student {
 
 
     bool processGate(const cv::Mat &hsv_img, const double scale, Polygon &gate) {
-
-        // Find purple regions
-        cv::Mat purple_mask;
-        cv::inRange(hsv_img, cv::Scalar(130, 10, 10), cv::Scalar(165, 255, 255), purple_mask);
-
-
-        std::vector<std::vector<cv::Point>> contours, contours_approx;
-        std::vector<cv::Point> approx_curve;
-        //cv::Mat contours_img;
-
-        // Process purple mask
-        //contours_img = hsv_img.clone();
-        cv::findContours(purple_mask, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
-        //drawContours(contours_img, contours, -1, cv::Scalar(40,190,40), 4, cv::LINE_AA);
-        // std::cout << "N. contours: " << contours.size() << std::endl;
-
-
-        bool res = false;
-
-        for (auto &contour : contours) {
-            const double area = cv::contourArea(contour);
-            //std::cout << "AREA " << area << std::endl;
-            //std::cout << "SIZE: " << contours.size() << std::endl;
-            if (area > 500) {
-                approxPolyDP(contour, approx_curve, 3, true);
-
-                // contours_approx = {approx_curve};
-                // drawContours(contours_img, contours_approx, -1, cv::Scalar(0,170,220), 3, cv::LINE_AA);
-
-
-                for (const auto &pt: approx_curve) {
-                    gate.emplace_back(pt.x / scale, pt.y / scale);
-                }
-                res = true;
-                break;
-            }
+        GateDetector detector;
+        vector<Polygon> gates = detector.findPolygons(hsv_img, scale);
+        cout << "[PROCESS_MAP] Found " << gates.size() << " gates" << endl;
+        if (gates.size()!=1) {
+            return false;
+        } else {
+            gate = gates[0];
+            return true;
         }
-
-
-        // cv::imshow("Original", contours_img);
-        // cv::waitKey(1);
-
-        return true;
-        //return res;
     }
 
     bool processVictims(const cv::Mat &hsvImage, const double scale, std::vector<std::pair<int, Polygon>> &victim_list) {
