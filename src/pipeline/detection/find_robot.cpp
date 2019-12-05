@@ -32,6 +32,7 @@ namespace student {
         x = robot.x;
         y = robot.y;
         theta = robot.theta;
+        triangle = robot.polygon;
         return true;
     }
 
