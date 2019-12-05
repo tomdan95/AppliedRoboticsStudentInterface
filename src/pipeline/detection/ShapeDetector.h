@@ -23,12 +23,14 @@ namespace student {
 
         vector<vector<cv::Point>> findContours(const cv::Mat &filteredImage);
 
+        // TODO: implement filterContours and make virtual filterContour, so we don'thave to cpy and paste the loop logic
         virtual vector<vector<cv::Point>> filterContours(const vector<vector<cv::Point>> &contours);
 
         vector<Polygon> mapContoursToPolygon(const vector<vector<cv::Point>> &contours, double scale);
 
         Polygon mapContourToPolygon(const vector<cv::Point> &contour, double scale);
 
+        // TODO: implement mapPolygons and make virtual makePolygon, so we don'thave to cpy and paste the loop logic
         virtual vector<DetectedShape>
         mapPolygons(vector<Polygon> polygons, const vector<vector<cv::Point>> &contour, const cv::Mat &hsvImage,
                     const cv::Mat &filteredImage) = 0;
