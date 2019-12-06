@@ -17,16 +17,16 @@ DubinsCurve dubinsShortestPath(RobotPosition start, RobotPosition end, double kM
     };
     double minLength = INFINITY;
     DubinsResult minCurve;
-    int pidx = 0, minPidx; // TODO: Rename pidx to i (for the for loop)
-    for (auto solver : solvers) {
+    int minPidx; // TODO: Rename pidx to i (for the for loop)
+    for (int i = 0; i < sizeof(solvers) / sizeof(ManeuverSolver*); i++) {
+        auto solver = solvers[i];
         auto res = solver->solve(scale);
-        cout << "Length: " << res.length() << endl;
+        cout << "Length: " << res.length() << " res = " << res.ok << endl;
         if (res.ok && res.length() < minLength) {
             minLength = res.length();
             minCurve = res;
-            minPidx = pidx;
+            minPidx = i;
         }
-        pidx++;
     }
     cout << "Min pidx=" << minPidx << endl;
 

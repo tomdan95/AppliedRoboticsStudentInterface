@@ -48,7 +48,7 @@ DubinsResult RSR::solve(ScaledRobotPosition scale) {
     if (temp2 < 0) {
         res.ok = false;
     } else {
-        res.ok = false;
+        res.ok = true;
         res.sc_s1 = sc_s1;
         res.sc_s2 = invK * sqrt(temp2);
         res.sc_s3 = invK * mod2pi(temp1 - scale.thetaEnd);
@@ -67,7 +67,7 @@ DubinsResult LSR::solve(ScaledRobotPosition scale) {
     if (temp3 < 0) {
         res.ok = false;
     } else {
-        res.ok = false;
+        res.ok = true;
         double sc_s2 = invK * sqrt(temp3);
         double temp2 = -atan2(-2, sc_s2 * scale.kMax);
         res.sc_s1 = invK * mod2pi(temp1 + temp2 - scale.thetaStart);
@@ -88,7 +88,7 @@ DubinsResult RSL::solve(ScaledRobotPosition scale) {
     if (temp3 < 0) {
         res.ok = false;
     } else {
-        res.ok = false;
+        res.ok = true;
         double sc_s2 = invK * sqrt(temp3);
         double temp2 = atan2(2, sc_s2 * scale.kMax);
         res.sc_s1 = invK * mod2pi(scale.thetaStart - temp1 + temp2);

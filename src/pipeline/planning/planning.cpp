@@ -54,18 +54,26 @@ namespace student {
 
 
         vector<Polygon> inflatedObstacles = inflateObstacles(obstacleList);
-
-
-
-        /*
         vector<Pose> poseVector;
+
+        RobotPosition start(x, y, theta);
+        RobotPosition end(gate[0].x, gate[0].y, 0);
+
+        cout << "robot x = " << start.x << " y = " << start.y << " theta = " << start.theta << endl;
+        cout << "gate x = " << end.x << " y = " << end.y << " theta = " << end.theta << endl;
+
+        auto res = dubinsShortestPath(start, end, 10);
+        dubinsCurveToPoseVector(res, poseVector);
+
+/*
+
         RobotPosition start(x, y, theta);
         RobotPosition gateEnd(gate[0].x, gate[0].y, (M_PI / 3.0));
 
         for (int i = 0; i <= 5; i++)
             for (const pair<int, Polygon> &victim:victimList) {
                 if(victim.first == i) {
-                    RobotPosition poseForVictim(victim.second[0].x, victim.second[0].y, theta);
+                    RobotPosition poseForVictim(victim.second[0].x, victim.second[0].y, 90);
                     auto res = dubinsShortestPath(start, poseForVictim, 5);
                     dubinsCurveToPoseVector(res, poseVector);
                     start = poseForVictim;
@@ -75,9 +83,9 @@ namespace student {
         auto res = dubinsShortestPath(start, gateEnd, 5);
         dubinsCurveToPoseVector(res, poseVector);
 
-
-        path.setPoints(poseVector);
 */
+        path.setPoints(poseVector);
+
         auto endTime = chrono::high_resolution_clock::now();
         auto timeTook = endTime - startTime;
         auto timeTookMs = chrono::duration_cast<chrono::milliseconds>(timeTook).count();
@@ -104,23 +112,15 @@ namespace student {
     pts(j+1, 1:2) = [x, y];
   end
          */
-        /*
 
-       DubinsArc temp;
-       Pose pose;
-       circleLine(0, arc.x0, arc.y0, arc.th0, arc.k, &temp);
-       vector.push_back(pose);
-       */
-
-        const int numPoints = 50;
+        const int numPoints = 100;
         for (int i = 0; i < numPoints; i++) {
             DubinsArc temp;
-            Pose pose;
-            double s = arc.L / numPoints * i;
+            double s = arc.L / numPoints * ((float)i);
             circleLine(s, arc.x0, arc.y0, arc.th0, arc.k, &temp);
-            pose.x = temp.x0;
-            pose.y = temp.y0;
-            vector.emplace_back(1, temp.xf, temp.yf, temp.thf, temp.k);
+            printf("%d) xf = %f yf = %f thetaf = %f k = %f\n", i, temp.xf, temp.yf, temp.thf, arc.k);
+            //vector.emplace_back(1, temp.xf, temp.yf, temp.thf, temp.k); // TODO: temp.k doesn't get updated. Do we need it??
+            vector.emplace_back(1, temp.xf, temp.yf, temp.thf, arc.k);
         }
     }
 
