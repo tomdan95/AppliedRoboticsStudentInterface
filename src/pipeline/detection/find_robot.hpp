@@ -36,6 +36,8 @@ namespace student {
 
     public:
         RobotDetector() : ShapeDetector(10) {}
+
+        double getRobotTheta(const Polygon &robot, const Point &center) const;
     };
 
 }

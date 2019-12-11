@@ -3,7 +3,8 @@
  */
 
 #include "find_robot.hpp"
-#include "../../utils.h"
+#include "../../opencv-utils.h"
+#include "../utils.h"
 
 using namespace std;
 
@@ -67,31 +68,29 @@ namespace student {
 
 
     RobotPose RobotDetector::getRobotPose(const Polygon &robot) {
-        double cx = 0, cy = 0;
-        for (auto item: robot) {
-            cx += item.x;
-            cy += item.y;
-        }
-        cx /= robot.size();
-        cy /= robot.size();
+        Point center = getPolygonCenter(robot);
+        RobotPose pose(robot, center.x, center.y, getRobotTheta(robot, center));
+        return pose;
+    }
 
+    double RobotDetector::getRobotTheta(const Polygon &robot, const Point &center) const {
         double dst = 0;
         const Point *vertex;
         for (auto &item: robot) {
-            double dx = item.x - cx;
-            double dy = item.y - cy;
+            double dx = item.x - center.x;
+            double dy = item.y - center.y;
             double curr_d = dx * dx + dy * dy;
             if (curr_d > dst) {
                 dst = curr_d;
                 vertex = &item;
             }
         }
-        double dx = cx - vertex->x;
-        double dy = cy - vertex->y;
-        double theta = std::atan2(dy, dx);
-        RobotPose pose(robot, cx, cy, theta);
-        return pose;
+        double dx = center.x - vertex->x;
+        double dy = center.y - vertex->y;
+        double theta = atan2(dy, dx);
+        return theta;
     }
+
 
     cv::Mat debugShowBlueFilterAndContours(const cv::Mat &hsvImage, const cv::Mat &blue_mask,
                                            const vector<std::vector<cv::Point>> &contours) {

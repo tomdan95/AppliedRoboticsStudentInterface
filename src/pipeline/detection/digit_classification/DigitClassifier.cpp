@@ -1,7 +1,7 @@
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
 #include "DigitClassifier.h"
-#include "../../../utils.h"
+#include "../../../opencv-utils.h"
 
 
 vector<int> DigitClassifier::recognizeDigits(const cv::Mat &hsvImage, const cv::Mat &filteredImage, const vector<cv::Rect> &rects) const {
