@@ -11,6 +11,46 @@
 using namespace std;
 namespace student {
 
+    bool planPath(const Polygon &borders, const vector<Polygon> &obstacleList,
+                  const vector<pair<int, Polygon>> &victimList,
+                  const Polygon &gate, const float x, const float y, const float theta,
+                  Path &path,
+                  const string &configFolder) {
+
+        cout << "[PLANNING] begin planPath" << endl;
+        auto startTime = chrono::high_resolution_clock::now();
+
+
+        vector<Polygon> inflatedObstacles = inflateObstacles(obstacleList);
+        vector<Pose> poseVector;
+
+        RobotPosition start(x, y, theta);
+        RobotPosition gateEnd(gate[0].x, gate[0].y, 0);
+
+
+        for (int i = 0; i <= 5; i++)
+            for (const pair<int, Polygon> &victim:victimList) {
+                if(victim.first == i) {
+                    RobotPosition poseForVictim(victim.second[0].x, victim.second[0].y, 0);
+                    auto res = dubinsShortestPath(start, poseForVictim, 5);
+                    dubinsCurveToPoseVector(res, poseVector);
+                    start = poseForVictim;
+                }
+            }
+
+        auto res = dubinsShortestPath(start, gateEnd, 5);
+        dubinsCurveToPoseVector(res, poseVector);
+
+
+        path.setPoints(poseVector);
+
+        auto endTime = chrono::high_resolution_clock::now();
+        auto timeTook = endTime - startTime;
+        auto timeTookMs = chrono::duration_cast<chrono::milliseconds>(timeTook).count();
+        cout << "[PLANNING] end planPath. Total time: " << timeTookMs << endl;
+        return true;
+    }
+
     vector<Polygon> inflateObstacles(const vector<Polygon> &obstacles) {
 
         vector<Polygon> inflatedObstacles;
@@ -43,56 +83,6 @@ namespace student {
         return inflatedObstacles;
     }
 
-    bool planPath(const Polygon &borders, const vector<Polygon> &obstacleList,
-                  const vector<pair<int, Polygon>> &victimList,
-                  const Polygon &gate, const float x, const float y, const float theta,
-                  Path &path,
-                  const string &configFolder) {
-
-        cout << "[PLANNING] begin planPath" << endl;
-        auto startTime = chrono::high_resolution_clock::now();
-
-
-        vector<Polygon> inflatedObstacles = inflateObstacles(obstacleList);
-        vector<Pose> poseVector;
-
-        RobotPosition start(x, y, theta);
-        RobotPosition end(gate[0].x, gate[0].y, 0);
-
-        cout << "robot x = " << start.x << " y = " << start.y << " theta = " << start.theta << endl;
-        cout << "gate x = " << end.x << " y = " << end.y << " theta = " << end.theta << endl;
-
-        auto res = dubinsShortestPath(start, end, 10);
-        dubinsCurveToPoseVector(res, poseVector);
-
-/*
-
-        RobotPosition start(x, y, theta);
-        RobotPosition gateEnd(gate[0].x, gate[0].y, (M_PI / 3.0));
-
-        for (int i = 0; i <= 5; i++)
-            for (const pair<int, Polygon> &victim:victimList) {
-                if(victim.first == i) {
-                    RobotPosition poseForVictim(victim.second[0].x, victim.second[0].y, 90);
-                    auto res = dubinsShortestPath(start, poseForVictim, 5);
-                    dubinsCurveToPoseVector(res, poseVector);
-                    start = poseForVictim;
-                }
-            }
-
-        auto res = dubinsShortestPath(start, gateEnd, 5);
-        dubinsCurveToPoseVector(res, poseVector);
-
-*/
-        path.setPoints(poseVector);
-
-        auto endTime = chrono::high_resolution_clock::now();
-        auto timeTook = endTime - startTime;
-        auto timeTookMs = chrono::duration_cast<chrono::milliseconds>(timeTook).count();
-        cout << "[PLANNING] end planPath. Total time: " << timeTookMs << endl;
-        return true;
-    }
-
 
     vector<Pose> dubinsCurveToPoseVector(DubinsCurve curve, vector<Pose> &vector) {
         dubinsArcToPoseVector(curve.a1, vector);
@@ -103,23 +93,12 @@ namespace student {
 
 
     void dubinsArcToPoseVector(DubinsArc arc, vector<Pose> &vector) {
-        /**
-         * npts = 100;
-  pts = zeros(npts+1, 2);
-  for j = 0:npts
-    s = arc.L/npts * j;
-    [x, y] = circline(s, arc.x0, arc.y0, arc.th0, arc.k);
-    pts(j+1, 1:2) = [x, y];
-  end
-         */
-
-        const int numPoints = 100;
+        const int numPoints = 5;
         for (int i = 0; i < numPoints; i++) {
             DubinsArc temp;
             double s = arc.L / numPoints * ((float)i);
             circleLine(s, arc.x0, arc.y0, arc.th0, arc.k, &temp);
-            printf("%d) xf = %f yf = %f thetaf = %f k = %f\n", i, temp.xf, temp.yf, temp.thf, arc.k);
-            //vector.emplace_back(1, temp.xf, temp.yf, temp.thf, temp.k); // TODO: temp.k doesn't get updated. Do we need it??
+            // TODO: temp.k doesn't get updated. Do we need it in this data structure??
             vector.emplace_back(1, temp.xf, temp.yf, temp.thf, arc.k);
         }
     }

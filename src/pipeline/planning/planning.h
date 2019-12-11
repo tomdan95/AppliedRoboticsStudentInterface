@@ -12,7 +12,9 @@
 
 
 using namespace std;
+
 namespace student {
+    vector<Polygon> inflateObstacles(const vector<Polygon> &obstacles);
     void dubinsArcToPoseVector(DubinsArc arc, vector<Pose>& vector);
     vector<Pose> dubinsCurveToPoseVector(DubinsCurve curve, vector<Pose> &poseVector);
 }
