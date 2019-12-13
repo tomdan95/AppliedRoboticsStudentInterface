@@ -41,8 +41,8 @@ add_library(student SHARED
         src/pipeline/detection/find_robot.hpp
         src/pipeline/detection/ShapeDetector.cpp
         src/pipeline/detection/ShapeDetector.h
-        src/utils.cpp
-        src/utils.h
+        src/opencv-utils.cpp
+        src/opencv-utils.h
         src/pipeline/detection/find_victims.cpp
         src/pipeline/detection/find_victims.hpp
         src/pipeline/detection/find_obstacles.hpp
@@ -51,7 +51,11 @@ add_library(student SHARED
         src/pipeline/detection/find_gate.cpp
         src/pipeline/detection/digit_classification/DigitClassifier.cpp
         src/pipeline/detection/digit_classification/DigitClassifier.h
-        src/pipeline/planning/planning.h)
+        src/pipeline/planning/planning.h
+        src/pipeline/planning/best_theta.cpp
+        src/pipeline/planning/best_theta.h
+        src/pipeline/utils.cpp
+        src/pipeline/utils.h)
 
 target_link_libraries(student
         ${OpenCV_LIBRARIES}
@@ -166,8 +170,10 @@ add_executable(find_robot_demo
         src/pipeline/detection/find_robot.hpp
         src/pipeline/detection/ShapeDetector.cpp
         src/pipeline/detection/ShapeDetector.h
-        src/utils.cpp
-        src/utils.h)
+        src/opencv-utils.cpp
+        src/opencv-utils.h
+        src/pipeline/utils.cpp
+        src/pipeline/utils.h)
 
 target_link_libraries(find_robot_demo
         ${OpenCV_LIBRARIES}
@@ -183,8 +189,8 @@ add_executable(find_victim_demo
         src/pipeline/detection/ShapeDetector.h
         src/pipeline/detection/digit_classification/DigitClassifier.cpp
         src/pipeline/detection/digit_classification/DigitClassifier.h
-        src/utils.cpp
-        src/utils.h)
+        src/opencv-utils.cpp
+        src/opencv-utils.h)
 
 target_link_libraries(find_victim_demo
         ${OpenCV_LIBRARIES}

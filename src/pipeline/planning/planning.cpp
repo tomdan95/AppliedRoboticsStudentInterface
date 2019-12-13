@@ -13,8 +13,6 @@ using namespace std;
 namespace student {
 
 
-
-
     bool planPath(const Polygon &borders, const vector<Polygon> &obstacleList,
                   const vector<pair<int, Polygon>> &victimList,
                   const Polygon &gate, const float x, const float y, const float theta,
