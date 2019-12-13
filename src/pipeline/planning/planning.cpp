@@ -7,11 +7,18 @@
 #include "clipper/clipper.hpp"
 #include "../utils.h"
 
+#include "../planning/voronoi_helper.h"
+
 #define INT_ROUND 1000
 
 using namespace std;
 namespace student {
 
+
+    void testVoronoiPlanning(vector<Polygon>& vector) {
+        cv::Mat image(1000,1280, CV_8UC3, cv::Scalar(0,0,255));
+        testComputeVoronoi(image, vector);
+    }
 
     bool planPath(const Polygon &borders, const vector<Polygon> &obstacleList,
                   const vector<pair<int, Polygon>> &victimList,
@@ -22,6 +29,9 @@ namespace student {
         auto startTime = chrono::high_resolution_clock::now();
 
         vector<Polygon> inflatedObstacles = inflateObstacles(obstacleList);
+
+        vector<Polygon> copy = obstacleList;
+        testVoronoiPlanning(copy);
 
         vector<Point> pathPoints = getSortedVictimPoints(victimList);
         pathPoints.push_back(getPolygonCenter(gate));

@@ -55,7 +55,8 @@ add_library(student SHARED
         src/pipeline/planning/best_theta.cpp
         src/pipeline/planning/best_theta.h
         src/pipeline/utils.cpp
-        src/pipeline/utils.h)
+        src/pipeline/utils.h
+        src/pipeline/planning/voronoi_helper.cpp src/pipeline/planning/voronoi_helper.h)
 
 target_link_libraries(student
         ${OpenCV_LIBRARIES}
