@@ -15,8 +15,8 @@ using namespace std;
 namespace student {
 
 
-    void testVoronoiPlanning(vector<Polygon>& vector) {
-        cv::Mat image(1000,1280, CV_8UC3, cv::Scalar(0,0,255));
+    void testVoronoiPlanning(vector<Polygon> &vector) {
+        cv::Mat image(1000, 1280, CV_8UC3, cv::Scalar(0, 0, 255));
         testComputeVoronoi(image, vector);
     }
 
@@ -31,8 +31,12 @@ namespace student {
         vector<Polygon> inflatedObstacles = inflateObstacles(obstacleList);
         // TODO: Now that the obstacles has been inflated, merge some of them (the ones which overlap)
 
+        //vector<Polygon> copy = inflatedObstacles;
+
+
         vector<Polygon> copy = inflatedObstacles;
         testVoronoiPlanning(copy);
+
 
         vector<Point> pathPoints = getSortedVictimPoints(victimList);
         pathPoints.push_back(getPolygonCenter(gate));
@@ -85,7 +89,7 @@ namespace student {
             //if (obstacle.size() == 3) {
             //    co.AddPath(clipperObstacle, ClipperLib::jtSquare, ClipperLib::etClosedLine);
             //} else {
-                co.AddPath(clipperObstacle, ClipperLib::jtSquare, ClipperLib::etClosedPolygon);
+            co.AddPath(clipperObstacle, ClipperLib::jtSquare, ClipperLib::etClosedPolygon);
             //}
 
             co.Execute(clipperInflatedObstacle, 10); // TODO: Change the offset value according to the robot size

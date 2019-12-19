@@ -72,7 +72,7 @@ namespace boost {
     }  // polygon
 }  // boost
 
-void iterate_primary_edges1(const voronoi_diagram<double> &vd, cv::Mat& rgbImage) {
+void iterate_primary_edges1(const voronoi_diagram<double> &vd, cv::Mat &rgbImage) {
 
     int i = 0;
     for (auto edge : vd.edges()) {
@@ -92,20 +92,17 @@ void iterate_primary_edges1(const voronoi_diagram<double> &vd, cv::Mat& rgbImage
 
 }
 
-int testComputeVoronoi(cv::Mat& image, vector<Polygon>& vector) {
+int testComputeVoronoi(cv::Mat &image, vector<Polygon> &vector) {
     // Preparing Input Geometries.
 
     std::vector<Segment> segments;
 
-    for(const Polygon& obstacle:vector) {
+    for (const Polygon &obstacle:vector) {
         cv::Point start(obstacle[0].x * 1000.0, obstacle[0].y * 1000.0);
-        for(int i = 1; i < obstacle.size(); i++) {
+        for (int i = 1; i < obstacle.size(); i++) {
             const Point point = obstacle[i];
 
             cv::Point end(point.x * 1000.0, point.y * 1000.0);
-            cv::line(image, start, end, cv::Scalar(255, 0, 0), 3);
-
-            std::cout << start.x << " " << start.y << std::endl;
             segments.emplace_back(start.x, start.y, end.x, end.y);
 
             start = end;
@@ -113,11 +110,9 @@ int testComputeVoronoi(cv::Mat& image, vector<Polygon>& vector) {
 
         // add last
         cv::Point end(obstacle[0].x * 1000.0, obstacle[0].y * 1000.0);
-        cv::line(image, start, end, cv::Scalar(255, 0, 0), 3);
-
-        std::cout << start.x << " " << start.y << std::endl;
         segments.emplace_back(start.x, start.y, end.x, end.y);
     }
+
 
 
 
@@ -129,11 +124,20 @@ int testComputeVoronoi(cv::Mat& image, vector<Polygon>& vector) {
     segments.push_back(Segment(200, 200, 200, 100));
     segments.push_back(Segment(200, 100, 100, 100));
 */
-    segments.emplace_back(0, 0, 1000, 0);
-    segments.emplace_back(1000, 0, 1000, 1000);
-    segments.emplace_back(1000, 1000, 0, 1000);
-    segments.emplace_back(0, 1000, 0, 0);
+    segments.emplace_back(10, 10, 1200, 10);
+    segments.emplace_back(1200, 10, 1200, 900);
+    segments.emplace_back(1200, 900, 10, 900);
+    segments.emplace_back(10, 900, 10, 10);
 
+
+    // Draw segments
+    for (const auto segment : segments) {
+        auto start = cv::Point(segment.p0.a, segment.p0.b);
+        auto end = cv::Point(segment.p1.a, segment.p1.b);
+        cv::circle(image, start, 10, cv::Scalar(100, 100, 0), 3);
+        cv::circle(image, end, 10, cv::Scalar(100, 100, 0), 3);
+        cv::line(image, start, end, cv::Scalar(255, 0, 0), 3);
+    }
 
     // Construction of the Voronoi Diagram.
     voronoi_diagram<double> vd;
