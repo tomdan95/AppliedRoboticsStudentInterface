@@ -9,7 +9,7 @@
 
 #include "../planning/voronoi_helper.h"
 
-#define INT_ROUND 1000
+#define INT_ROUND 1000.0
 
 using namespace std;
 namespace student {
@@ -29,8 +29,9 @@ namespace student {
         auto startTime = chrono::high_resolution_clock::now();
 
         vector<Polygon> inflatedObstacles = inflateObstacles(obstacleList);
+        // TODO: Now that the obstacles has been inflated, merge some of them (the ones which overlap)
 
-        vector<Polygon> copy = obstacleList;
+        vector<Polygon> copy = inflatedObstacles;
         testVoronoiPlanning(copy);
 
         vector<Point> pathPoints = getSortedVictimPoints(victimList);
@@ -69,31 +70,32 @@ namespace student {
     }
 
     vector<Polygon> inflateObstacles(const vector<Polygon> &obstacles) {
-
         vector<Polygon> inflatedObstacles;
         for (const Polygon &obstacle : obstacles) {
             ClipperLib::Path clipperObstacle;
-            ClipperLib::Paths clipperInflated;
+            ClipperLib::Paths clipperInflatedObstacle;
             for (const auto &point : obstacle) {
                 clipperObstacle << ClipperLib::IntPoint(point.x * INT_ROUND, point.y * INT_ROUND);
             }
+            clipperObstacle << ClipperLib::IntPoint(obstacle[0].x * INT_ROUND, obstacle[0].y * INT_ROUND);
 
             ClipperLib::ClipperOffset co;
-            if (obstacle.size() == 3) {
-                co.AddPath(clipperObstacle, ClipperLib::jtSquare, ClipperLib::etClosedLine);
-            } else {
+            cout << "inflating, size " << obstacle.size() << endl;
+            // TODO: Do we need to do something different for triangles?
+            //if (obstacle.size() == 3) {
+            //    co.AddPath(clipperObstacle, ClipperLib::jtSquare, ClipperLib::etClosedLine);
+            //} else {
                 co.AddPath(clipperObstacle, ClipperLib::jtSquare, ClipperLib::etClosedPolygon);
-            }
+            //}
 
-            co.Execute(clipperInflated, 10); // TODO: Chane the offset value
+            co.Execute(clipperInflatedObstacle, 10); // TODO: Change the offset value according to the robot size
 
-            for (const auto &inflatedPath : clipperInflated) {
+            for (const auto &inflatedPath : clipperInflatedObstacle) {
                 Polygon inflatedObstacle;
                 for (const auto &point : inflatedPath) {
-                    int x = point.X / INT_ROUND;
-                    int y = point.Y / INT_ROUND;
-                    inflatedObstacle.emplace_back(x, y);
+                    inflatedObstacle.emplace_back(point.X / INT_ROUND, point.Y / INT_ROUND);
                 }
+                //inflatedObstacle.erase()
                 inflatedObstacles.push_back(inflatedObstacle);
             }
         }
