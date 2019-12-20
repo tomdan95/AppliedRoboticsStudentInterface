@@ -4,6 +4,6 @@
 #include "student_image_elab_interface.hpp"
 #include "student_planning_interface.hpp"
 
-int testComputeVoronoi(cv::Mat& image, vector<Polygon>& vector);
+int testComputeVoronoi(cv::Mat& image, vector<Polygon>& obstacles);
 
 #endif //STUDENT_PROECT_VORONOI_HELPER_H
