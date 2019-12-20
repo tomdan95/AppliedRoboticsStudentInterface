@@ -72,12 +72,30 @@ namespace boost {
     }  // polygon
 }  // boost
 
-void iterate_primary_edges1(const voronoi_diagram<double> &vd, cv::Mat &rgbImage) {
+
+bool similar (double a, double b) {
+    return b > (a - 10.0) && b < (a + 10.0);
+}
+
+bool isPointOverObstacle(double xb, double yb, vector<Polygon> &obstacles) {
+    // TODO: Naive implementation, replace with efficient one
+    for (const auto& obstacle : obstacles) {
+        for (const auto vertex : obstacle) {
+            double xa = vertex.x * 1000.0;
+            double ya = vertex.y * 1000.0;
+            if (similar(xa, xb) && similar(ya, yb)){
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+void iterate_primary_edges1(const voronoi_diagram<double> &vd, cv::Mat &rgbImage, vector<Polygon> &obstacles) {
 
     int i = 0;
     for (auto edge : vd.edges()) {
         if (edge.is_primary() && edge.vertex0() && edge.vertex1()) {
-
             double startX = edge.vertex0()->x();
             double startY = edge.vertex0()->y();
             double endX = edge.vertex1()->x();
@@ -85,19 +103,21 @@ void iterate_primary_edges1(const voronoi_diagram<double> &vd, cv::Mat &rgbImage
 
             cv::Point start(startX, startY);
             cv::Point end(endX, endY);
-            cv::line(rgbImage, start, end, cv::Scalar(0, 255, 0), 3);
+
+            if(!isPointOverObstacle(startX, startY, obstacles) && !isPointOverObstacle(endX, endY, obstacles)) {
+                cv::line(rgbImage, start, end, cv::Scalar(0, 255, 0), 3);
+            }
         }
     }
     std::cout << "fatto" << endl;
-
 }
 
-int testComputeVoronoi(cv::Mat &image, vector<Polygon> &vector) {
+int testComputeVoronoi(cv::Mat &image, vector<Polygon> &obstacles) {
     // Preparing Input Geometries.
 
     std::vector<Segment> segments;
 
-    for (const Polygon &obstacle:vector) {
+    for (const Polygon &obstacle:obstacles) {
         cv::Point start(obstacle[0].x * 1000.0, obstacle[0].y * 1000.0);
         for (int i = 1; i < obstacle.size(); i++) {
             const Point point = obstacle[i];
@@ -114,16 +134,13 @@ int testComputeVoronoi(cv::Mat &image, vector<Polygon> &vector) {
     }
 
 
-
-
-    std::vector<VoronoiPoint> points;
-
 /*
     segments.push_back(Segment(100, 100, 100, 200));
     segments.push_back(Segment(100, 200, 200, 200));
     segments.push_back(Segment(200, 200, 200, 100));
     segments.push_back(Segment(200, 100, 100, 100));
 */
+    // TODO: Replace with gate
     segments.emplace_back(10, 10, 1200, 10);
     segments.emplace_back(1200, 10, 1200, 900);
     segments.emplace_back(1200, 900, 10, 900);
@@ -143,11 +160,11 @@ int testComputeVoronoi(cv::Mat &image, vector<Polygon> &vector) {
     voronoi_diagram<double> vd;
 
     std::cout << "before construct voronoi" << std::endl;
-    construct_voronoi(points.begin(), points.end(), segments.begin(), segments.end(), &vd);
+    construct_voronoi(segments.begin(), segments.end(), &vd);
     std::cout << "after construct voronoi" << std::endl;
 
     std::cout << "before iterate" << std::endl;
-    iterate_primary_edges1(vd, image);
+    iterate_primary_edges1(vd, image, obstacles);
     std::cout << "after iterate" << std::endl;
     showImageAndWaitKeyPress(image);
     return 0;

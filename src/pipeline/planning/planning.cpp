@@ -15,9 +15,14 @@ using namespace std;
 namespace student {
 
 
-    void testVoronoiPlanning(vector<Polygon> &vector) {
+    void testVoronoiPlanning(vector<Polygon> &obstacles, const Polygon &gate, const float x, const float y) {
         cv::Mat image(1000, 1280, CV_8UC3, cv::Scalar(0, 0, 255));
-        testComputeVoronoi(image, vector);
+
+        cv::circle(image, cv::Point(x * 1000, y * 1000), 5, cv::Scalar(255, 255, 255), 10);
+        cv::circle(image, cv::Point(gate[0].x * 1000, gate[0].y * 1000), 5, cv::Scalar(255, 255, 255), 10);
+
+
+        testComputeVoronoi(image, obstacles);
     }
 
     bool planPath(const Polygon &borders, const vector<Polygon> &obstacleList,
@@ -31,11 +36,9 @@ namespace student {
         vector<Polygon> inflatedObstacles = inflateObstacles(obstacleList);
         // TODO: Now that the obstacles has been inflated, merge some of them (the ones which overlap)
 
-        //vector<Polygon> copy = inflatedObstacles;
-
 
         vector<Polygon> copy = inflatedObstacles;
-        testVoronoiPlanning(copy);
+        testVoronoiPlanning(copy, gate, x, y);
 
 
         vector<Point> pathPoints = getSortedVictimPoints(victimList);
@@ -73,25 +76,21 @@ namespace student {
         return victimPoints;
     }
 
+    // TODO: Move to a separate file
     vector<Polygon> inflateObstacles(const vector<Polygon> &obstacles) {
         vector<Polygon> inflatedObstacles;
         for (const Polygon &obstacle : obstacles) {
             ClipperLib::Path clipperObstacle;
-            ClipperLib::Paths clipperInflatedObstacle;
             for (const auto &point : obstacle) {
                 clipperObstacle << ClipperLib::IntPoint(point.x * INT_ROUND, point.y * INT_ROUND);
             }
-            clipperObstacle << ClipperLib::IntPoint(obstacle[0].x * INT_ROUND, obstacle[0].y * INT_ROUND);
+            //clipperObstacle << ClipperLib::IntPoint(obstacle[0].x * INT_ROUND, obstacle[0].y * INT_ROUND);
 
             ClipperLib::ClipperOffset co;
             cout << "inflating, size " << obstacle.size() << endl;
-            // TODO: Do we need to do something different for triangles?
-            //if (obstacle.size() == 3) {
-            //    co.AddPath(clipperObstacle, ClipperLib::jtSquare, ClipperLib::etClosedLine);
-            //} else {
-            co.AddPath(clipperObstacle, ClipperLib::jtSquare, ClipperLib::etClosedPolygon);
-            //}
+            co.AddPath(clipperObstacle, ClipperLib::jtMiter, ClipperLib::etClosedPolygon);
 
+            ClipperLib::Paths clipperInflatedObstacle;
             co.Execute(clipperInflatedObstacle, 10); // TODO: Change the offset value according to the robot size
 
             for (const auto &inflatedPath : clipperInflatedObstacle) {

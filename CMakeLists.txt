@@ -198,3 +198,33 @@ target_link_libraries(find_victim_demo
         )
 ##### END of find_robot_demo ####
 
+##### START of planning_demo ####
+add_executable(planning_demo
+        src/demos/planning.cpp
+        libs/clipper/clipper.hpp
+        libs/clipper/clipper.cpp
+        src/pipeline/planning/planning.cpp
+        src/pipeline/planning/planning.h
+        src/pipeline/planning/voronoi_helper.cpp
+        src/pipeline/planning/voronoi_helper.h
+        src/pipeline/planning/dubins/curve.cpp
+        src/pipeline/planning/dubins/curve.h
+        src/pipeline/planning/dubins/primitives.cpp
+        src/pipeline/planning/dubins/primitives.h
+        src/pipeline/planning/dubins/scale.cpp
+        src/pipeline/planning/dubins/scale.h
+        src/pipeline/planning/dubins/temp.cpp
+        src/pipeline/planning/dubins/temp.h
+        src/pipeline/planning/dubins/utils.cpp
+        src/pipeline/planning/dubins/utils.h
+        src/pipeline/planning/dubins/dubins.cpp
+        src/pipeline/planning/dubins/dubins.h
+        src/pipeline/utils.cpp
+        src/pipeline/utils.h
+        src/opencv-utils.cpp
+        src/opencv-utils.h)
+
+target_link_libraries(planning_demo
+        ${OpenCV_LIBRARIES}
+        )
+##### END of planning_demo ####
