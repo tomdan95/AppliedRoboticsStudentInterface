@@ -74,7 +74,9 @@ namespace student {
     }
 
     vector<Polygon> inflateObstacles(const vector<Polygon> &obstacles) {
-        vector<Polygon> inflatedObstacles;
+        vector<Polygon> returnObstacles;
+        ClipperLib::Clipper cl;
+        ClipperLib::Paths MergedObstacles;
         for (const Polygon &obstacle : obstacles) {
             ClipperLib::Path clipperObstacle;
             ClipperLib::Paths clipperInflatedObstacle;
@@ -92,18 +94,19 @@ namespace student {
             co.AddPath(clipperObstacle, ClipperLib::jtSquare, ClipperLib::etClosedPolygon);
             //}
 
-            co.Execute(clipperInflatedObstacle, 10); // TODO: Change the offset value according to the robot size
-
-            for (const auto &inflatedPath : clipperInflatedObstacle) {
-                Polygon inflatedObstacle;
-                for (const auto &point : inflatedPath) {
-                    inflatedObstacle.emplace_back(point.X / INT_ROUND, point.Y / INT_ROUND);
+            co.Execute(clipperInflatedObstacle, 20); // TODO: Change the offset value according to the robot size
+            cl.AddPaths(clipperInflatedObstacle, ClipperLib::ptSubject, true);
+        }
+        cl.Execute(ClipperLib::ctUnion, MergedObstacles, ClipperLib::pftNonZero, ClipperLib::pftNonZero);
+        for (const auto &mergedPath : MergedObstacles) {
+                Polygon mergedObstacle;
+                for (const auto &point : mergedPath) {
+                    mergedObstacle.emplace_back(point.X / INT_ROUND, point.Y / INT_ROUND);
                 }
                 //inflatedObstacle.erase()
-                inflatedObstacles.push_back(inflatedObstacle);
+                returnObstacles.push_back(mergedObstacle);
             }
-        }
-        return inflatedObstacles;
+        return returnObstacles;
     }
 
 
