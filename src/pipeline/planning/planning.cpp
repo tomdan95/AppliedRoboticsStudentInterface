@@ -33,7 +33,7 @@ namespace student {
         cout << "[PLANNING] begin planPath" << endl;
         auto startTime = chrono::high_resolution_clock::now();
 
-        vector<Polygon> inflatedObstacles = inflateObstacles(obstacleList);
+        vector<Polygon> inflatedObstacles = inflateObstacles(obstacleList, borders);
         // TODO: Now that the obstacles has been inflated, merge some of them (the ones which overlap)
 
 
@@ -77,10 +77,10 @@ namespace student {
     }
 
     // TODO: Move to a separate file
-    vector<Polygon> inflateObstacles(const vector<Polygon> &obstacles) {
+    vector<Polygon> inflateObstacles(const vector<Polygon> &obstacles, const Polygon &borders) {
         vector<Polygon> returnObstacles;
-        ClipperLib::Clipper cl;
-        ClipperLib::Paths MergedObstacles;
+        ClipperLib::Clipper cl, clFinal;
+        ClipperLib::Paths MergedObstacles, FinalArena;
         for (const Polygon &obstacle : obstacles) {
             ClipperLib::Path clipperObstacle;
             ClipperLib::Paths clipperInflatedObstacle;
@@ -97,7 +97,16 @@ namespace student {
             cl.AddPaths(clipperInflatedObstacle, ClipperLib::ptSubject, true);
         }
         cl.Execute(ClipperLib::ctUnion, MergedObstacles, ClipperLib::pftNonZero, ClipperLib::pftNonZero);
-        for (const auto &mergedPath : MergedObstacles) {
+        
+        ClipperLib::Path clipperBorders;
+        for (const auto &point : borders) {
+                clipperBorders << ClipperLib::IntPoint(point.x * INT_ROUND, point.y * INT_ROUND);
+            }
+
+        clFinal.AddPath(clipperBorders, ClipperLib::ptSubject, true);
+        clFinal.AddPaths(MergedObstacles, ClipperLib::ptClip, true);
+        clFinal.Execute(ClipperLib::ctDifference, FinalArena, ClipperLib::pftEvenOdd, ClipperLib::pftEvenOdd);
+        for (const auto &mergedPath : FinalArena) {
                 Polygon mergedObstacle;
                 for (const auto &point : mergedPath) {
                     mergedObstacle.emplace_back(point.X / INT_ROUND, point.Y / INT_ROUND);

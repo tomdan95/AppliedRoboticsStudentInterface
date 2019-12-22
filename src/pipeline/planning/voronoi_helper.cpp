@@ -134,17 +134,7 @@ int testComputeVoronoi(cv::Mat &image, vector<Polygon> &obstacles) {
     }
 
 
-/*
-    segments.push_back(Segment(100, 100, 100, 200));
-    segments.push_back(Segment(100, 200, 200, 200));
-    segments.push_back(Segment(200, 200, 200, 100));
-    segments.push_back(Segment(200, 100, 100, 100));
-*/
-    // TODO: Replace with gate
-    segments.emplace_back(10, 10, 1200, 10);
-    segments.emplace_back(1200, 10, 1200, 900);
-    segments.emplace_back(1200, 900, 10, 900);
-    segments.emplace_back(10, 900, 10, 10);
+
 
 
     // Draw segments
