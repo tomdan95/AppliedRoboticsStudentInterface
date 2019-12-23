@@ -23,6 +23,8 @@ using boost::polygon::y;
 using boost::polygon::low;
 using boost::polygon::high;
 
+#define INT_ROUND 800.0
+
 struct VoronoiPoint {
     int a;
     int b;
@@ -81,8 +83,8 @@ bool isPointOverObstacle(double xb, double yb, vector<Polygon> &obstacles) {
     // TODO: Naive implementation, replace with efficient one
     for (const auto& obstacle : obstacles) {
         for (const auto vertex : obstacle) {
-            double xa = vertex.x * 1000.0;
-            double ya = vertex.y * 1000.0;
+            double xa = vertex.x * INT_ROUND;
+            double ya = vertex.y * INT_ROUND;
             if (similar(xa, xb) && similar(ya, yb)){
                 return true;
             }
@@ -118,18 +120,18 @@ int testComputeVoronoi(cv::Mat &image, vector<Polygon> &obstacles) {
     std::vector<Segment> segments;
 
     for (const Polygon &obstacle:obstacles) {
-        cv::Point start(obstacle[0].x * 1000.0, obstacle[0].y * 1000.0);
+        cv::Point start(obstacle[0].x * INT_ROUND, obstacle[0].y * INT_ROUND);
         for (int i = 1; i < obstacle.size(); i++) {
             const Point point = obstacle[i];
 
-            cv::Point end(point.x * 1000.0, point.y * 1000.0);
+            cv::Point end(point.x * INT_ROUND, point.y * INT_ROUND);
             segments.emplace_back(start.x, start.y, end.x, end.y);
 
             start = end;
         }
 
         // add last
-        cv::Point end(obstacle[0].x * 1000.0, obstacle[0].y * 1000.0);
+        cv::Point end(obstacle[0].x * INT_ROUND, obstacle[0].y * INT_ROUND);
         segments.emplace_back(start.x, start.y, end.x, end.y);
     }
 

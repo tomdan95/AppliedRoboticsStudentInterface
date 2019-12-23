@@ -18,8 +18,8 @@ namespace student {
     void testVoronoiPlanning(vector<Polygon> &obstacles, const Polygon &gate, const float x, const float y) {
         cv::Mat image(1000, 1280, CV_8UC3, cv::Scalar(0, 0, 255));
 
-        cv::circle(image, cv::Point(x * 1000, y * 1000), 5, cv::Scalar(255, 255, 255), 10);
-        cv::circle(image, cv::Point(gate[0].x * 1000, gate[0].y * 1000), 5, cv::Scalar(255, 255, 255), 10);
+        cv::circle(image, cv::Point(x * INT_ROUND, y * INT_ROUND), 5, cv::Scalar(255, 255, 255), 10);
+        cv::circle(image, cv::Point(gate[0].x * INT_ROUND, gate[0].y * INT_ROUND), 5, cv::Scalar(255, 255, 255), 10);
 
 
         testComputeVoronoi(image, obstacles);
