@@ -38,6 +38,8 @@ add_library(student SHARED
         src/pipeline/planning/dubins/utils.h
         src/pipeline/planning/dubins/dubins.cpp
         src/pipeline/planning/dubins/dubins.h
+        src/pipeline/planning/Graph.cpp
+        src/pipeline/planning/Graph.h
         src/pipeline/detection/find_robot.hpp
         src/pipeline/detection/ShapeDetector.cpp
         src/pipeline/detection/ShapeDetector.h
@@ -52,11 +54,9 @@ add_library(student SHARED
         src/pipeline/detection/digit_classification/DigitClassifier.cpp
         src/pipeline/detection/digit_classification/DigitClassifier.h
         src/pipeline/planning/planning.h
-        src/pipeline/planning/best_theta.cpp
-        src/pipeline/planning/best_theta.h
         src/pipeline/utils.cpp
         src/pipeline/utils.h
-        src/pipeline/planning/voronoi_helper.cpp src/pipeline/planning/voronoi_helper.h)
+        src/pipeline/planning/voronoi_cleanest_path.cpp src/pipeline/planning/voronoi_cleanest_path.h)
 
 target_link_libraries(student
         ${OpenCV_LIBRARIES}
@@ -205,8 +205,8 @@ add_executable(planning_demo
         libs/clipper/clipper.cpp
         src/pipeline/planning/planning.cpp
         src/pipeline/planning/planning.h
-        src/pipeline/planning/voronoi_helper.cpp
-        src/pipeline/planning/voronoi_helper.h
+        src/pipeline/planning/voronoi_cleanest_path.cpp
+        src/pipeline/planning/voronoi_cleanest_path.h
         src/pipeline/planning/dubins/curve.cpp
         src/pipeline/planning/dubins/curve.h
         src/pipeline/planning/dubins/primitives.cpp
@@ -219,6 +219,8 @@ add_executable(planning_demo
         src/pipeline/planning/dubins/utils.h
         src/pipeline/planning/dubins/dubins.cpp
         src/pipeline/planning/dubins/dubins.h
+        src/pipeline/planning/Graph.cpp
+        src/pipeline/planning/Graph.h
         src/pipeline/utils.cpp
         src/pipeline/utils.h
         src/opencv-utils.cpp

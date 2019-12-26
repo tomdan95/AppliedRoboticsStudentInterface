@@ -7,22 +7,24 @@
 #include "clipper/clipper.hpp"
 #include "../utils.h"
 
-#include "../planning/voronoi_helper.h"
+#include "voronoi_cleanest_path.h"
+#include "Graph.h"
+#include "../../opencv-utils.h"
 
 #define INT_ROUND 1000.0
 
 using namespace std;
+
 namespace student {
 
-
-    void testVoronoiPlanning(vector<Polygon> &obstacles, const Polygon &gate, const float x, const float y) {
+    void drawCleanestPath(Graph graph) {
         cv::Mat image(1000, 1280, CV_8UC3, cv::Scalar(0, 0, 255));
-
-        cv::circle(image, cv::Point(x * INT_ROUND, y * INT_ROUND), 5, cv::Scalar(255, 255, 255), 10);
-        cv::circle(image, cv::Point(gate[0].x * INT_ROUND, gate[0].y * INT_ROUND), 5, cv::Scalar(255, 255, 255), 10);
-
-
-        testComputeVoronoi(image, obstacles);
+        for(const auto edge : graph.edges) {
+            cv::Point start(edge.first.x, edge.first.y);
+            cv::Point end(edge.second.x, edge.second.y);
+            cv::line(image, start, end, cv::Scalar(255, 0, 0));
+        }
+        showImageAndWaitKeyPress(image);
     }
 
     bool planPath(const Polygon &borders, const vector<Polygon> &obstacleList,
@@ -30,36 +32,13 @@ namespace student {
                   const Polygon &gate, const float x, const float y, const float theta,
                   Path &path,
                   const string &configFolder) {
-        cout << "[PLANNING] begin planPath" << endl;
-        auto startTime = chrono::high_resolution_clock::now();
-
         vector<Polygon> inflatedObstacles = inflateObstacles(obstacleList, borders);
-        // TODO: Now that the obstacles has been inflated, merge some of them (the ones which overlap)
+        vector<Polygon> modifiableInflatedObstacles = inflatedObstacles;
+        Graph cleanestPaths = findCleanestPaths(modifiableInflatedObstacles);
 
+        // TODO: compute paths
+        drawCleanestPath(cleanestPaths);
 
-        vector<Polygon> copy = inflatedObstacles;
-        testVoronoiPlanning(copy, gate, x, y);
-
-
-        vector<Point> pathPoints = getSortedVictimPoints(victimList);
-        pathPoints.push_back(getPolygonCenter(gate));
-
-        vector<Pose> poseVector;
-        RobotPosition start(x, y, theta);
-        for (const Point &point:pathPoints) {
-            RobotPosition pointWithTheta(point.x, point.y, 0);
-            auto res = dubinsShortestPath(start, pointWithTheta, 5);
-            dubinsCurveToPoseVector(res, poseVector);
-            start = pointWithTheta;
-        }
-
-
-        path.setPoints(poseVector);
-
-        auto endTime = chrono::high_resolution_clock::now();
-        auto timeTook = endTime - startTime;
-        auto timeTookMs = chrono::duration_cast<chrono::milliseconds>(timeTook).count();
-        cout << "[PLANNING] end planPath. Total time: " << timeTookMs << endl;
         return true;
     }
 
@@ -93,7 +72,7 @@ namespace student {
             cout << "inflating, size " << obstacle.size() << endl;
             co.AddPath(clipperObstacle, ClipperLib::jtMiter, ClipperLib::etClosedPolygon);
 
-            co.Execute(clipperInflatedObstacle, 20); // TODO: Change the offset value according to the robot size
+            co.Execute(clipperInflatedObstacle, 30); // TODO: Change the offset value according to the robot size
             cl.AddPaths(clipperInflatedObstacle, ClipperLib::ptSubject, true);
         }
         cl.Execute(ClipperLib::ctUnion, MergedObstacles, ClipperLib::pftNonZero, ClipperLib::pftNonZero);
@@ -118,6 +97,7 @@ namespace student {
     }
 
 
+    // TODO: Move to dubis folder
     vector<Pose> dubinsCurveToPoseVector(DubinsCurve curve, vector<Pose> &vector) {
         dubinsArcToPoseVector(curve.a1, vector);
         dubinsArcToPoseVector(curve.a2, vector);

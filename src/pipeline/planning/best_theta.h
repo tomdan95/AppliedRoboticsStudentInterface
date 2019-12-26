@@ -1,8 +1,0 @@
-//
-// Created by lar2019 on 06/12/19.
-//
-
-#ifndef STUDENT_PROECT_BEST_THETA_H
-#define STUDENT_PROECT_BEST_THETA_H
-
-#endif //STUDENT_PROECT_BEST_THETA_H
