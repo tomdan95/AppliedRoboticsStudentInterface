@@ -9,7 +9,18 @@ using namespace std;
 namespace student {
     class Graph {
     public:
-        vector<pair<Point, Point>> edges;
+        vector<pair<Point*, Point*>> edges;
+        set<Point*> points;
+
+        void addEdge(Point a, Point b);
+
+        void connectTo(Point point);
+
+    private:
+        Point* addPoint(Point p);
+        Point* getNearestPointTo(Point point);
+
+        static double distanceBetween(Point a, Point b);
     };
 }
 

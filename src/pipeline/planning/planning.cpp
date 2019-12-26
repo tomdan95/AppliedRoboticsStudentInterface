@@ -10,6 +10,7 @@
 #include "voronoi/voronoi_cleanest_path.h"
 #include "Graph.h"
 #include "../../opencv-utils.h"
+#include "../DebugImage.h"
 
 #define INT_ROUND 1000.0
 
@@ -17,15 +18,9 @@ using namespace std;
 
 namespace student {
 
-    void drawCleanestPath(Graph graph) {
-        cv::Mat image(1000, 1280, CV_8UC3, cv::Scalar(0, 0, 255));
-        for(const auto edge : graph.edges) {
-            cv::Point start(edge.first.x, edge.first.y);
-            cv::Point end(edge.second.x, edge.second.y);
-            cv::line(image, start, end, cv::Scalar(255, 0, 0));
-        }
-        showImageAndWaitKeyPress(image);
-    }
+    void
+    connectStartAndGateAndVictimsToCleanestPathsGraph(const vector<pair<int, Polygon>> &victims, const Polygon &gate,
+                                                      Point start, Graph *cleanestPaths);
 
     bool planPath(const Polygon &borders, const vector<Polygon> &obstacleList,
                   const vector<pair<int, Polygon>> &victimList,
@@ -35,14 +30,27 @@ namespace student {
         vector<Polygon> inflatedObstacles = inflateObstacles(obstacleList, borders);
         Graph cleanestPaths = findCleanestPaths(inflatedObstacles, obstacleList);// TODO: OBSTACLES NOT INFLATED!!!
 
-        drawCleanestPath(cleanestPaths);
 
-        // TODO: Connect the Voronoi path from the robot to the first victim, then from the first victmin to the second
-        // TODO: and so on, until we connect the last victim to the gate
-        // TODO: Every time we compute the shortes path fom one point to the other, we consider only the Voronoi vertexes
-        // TODO: and then we compute dubins (making sure that the curve doesn't intersect an obstacle)
+        vector<Pose> poses;
+
+        connectStartAndGateAndVictimsToCleanestPathsGraph(victimList, gate, Point(x, y), &cleanestPaths);
+        DebugImage::drawGraph(cleanestPaths);
+        DebugImage::showAndWait();
+
+        path.setPoints(poses);
+
 
         return true;
+    }
+
+    void
+    connectStartAndGateAndVictimsToCleanestPathsGraph(const vector<pair<int, Polygon>> &victims, const Polygon &gate,
+                                                      Point start, Graph *cleanestPaths) {
+        cleanestPaths->connectTo(start);
+        cleanestPaths->connectTo(getPolygonCenter(gate));
+        for (const auto &victim:victims) {
+            cleanestPaths->connectTo(getPolygonCenter(victim.second));
+        }
     }
 
     vector<Point> getSortedVictimPoints(const vector<pair<int, Polygon>> &victimList) {
@@ -79,23 +87,23 @@ namespace student {
             cl.AddPaths(clipperInflatedObstacle, ClipperLib::ptSubject, true);
         }
         cl.Execute(ClipperLib::ctUnion, MergedObstacles, ClipperLib::pftNonZero, ClipperLib::pftNonZero);
-        
+
         ClipperLib::Path clipperBorders;
         for (const auto &point : borders) {
-                clipperBorders << ClipperLib::IntPoint(point.x * INT_ROUND, point.y * INT_ROUND);
-            }
+            clipperBorders << ClipperLib::IntPoint(point.x * INT_ROUND, point.y * INT_ROUND);
+        }
 
         clFinal.AddPath(clipperBorders, ClipperLib::ptSubject, true);
         clFinal.AddPaths(MergedObstacles, ClipperLib::ptClip, true);
         clFinal.Execute(ClipperLib::ctDifference, FinalArena, ClipperLib::pftEvenOdd, ClipperLib::pftEvenOdd);
         for (const auto &mergedPath : FinalArena) {
-                Polygon mergedObstacle;
-                for (const auto &point : mergedPath) {
-                    mergedObstacle.emplace_back(point.X / INT_ROUND, point.Y / INT_ROUND);
-                }
-                //inflatedObstacle.erase()
-                returnObstacles.push_back(mergedObstacle);
+            Polygon mergedObstacle;
+            for (const auto &point : mergedPath) {
+                mergedObstacle.emplace_back(point.X / INT_ROUND, point.Y / INT_ROUND);
             }
+            //inflatedObstacle.erase()
+            returnObstacles.push_back(mergedObstacle);
+        }
         return returnObstacles;
     }
 

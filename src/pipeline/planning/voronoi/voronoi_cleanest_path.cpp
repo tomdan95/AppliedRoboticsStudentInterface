@@ -61,19 +61,18 @@ namespace student {
         for (auto edge : vd.edges()) {
             if (edge.is_primary() && edge.vertex0() && edge.vertex1()) {
                 if (!isEdgeInsideObstacle(edge, obstacles)) {
-                    // TODO: include in the resulting graph
-                    double startX = edge.vertex0()->x();
-                    double startY = edge.vertex0()->y();
-                    double endX = edge.vertex1()->x();
-                    double endY = edge.vertex1()->y();
-                    // TODO: Back to double
-                    graph.edges.emplace_back(Point(startX, startY), Point(endX, endY));
+                    double startX = edge.vertex0()->x() / VORONOI_DOUBLE_TO_INT;
+                    double startY = edge.vertex0()->y() / VORONOI_DOUBLE_TO_INT;
+                    double endX = edge.vertex1()->x() / VORONOI_DOUBLE_TO_INT;
+                    double endY = edge.vertex1()->y() / VORONOI_DOUBLE_TO_INT;
+                    graph.addEdge(Point(startX, startY), Point(endX, endY));
                 }
             }
         }
         return graph;
     }
 
+    // TODO: Move
     void drawEdgeAndObstacles(const boost::polygon::voronoi_edge<double> edge, const vector<Polygon> obstacles) {
         cv::Mat image(1000, 1280, CV_8UC3, cv::Scalar(0, 0, 255));
 

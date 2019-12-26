@@ -5,6 +5,7 @@
 
 #include <opencv2/core/mat.hpp>
 #include <utils.hpp>
+#include "planning/Graph.h"
 
 namespace student {
 
@@ -18,6 +19,10 @@ namespace student {
         static void drawSegment(const Point &a, const Point &b, int multiply = 1);
 
         static void clear();
+
+        static void drawGraph(student::Graph graph);
+
+        static void drawImage(const cv::Mat &mat);
     };
 
 

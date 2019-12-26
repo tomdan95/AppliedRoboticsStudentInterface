@@ -9,6 +9,7 @@
 #include "find_victims.hpp"
 #include "find_obstacles.hpp"
 #include "find_gate.hpp"
+#include "../DebugImage.h"
 
 
 namespace student {
@@ -53,8 +54,11 @@ namespace student {
         }
     }
 
+    // TODO: Move up
     bool processMap(const cv::Mat &rgbImage, const double scale, vector<Polygon> &obstacleList,
                     vector<pair<int, Polygon>> &victimList, Polygon &gate, const string &config_folder) {
+        DebugImage::drawImage(rgbImage);
+
         cv::Mat hsv_img = convertRGBToHSV(rgbImage);
         bool foundObstacles = processObstacles(hsv_img, scale, obstacleList);
         bool foundVictims = processVictims(hsv_img, scale, victimList);
