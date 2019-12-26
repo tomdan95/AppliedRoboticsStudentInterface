@@ -22,10 +22,10 @@ cv::Mat loadImage(string fileName) {
 }
 
 
-void showImageAndWaitKeyPress(const cv::Mat &image) {
+void showImageAndWaitKeyPress(const cv::Mat &image, int wait) {
     namedWindow("Loaded image", cv::WINDOW_AUTOSIZE);// Create a window for display.
     imshow("Display window", image);
-    cv::waitKey(0);
+    cv::waitKey(wait);
 }
 
 

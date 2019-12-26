@@ -56,7 +56,11 @@ add_library(student SHARED
         src/pipeline/planning/planning.h
         src/pipeline/utils.cpp
         src/pipeline/utils.h
-        src/pipeline/planning/voronoi_cleanest_path.cpp src/pipeline/planning/voronoi_cleanest_path.h)
+        src/pipeline/planning/voronoi/voronoi_cleanest_path.cpp
+        src/pipeline/planning/voronoi/voronoi_cleanest_path.h
+        src/pipeline/planning/collision_detection/CollisionDetector.cpp
+        src/pipeline/planning/collision_detection/CollisionDetector.h
+        src/pipeline/DebugImage.cpp src/pipeline/DebugImage.h)
 
 target_link_libraries(student
         ${OpenCV_LIBRARIES}
@@ -205,8 +209,8 @@ add_executable(planning_demo
         libs/clipper/clipper.cpp
         src/pipeline/planning/planning.cpp
         src/pipeline/planning/planning.h
-        src/pipeline/planning/voronoi_cleanest_path.cpp
-        src/pipeline/planning/voronoi_cleanest_path.h
+        src/pipeline/planning/voronoi/voronoi_cleanest_path.cpp
+        src/pipeline/planning/voronoi/voronoi_cleanest_path.h
         src/pipeline/planning/dubins/curve.cpp
         src/pipeline/planning/dubins/curve.h
         src/pipeline/planning/dubins/primitives.cpp
@@ -224,9 +228,22 @@ add_executable(planning_demo
         src/pipeline/utils.cpp
         src/pipeline/utils.h
         src/opencv-utils.cpp
-        src/opencv-utils.h)
+        src/opencv-utils.h src/pipeline/planning/collision_detection/CollisionDetector.cpp src/pipeline/planning/collision_detection/CollisionDetector.h
+        src/pipeline/DebugImage.cpp src/pipeline/DebugImage.h)
 
 target_link_libraries(planning_demo
+        ${OpenCV_LIBRARIES}
+        )
+##### END of planning_demo ####
+
+##### START of collision_detector_demo ####
+add_executable(collision_detector_demo
+        src/demos/collision_detector.cpp
+        src/pipeline/planning/collision_detection/CollisionDetector.cpp
+        src/pipeline/planning/collision_detection/CollisionDetector.h
+        )
+
+target_link_libraries(collision_detector_demo
         ${OpenCV_LIBRARIES}
         )
 ##### END of planning_demo ####

@@ -3,7 +3,7 @@
 
 #include "student_image_elab_interface.hpp"
 #include "student_planning_interface.hpp"
-#include "Graph.h"
+#include "../Graph.h"
 #include <boost/polygon/voronoi.hpp>
 
 using boost::polygon::voronoi_diagram;
@@ -15,23 +15,23 @@ struct VoronoiPoint {
     VoronoiPoint(int x, int y) : x(x), y(y) {}
 };
 
-struct Segment {
+struct VoronoiSegment {
     VoronoiPoint p0;
     VoronoiPoint p1;
 
-    Segment(int x1, int y1, int x2, int y2) : p0(x1, y1), p1(x2, y2) {}
+    VoronoiSegment(int x1, int y1, int x2, int y2) : p0(x1, y1), p1(x2, y2) {}
 };
 
 
-
 namespace student {
-    Graph findCleanestPaths(vector<Polygon> &obstaclesAndArena);
+    Graph findCleanestPaths(const vector<Polygon> &obstaclesAndArena, const vector<Polygon> &obstacles);
 
     // private functions  (TODO: Consider creating a class to encapsulate them)
-    vector<Segment> mapPolygonsToVoronoiSegments(const vector<Polygon> &obstaclesAndArena);
-    Graph getCleanestPathFromVoroniDiagram(const voronoi_diagram<double> &vd, vector<Polygon> &obstacles);
-    bool isPointOverObstacle(double xb, double yb, vector<Polygon> &obstacles);
-    bool isSimilar (double a, double b);
+    vector<VoronoiSegment>
+    mapPolygonsToVoronoiSegments(const vector<Polygon> &obstaclesAndArena);
+
+    Graph getCleanestPathFromVoroniDiagram(const voronoi_diagram<double> &vd, const vector<Polygon> &obstaclesAndArena, const vector<Polygon> &obstacles);
+    bool isEdgeInsideObstacle(const boost::polygon::voronoi_edge<double> edge, const vector<Polygon> &obstacles);
 }
 
 namespace boost {
@@ -53,16 +53,16 @@ namespace boost {
         };
 
         template<>
-        struct geometry_concept<Segment> {
+        struct geometry_concept<VoronoiSegment> {
             typedef segment_concept type;
         };
 
         template<>
-        struct segment_traits<Segment> {
+        struct segment_traits<VoronoiSegment> {
             typedef int coordinate_type;
             typedef VoronoiPoint point_type;
 
-            static inline point_type get(const Segment &segment, direction_1d dir) {
+            static inline point_type get(const VoronoiSegment &segment, direction_1d dir) {
                 return dir.to_int() ? segment.p1 : segment.p0;
             }
         };

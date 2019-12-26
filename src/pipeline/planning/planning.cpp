@@ -7,7 +7,7 @@
 #include "clipper/clipper.hpp"
 #include "../utils.h"
 
-#include "voronoi_cleanest_path.h"
+#include "voronoi/voronoi_cleanest_path.h"
 #include "Graph.h"
 #include "../../opencv-utils.h"
 
@@ -33,11 +33,14 @@ namespace student {
                   Path &path,
                   const string &configFolder) {
         vector<Polygon> inflatedObstacles = inflateObstacles(obstacleList, borders);
-        vector<Polygon> modifiableInflatedObstacles = inflatedObstacles;
-        Graph cleanestPaths = findCleanestPaths(modifiableInflatedObstacles);
+        Graph cleanestPaths = findCleanestPaths(inflatedObstacles, obstacleList);// TODO: OBSTACLES NOT INFLATED!!!
 
-        // TODO: compute paths
         drawCleanestPath(cleanestPaths);
+
+        // TODO: Connect the Voronoi path from the robot to the first victim, then from the first victmin to the second
+        // TODO: and so on, until we connect the last victim to the gate
+        // TODO: Every time we compute the shortes path fom one point to the other, we consider only the Voronoi vertexes
+        // TODO: and then we compute dubins (making sure that the curve doesn't intersect an obstacle)
 
         return true;
     }

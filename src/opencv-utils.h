@@ -10,7 +10,7 @@ cv::Mat convertRGBToHSV(const cv::Mat &rgb);
 
 cv::Mat loadImage(string fileName);
 
-void showImageAndWaitKeyPress(const cv::Mat &image);
+void showImageAndWaitKeyPress(const cv::Mat &image, int wait = 0);
 
 cv::Mat rotateImage(const cv::Mat &image, int degrees);
 
