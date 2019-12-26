@@ -9,10 +9,10 @@
 using boost::polygon::voronoi_diagram;
 
 struct VoronoiPoint {
-    int a;
-    int b;
+    int x;
+    int y;
 
-    VoronoiPoint(int x, int y) : a(x), b(y) {}
+    VoronoiPoint(int x, int y) : x(x), y(y) {}
 };
 
 struct Segment {
@@ -48,7 +48,7 @@ namespace boost {
 
             static inline coordinate_type get(
                     const VoronoiPoint &point, orientation_2d orient) {
-                return (orient == HORIZONTAL) ? point.a : point.b;
+                return (orient == HORIZONTAL) ? point.x : point.y;
             }
         };
 
