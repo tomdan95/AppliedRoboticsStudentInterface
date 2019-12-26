@@ -13,9 +13,9 @@ void student::DebugImage::showAndWait(int wait) {
 }
 
 
-void DebugImage::drawSegment(const Point &a, const Point &b, int multiply) {
+void DebugImage::drawSegment(const Point &a, const Point &b, int multiply, cv::Scalar color) {
     cv::line(image, cv::Point(a.x * multiply, a.y * multiply), cv::Point(b.x * multiply, b.y * multiply),
-             cv::Scalar(255, 0, 0));
+             color);
 }
 
 void DebugImage::clear() {
@@ -24,10 +24,23 @@ void DebugImage::clear() {
 
 void DebugImage::drawGraph(student::Graph graph) {
     for (const auto edge : graph.edges) {
-        DebugImage::drawSegment(*edge.first, *edge.second, 800);// TODO: Move this constant away
+        DebugImage::drawSegment(*edge.first, *edge.second, 800.0);// TODO: Move this constant away
     }
 }
 
 void DebugImage::drawImage(const cv::Mat &mat) {
     mat.copyTo(image);
+}
+
+void DebugImage::drawPath(vector<Point *> path) {
+    Point *start = path[0];
+    for (int i = 1; i < path.size(); i++) {
+        drawSegment(*start, *path[i], 800, cv::Scalar(0, 255, 0));
+        start = path[i];
+    }
+}
+
+void DebugImage::drawPoint(Point point, cv::Scalar color) {
+
+    cv::circle(image, cv::Point(point.x * 800.0, point.y * 800.0),5, color, 10);
 }

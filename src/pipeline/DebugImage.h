@@ -16,13 +16,17 @@ namespace student {
     public:
         static void showAndWait(int wait = 0);
 
-        static void drawSegment(const Point &a, const Point &b, int multiply = 1);
+        static void drawSegment(const Point &a, const Point &b, int multiply = 1, cv::Scalar color = cv::Scalar(255, 0, 0));
 
         static void clear();
 
         static void drawGraph(student::Graph graph);
 
         static void drawImage(const cv::Mat &mat);
+
+        static void drawPath(vector<Point *> path);
+
+        static void drawPoint(Point point, cv::Scalar color = cv::Scalar(255, 0, 0));
     };
 
 

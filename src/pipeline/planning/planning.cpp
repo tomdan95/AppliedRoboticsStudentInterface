@@ -34,7 +34,22 @@ namespace student {
         vector<Pose> poses;
 
         connectStartAndGateAndVictimsToCleanestPathsGraph(victimList, gate, Point(x, y), &cleanestPaths);
+
+        // from start to gate
+        Point *start = cleanestPaths.addAndConnectToNearestPoint(Point(x, y));
+        Point *copyOfGate = cleanestPaths.addAndConnectToNearestPoint(getPolygonCenter(gate));
+
+
         DebugImage::drawGraph(cleanestPaths);
+
+        DebugImage::drawPoint(*start);
+        DebugImage::drawPoint(*copyOfGate);
+        DebugImage::showAndWait();
+
+        vector<Point*> shortestPath = cleanestPaths.shortestPathFromTo(start, copyOfGate);
+
+
+        DebugImage::drawPath(shortestPath);
         DebugImage::showAndWait();
 
         path.setPoints(poses);
@@ -46,10 +61,10 @@ namespace student {
     void
     connectStartAndGateAndVictimsToCleanestPathsGraph(const vector<pair<int, Polygon>> &victims, const Polygon &gate,
                                                       Point start, Graph *cleanestPaths) {
-        cleanestPaths->connectTo(start);
-        cleanestPaths->connectTo(getPolygonCenter(gate));
+        //cleanestPaths->connectTo(start);
+        //cleanestPaths->connectTo(getPolygonCenter(gate));
         for (const auto &victim:victims) {
-            cleanestPaths->connectTo(getPolygonCenter(victim.second));
+            cleanestPaths->addAndConnectToNearestPoint(getPolygonCenter(victim.second));
         }
     }
 

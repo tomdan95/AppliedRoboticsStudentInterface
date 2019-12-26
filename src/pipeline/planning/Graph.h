@@ -14,13 +14,21 @@ namespace student {
 
         void addEdge(Point a, Point b);
 
-        void connectTo(Point point);
+        /**
+         * @param point point to add
+         * @return Pointer to the copy of the new added point
+         */
+        Point * addAndConnectToNearestPoint(Point point);
+
+        vector<Point *> shortestPathFromTo(Point *a, Point *b);
 
     private:
-        Point* addPoint(Point p);
+        Point* findOrAddPoint(Point p);
         Point* getNearestPointTo(Point point);
 
         static double distanceBetween(Point a, Point b);
+
+        vector<Point *> getAdjacentPoints(Point *pPoint);
     };
 }
 
