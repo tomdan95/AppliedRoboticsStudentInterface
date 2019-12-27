@@ -16,43 +16,41 @@ namespace student {
     }
 
     vector<DubinsCurve> findBestTheta(vector<Point *> path, double robotTheta) {
-        int steps = 360.0 * 1.0;
+        int steps = 360;
         double step = (2.0 * M_PI) / steps;
         vector<vector<pair<pair<DubinsCurve, int>, double>>> curvesTable;
         curvesTable.resize(path.size() - 1);
 
         for (int beforeEnd = 0; beforeEnd < steps; beforeEnd++) {
+            DubinsCurve shortest;
+            double shortestLength = 10000;
             for (int end = 0; end < steps; end++) {
                 DubinsCurve curve = invokeDubins(beforeEnd * step, end * step, *path[path.size() - 2],
                                                  *path[path.size() - 1]);
-                curvesTable[path.size() - 2].emplace_back(make_pair(curve, -1), curve.L);
-
-                //DebugImage::clear();
-                //DebugImage::drawPoses(dubinsCurveToPoseVector(curve));
-                //DebugImage::drawPath(path);
-                //DebugImage::showAndWait(1);
+                if (curve.L < shortestLength) {
+                    shortestLength = curve.L;
+                    shortest = curve;
+                }
             }
+            curvesTable[path.size() - 2].emplace_back(make_pair(shortest, -1), shortest.L);
         }
 
 
         for (int pathPoint = path.size() - 3; pathPoint >= 1; pathPoint--) {
             for (int beforeI = 0; beforeI < steps; beforeI++) {
+                DubinsCurve shortest;
+                double shortestLength = 10000;
+                int minI = -1;
                 for (int i = 0; i < steps; i++) {
                     DubinsCurve curve = invokeDubins(beforeI * step, i * step, *path[pathPoint], *path[pathPoint + 1]);
-                    curvesTable[pathPoint].emplace_back(make_pair(curve, i),
-                                                        curve.L + curvesTable[pathPoint + 1][i].second);
-
-                    /*DebugImage::clear();
-                    DebugImage::drawPath(path);
-                    if (curve.L != 1000) {
-                        DebugImage::drawPoses(dubinsCurveToPoseVector(curve));
-                        DebugImage::showAndWait(100);
-                    } else {
-                        DebugImage::drawPoint(*path[pathPoint]);
-                        DebugImage::drawPoint(*path[pathPoint + 1]);
-                        DebugImage::showAndWait();
-                    }*/
+                    double length = curve.L + curvesTable[pathPoint + 1][i].second;
+                    if(length < shortestLength) {
+                        shortestLength = length;
+                        shortest = curve;
+                        minI = i;
+                    }
                 }
+                curvesTable[pathPoint].emplace_back(make_pair(shortest, minI), shortestLength);
             }
         }
 

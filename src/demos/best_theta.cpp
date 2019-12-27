@@ -13,10 +13,10 @@ int main() {
     vector<Point *> path;
 
     path.push_back(new Point(0.1, 0.1));
-    path.push_back(new Point(0.2, 0.1));
-    path.push_back(new Point(0.5, 0.1));
-    path.push_back(new Point(0.5, 1));
-    path.push_back(new Point(0.2, 1));
+    path.push_back(new Point(0.3, 0.1));
+    path.push_back(new Point(0.6, 0.1));
+    path.push_back(new Point(0.6, 1));
+    path.push_back(new Point(0.3, 1));
     path.push_back(new Point(0.1, 1));
 
     vector<DubinsCurve> curves = findBestTheta(path, 0);
