@@ -60,7 +60,7 @@ add_library(student SHARED
         src/pipeline/planning/voronoi/voronoi_cleanest_path.h
         src/pipeline/planning/collision_detection/CollisionDetector.cpp
         src/pipeline/planning/collision_detection/CollisionDetector.h
-        src/pipeline/DebugImage.cpp src/pipeline/DebugImage.h)
+        src/pipeline/DebugImage.cpp src/pipeline/DebugImage.h src/pipeline/planning/best_theta/best_theta.cpp src/pipeline/planning/best_theta/best_theta.h)
 
 target_link_libraries(student
         ${OpenCV_LIBRARIES}
@@ -107,7 +107,6 @@ target_link_libraries(demo_filters
         )
 
 ##### END OF demo_filters #####
-
 
 
 ##### START OF demo_rgb_filter #####
@@ -207,10 +206,10 @@ add_executable(planning_demo
         src/demos/planning.cpp
         libs/clipper/clipper.hpp
         libs/clipper/clipper.cpp
+        src/pipeline/unwrap.cpp
+        src/pipeline/detection/find_robot.cpp
+        src/pipeline/detection/process_map.cpp
         src/pipeline/planning/planning.cpp
-        src/pipeline/planning/planning.h
-        src/pipeline/planning/voronoi/voronoi_cleanest_path.cpp
-        src/pipeline/planning/voronoi/voronoi_cleanest_path.h
         src/pipeline/planning/dubins/curve.cpp
         src/pipeline/planning/dubins/curve.h
         src/pipeline/planning/dubins/primitives.cpp
@@ -225,25 +224,69 @@ add_executable(planning_demo
         src/pipeline/planning/dubins/dubins.h
         src/pipeline/planning/Graph.cpp
         src/pipeline/planning/Graph.h
+        src/pipeline/detection/find_robot.hpp
+        src/pipeline/detection/ShapeDetector.cpp
+        src/pipeline/detection/ShapeDetector.h
+        src/opencv-utils.cpp
+        src/opencv-utils.h
+        src/pipeline/detection/find_victims.cpp
+        src/pipeline/detection/find_victims.hpp
+        src/pipeline/detection/find_obstacles.hpp
+        src/pipeline/detection/find_obstacles.cpp
+        src/pipeline/detection/find_gate.hpp
+        src/pipeline/detection/find_gate.cpp
+        src/pipeline/detection/digit_classification/DigitClassifier.cpp
+        src/pipeline/detection/digit_classification/DigitClassifier.h
+        src/pipeline/planning/planning.h
         src/pipeline/utils.cpp
         src/pipeline/utils.h
-        src/opencv-utils.cpp
-        src/opencv-utils.h src/pipeline/planning/collision_detection/CollisionDetector.cpp src/pipeline/planning/collision_detection/CollisionDetector.h
-        src/pipeline/DebugImage.cpp src/pipeline/DebugImage.h)
+        src/pipeline/planning/voronoi/voronoi_cleanest_path.cpp
+        src/pipeline/planning/voronoi/voronoi_cleanest_path.h
+        src/pipeline/planning/collision_detection/CollisionDetector.cpp
+        src/pipeline/planning/collision_detection/CollisionDetector.h
+        src/pipeline/DebugImage.cpp src/pipeline/DebugImage.h src/pipeline/planning/best_theta/best_theta.cpp src/pipeline/planning/best_theta/best_theta.h)
 
 target_link_libraries(planning_demo
         ${OpenCV_LIBRARIES}
         )
 ##### END of planning_demo ####
 
+# WARNING: Cyclic DEPENDENCY!!!
 ##### START of collision_detector_demo ####
-add_executable(collision_detector_demo
-        src/demos/collision_detector.cpp
-        src/pipeline/planning/collision_detection/CollisionDetector.cpp
-        src/pipeline/planning/collision_detection/CollisionDetector.h
+#add_executable(collision_detector_demo
+#        src/demos/collision_detector.cpp
+#        src/pipeline/planning/collision_detection/CollisionDetector.cpp
+#        src/pipeline/planning/collision_detection/CollisionDetector.h
+#        src/pipeline/planning/best_theta/best_theta.cpp src/pipeline/planning/best_theta/best_theta.h)
+
+#target_link_libraries(collision_detector_demo
+#        ${OpenCV_LIBRARIES}
+#        )
+##### END of planning_demo ####
+
+##### START of best_theta_demo ####
+add_executable(best_theta_demo
+        src/demos/best_theta.cpp
+        src/pipeline/planning/best_theta/best_theta.cpp
+        src/pipeline/planning/dubins/curve.cpp
+        src/pipeline/planning/dubins/curve.h
+        src/pipeline/planning/dubins/primitives.cpp
+        src/pipeline/planning/dubins/primitives.h
+        src/pipeline/planning/dubins/scale.cpp
+        src/pipeline/planning/dubins/scale.h
+        src/pipeline/planning/dubins/temp.cpp
+        src/pipeline/planning/dubins/temp.h
+        src/pipeline/planning/dubins/utils.cpp
+        src/pipeline/planning/dubins/utils.h
+        src/pipeline/planning/dubins/dubins.cpp
+        src/pipeline/planning/dubins/dubins.h
+        src/pipeline/DebugImage.cpp
+        src/opencv-utils.cpp
         )
 
-target_link_libraries(collision_detector_demo
+target_link_libraries(best_theta_demo
         ${OpenCV_LIBRARIES}
         )
 ##### END of planning_demo ####
+
+
