@@ -7,7 +7,7 @@
 using namespace std;
 
 namespace student {
-    vector<DubinsCurve> findBestTheta(vector<Point *> path, double robotTheta);
+    vector<DubinsCurve> findBestDubinsCurves(vector<Point *> path, double robotTheta);
 }
 
 #endif

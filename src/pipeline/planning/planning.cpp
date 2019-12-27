@@ -85,39 +85,18 @@ namespace student {
                   const string &configFolder) {
         vector<Polygon> inflatedObstacles = inflateObstacles(obstacleList, borders);
         Graph cleanestPaths = findCleanestPaths(inflatedObstacles, obstacleList);// TODO: OBSTACLES NOT INFLATED!!!
-
-
-        vector<Point *> toReach = addPointsToReach(&cleanestPaths, Point(x, y), getSortedVictimPoints(victimList),
-                                                   gate);
-
-
-        DebugImage::clear();
-        DebugImage::drawGraph(cleanestPaths);
-        for (auto *p:toReach) {
-            DebugImage::drawPoint(*p);
-        }
-
+        vector<Point *> toReach = addPointsToReach(&cleanestPaths, Point(x, y), getSortedVictimPoints(victimList), gate);
         vector<Point *> shortestPath = computeShortestPath(&cleanestPaths, toReach);
-
-        DebugImage::drawPath(shortestPath);
-        DebugImage::showAndWait();
-
         prunePath(&shortestPath, toReach);
 
-        DebugImage::drawPath(shortestPath, cv::Scalar(200, 200, 100));
-        DebugImage::showAndWait();
+        vector<DubinsCurve> curves = findBestDubinsCurves(shortestPath,
+                                                          theta); // TODO: add obstacles to also do collision checking (and alsocheck border)
 
-
-        vector<DubinsCurve> curves = findBestTheta(shortestPath,
-                                                   theta); // TODO: add obstacles to also do collision checking
-
-        cout << "discetizing" << endl;
         vector<Pose> allPoses;
         for (auto curve:curves) {
             vector<Pose> poses = dubinsCurveToPoseVector(curve);
             allPoses.insert(allPoses.end(), poses.begin(), poses.end());
         }
-        cout << "done" << endl;
         path.setPoints(allPoses);
 
         DebugImage::clear();
