@@ -11,6 +11,7 @@
 #include "Graph.h"
 #include "../../opencv-utils.h"
 #include "../DebugImage.h"
+#include "best_theta/best_theta.h"
 
 #define INT_ROUND 1000.0
 
@@ -29,31 +30,33 @@ namespace student {
                   const string &configFolder) {
         vector<Polygon> inflatedObstacles = inflateObstacles(obstacleList, borders);
         Graph cleanestPaths = findCleanestPaths(inflatedObstacles, obstacleList);// TODO: OBSTACLES NOT INFLATED!!!
-
-
-        vector<Pose> poses;
-
         connectStartAndGateAndVictimsToCleanestPathsGraph(victimList, gate, Point(x, y), &cleanestPaths);
 
         // from start to gate
         Point *start = cleanestPaths.addAndConnectToNearestPoint(Point(x, y));
-        Point *copyOfGate = cleanestPaths.addAndConnectToNearestPoint(getPolygonCenter(gate));
+        Point *copyOfGate = cleanestPaths.addAndConnectToNearestPoint(getPolygonCenter(victimList[3].second));
 
 
         DebugImage::drawGraph(cleanestPaths);
 
         DebugImage::drawPoint(*start);
         DebugImage::drawPoint(*copyOfGate);
-        DebugImage::showAndWait();
 
         vector<Point*> shortestPath = cleanestPaths.shortestPathFromTo(start, copyOfGate);
 
-
         DebugImage::drawPath(shortestPath);
-        DebugImage::showAndWait();
 
+
+        vector<DubinsCurve> curves = findBestTheta(shortestPath, theta); // TODO: add obstacles to also do collision checking
+
+        vector<Pose> poses;
+        for(auto curve:curves) {
+            dubinsCurveToPoseVector(curve, poses);
+        }
         path.setPoints(poses);
 
+        DebugImage::drawPoses(poses);
+        DebugImage::showAndWait();
 
         return true;
     }
@@ -133,7 +136,7 @@ namespace student {
 
 
     void dubinsArcToPoseVector(DubinsArc arc, vector<Pose> &vector) {
-        const int numPoints = 5;
+        const int numPoints = 20;
         for (int i = 0; i < numPoints; i++) {
             DubinsArc temp;
             double s = arc.L / numPoints * ((float) i);

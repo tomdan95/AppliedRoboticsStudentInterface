@@ -27,6 +27,10 @@ namespace student {
         static void drawPath(vector<Point *> path);
 
         static void drawPoint(Point point, cv::Scalar color = cv::Scalar(255, 0, 0));
+
+        static void drawPoses(vector<Pose> poses);
+
+        static void drawPose(Pose pose);
     };
 
 

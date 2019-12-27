@@ -69,14 +69,11 @@ vector<Point *> student::Graph::shortestPathFromTo(Point *from, Point *to) {
         vector<Point *> adjacentPoints = getAdjacentPoints(u);
         for (auto *v:adjacentPoints) {
 
-            DebugImage::drawPoint(*v, cv::Scalar(255, 255, 100));
-            DebugImage::showAndWait(1);
 
             double weight = distanceBetween(*u, *v);
 
             if (distances[v] > distances[u] + weight) {
                 distances[v] = distances[u] + weight;
-                cout << "distances[v] = " << distances[v] << endl;
                 predecessorOf[v] = u;
                 toVisit.push(make_pair(distances[v], v));
             }
@@ -86,7 +83,6 @@ vector<Point *> student::Graph::shortestPathFromTo(Point *from, Point *to) {
     vector<Point *> path;
     Point *predecessor = to;
     while (predecessor != NULL) {
-        cout << "back" << endl;
         path.insert(path.begin(), predecessor);
         predecessor = predecessorOf[predecessor];
     }

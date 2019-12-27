@@ -4,7 +4,6 @@ using namespace std;
 
 DubinsCurve dubinsShortestPath(RobotPosition start, RobotPosition end, double kMax) {
     ScaledRobotPosition scale = scaleToStandard(start, end, kMax);
-    cout << "t0=" << scale.thetaStart << " tf=" << scale.thetaEnd << " kmax=" << scale.kMax << " lambda=" << scale.lambda << endl;
 
 
     ManeuverSolver * solvers[] = {
@@ -21,22 +20,16 @@ DubinsCurve dubinsShortestPath(RobotPosition start, RobotPosition end, double kM
     for (int i = 0; i < sizeof(solvers) / sizeof(ManeuverSolver*); i++) {
         auto solver = solvers[i];
         auto res = solver->solve(scale);
-        cout << "Length: " << res.length() << " res = " << res.ok << endl;
         if (res.ok && res.length() < minLength) {
             minLength = res.length();
             minCurve = res;
             minPidx = i;
         }
     }
-    cout << "Min pidx=" << minPidx << endl;
 
     // Back from standard
-    cout << "s1=" << minCurve.sc_s1 << " s2=" << minCurve.sc_s2 << " s3=" << minCurve.sc_s3 << endl;
     DubinsResult scaled = minCurve.scaleFromStandard(scale.lambda);
-    cout << "scaled s1=" << scaled.sc_s1 << " s2=" << scaled.sc_s2 << " s3=" << scaled.sc_s3 << endl;
 
-    cout << "Minum scaled length: " << endl;
-    cout << scaled.length() << endl;
 
     auto kSigns = solvers[minPidx]->getKSigns(kMax);
     return dubinsCurve(start.x, start.y, start.theta, scaled.sc_s1, scaled.sc_s2, scaled.sc_s3, kSigns.k0, kSigns.k1, kSigns.k2);

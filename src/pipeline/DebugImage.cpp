@@ -44,3 +44,21 @@ void DebugImage::drawPoint(Point point, cv::Scalar color) {
 
     cv::circle(image, cv::Point(point.x * 800.0, point.y * 800.0),5, color, 10);
 }
+
+void DebugImage::drawPoses(vector<Pose> poses) {
+    Pose start = poses[0];
+    drawPose(start);
+    for (int i = 1; i < poses.size(); i++) {
+        Pose end = poses[i];
+        drawSegment(Point(start.x, start.y), Point(end.x, end.y), 800, cv::Scalar(122, 122, 0));
+        drawPose(end);
+        start = end;
+    }
+    Pose end = poses[0];
+    drawSegment(Point(start.x, start.y), Point(end.x, end.y), 800, cv::Scalar(122, 122, 0));
+}
+
+void DebugImage::drawPose(Pose pose) {
+    // TODO: Draw triangle
+    drawPoint(Point(pose.x, pose.y), cv::Scalar(200, 0, 200));
+}
