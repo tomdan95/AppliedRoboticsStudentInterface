@@ -22,11 +22,11 @@ namespace student {
 
         vector<Point *> shortestPathFromTo(Point *a, Point *b);
 
+
+        static double distanceBetween(Point a, Point b); // TODO :move
     private:
         Point* findOrAddPoint(Point p);
         Point* getNearestPointTo(Point point);
-
-        static double distanceBetween(Point a, Point b);
 
         vector<Point *> getAdjacentPoints(Point *pPoint);
     };

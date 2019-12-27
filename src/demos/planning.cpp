@@ -7,40 +7,24 @@
 using namespace std;
 using namespace student;
 
-vector<Polygon> generateObstacles() {
-    vector<Polygon> obstacles;
-
-    Polygon square;
-    square.emplace_back(0.2, 0.2);
-    square.emplace_back(0.2, 0.3);
-    square.emplace_back(0.3, 0.3);
-    square.emplace_back(0.3, 0.2);
-    //obstacles.push_back(square);
-
-
-    Polygon triangle;
-    triangle.emplace_back(0.5, 0.5);
-    triangle.emplace_back(0.6, 0.5);
-    triangle.emplace_back(0.55, 0.55);
-    obstacles.push_back(triangle);
-
-    return obstacles;
-}
-
-vector<Point> generateGate(){
-    vector<Point> gate;
-    gate.emplace_back(0.9, 0.9);
-    return gate;
-}
 
 int main() {
     cv::Mat img = loadImage("/home/lar2019/robot/AppliedRoboticsStudentInterface/src/areana_samples/000.jpg");
     cv::Mat hsv = convertRGBToHSV(img);
 
-    vector<Point> borders; // TODO: fill
-    auto obstacles = generateObstacles();
-    vector<pair<int, vector<Point>>> victims;
-    auto gate = generateGate();
+    vector<Point> robotTriangle;
+    double x, y, theta;
+    findRobot(img, 1, robotTriangle, x, y, theta, "");
+
+
+    vector<Polygon> obstacles;
+    vector<pair<int, Polygon>> victims;
+    Polygon gate;
+    processMap(img, 1, obstacles, victims, gate, "");
+
+
+    vector<Point> borders;
+
     Path path;
     planPath(borders, obstacles, victims, gate, 0.1, 0.1, 1, path, "");
 

@@ -32,17 +32,17 @@ void DebugImage::drawImage(const cv::Mat &mat) {
     mat.copyTo(image);
 }
 
-void DebugImage::drawPath(vector<Point *> path) {
+void DebugImage::drawPath(vector<Point *> path, cv::Scalar color) {
     Point *start = path[0];
     for (int i = 1; i < path.size(); i++) {
-        drawSegment(*start, *path[i], 800, cv::Scalar(0, 255, 0));
+        drawSegment(*start, *path[i], 800, color);
         start = path[i];
     }
 }
 
 void DebugImage::drawPoint(Point point, cv::Scalar color) {
 
-    cv::circle(image, cv::Point(point.x * 800.0, point.y * 800.0),5, color, 10);
+    cv::circle(image, cv::Point(point.x * 800.0, point.y * 800.0),5, color, 3);
 }
 
 void DebugImage::drawPoses(vector<Pose> poses) {

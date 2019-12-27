@@ -24,7 +24,7 @@ namespace student {
 
         static void drawImage(const cv::Mat &mat);
 
-        static void drawPath(vector<Point *> path);
+        static void drawPath(vector<Point *> path, cv::Scalar color = cv::Scalar(0, 255, 0));
 
         static void drawPoint(Point point, cv::Scalar color = cv::Scalar(255, 0, 0));
 
