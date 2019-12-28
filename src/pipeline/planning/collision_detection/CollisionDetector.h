@@ -4,6 +4,7 @@
 
 #include <utility>
 #include <utils.hpp>
+#include "../dubins/curve.h"
 
 using namespace std;
 
@@ -26,6 +27,8 @@ namespace student {
         explicit CollisionDetector(vector<Polygon> obstacles) : obstacles(std::move(obstacles)) {}
 
         bool isPointInAnyObstacle(const Point &point);
+
+        bool doesCurveCollide(DubinsCurve curve);
     };
 }
 

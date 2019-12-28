@@ -3,11 +3,13 @@
 
 #include <utils.hpp>
 #include "../dubins/curve.h"
+#include "../collision_detection/CollisionDetector.h"
 
 using namespace std;
 
 namespace student {
-    vector<DubinsCurve> findBestDubinsCurves(vector<Point *> path, double robotTheta);
+    vector<DubinsCurve>
+    findBestDubinsCurves(vector<Point *> path, double robotTheta, CollisionDetector *collisionDetector);
 }
 
 #endif

@@ -19,7 +19,9 @@ int main() {
     path.push_back(new Point(0.3, 1));
     path.push_back(new Point(0.1, 1));
 
-    vector<DubinsCurve> curves = findBestDubinsCurves(path, 0);
+    vector<Polygon> obstacles;
+    CollisionDetector detector(obstacles);
+    vector<DubinsCurve> curves = findBestDubinsCurves(path, 0, &detector);
 
 
     cout << "discretizing..." << endl;

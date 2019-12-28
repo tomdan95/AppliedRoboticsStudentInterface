@@ -83,14 +83,20 @@ namespace student {
                   const Polygon &gate, const float x, const float y, const float theta,
                   Path &path,
                   const string &configFolder) {
+
+        auto t_start = std::chrono::high_resolution_clock::now();
+
+
+
         vector<Polygon> inflatedObstacles = inflateObstacles(obstacleList, borders);
         Graph cleanestPaths = findCleanestPaths(inflatedObstacles, obstacleList);// TODO: OBSTACLES NOT INFLATED!!!
         vector<Point *> toReach = addPointsToReach(&cleanestPaths, Point(x, y), getSortedVictimPoints(victimList), gate);
         vector<Point *> shortestPath = computeShortestPath(&cleanestPaths, toReach);
         prunePath(&shortestPath, toReach);
 
+        CollisionDetector detector(obstacleList);// TODO: Not inflated!!
         vector<DubinsCurve> curves = findBestDubinsCurves(shortestPath,
-                                                          theta); // TODO: add obstacles to also do collision checking (and alsocheck border)
+                                                          theta, &detector); // TODO: add obstacles to also do collision checking (and alsocheck border)
 
         vector<Pose> allPoses;
         for (auto curve:curves) {
@@ -99,11 +105,17 @@ namespace student {
         }
         path.setPoints(allPoses);
 
+
+        auto t_end = std::chrono::high_resolution_clock::now();
+        double elapsed_time_ms = std::chrono::duration<double, std::milli>(t_end-t_start).count();
+        cout << "planning took " << elapsed_time_ms << "ms" << endl;
+
         DebugImage::clear();
         DebugImage::drawGraph(cleanestPaths);
         DebugImage::drawPoses(allPoses);
         DebugImage::drawPath(shortestPath, cv::Scalar());
         DebugImage::showAndWait();
+
 
         return true;
     }

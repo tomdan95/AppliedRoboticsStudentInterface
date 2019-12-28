@@ -2,6 +2,8 @@
 #include <iostream>
 #include "CollisionDetector.h"
 #include "../../DebugImage.h"
+#include "../dubins/curve.h"
+#include "../planning.h"
 
 using namespace std;
 using namespace student;
@@ -32,4 +34,14 @@ int CollisionDetector::isPointInObstacle(const Point p, const Polygon &polygon) 
     }
     return (crossingCount % 2 != 0);
 
+}
+
+bool CollisionDetector::doesCurveCollide(DubinsCurve curve) {
+    vector<Pose> poses = dubinsCurveToPoseVector(curve);
+    for (auto pose:poses) {
+        if (isPointInAnyObstacle(Point(pose.x, pose.y))) {
+            return true;
+        }
+    }
+    return false;
 }

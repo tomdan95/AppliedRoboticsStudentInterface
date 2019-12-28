@@ -1,6 +1,7 @@
 #include "best_theta.h"
 #include "../dubins/curve.h"
 #include "../dubins/dubins.h"
+#include "../collision_detection/CollisionDetector.h"
 
 #define STEPS 32
 #define STEP  ((2.0 * M_PI) / STEPS)
@@ -47,7 +48,8 @@ namespace student {
      * @param robotTheta Starting theta of the robot
      * @return list of curves that the robot has to follow
      */
-    vector<DubinsCurve> findBestDubinsCurves(vector<Point *> path, double robotTheta) {
+    vector<DubinsCurve>
+    findBestDubinsCurves(vector<Point *> path, double robotTheta, CollisionDetector *collisionDetector) {
         /**
          * Table that contains the curves.
          * It is a vector that contains a vector for each edge of the path.
@@ -72,7 +74,7 @@ namespace student {
                         // to the arriving theta
                         length += curvesTable[pathPoint + 1][thetaJ].second;
                     }
-                    if(length < lengthOfShortestCurve) {
+                    if(!collisionDetector->doesCurveCollide(curve) && length < lengthOfShortestCurve) {
                         lengthOfShortestCurve = length;
                         shortestCurveForThetaI = curve;
                         thetaJForShortestCurve = thetaJ;
