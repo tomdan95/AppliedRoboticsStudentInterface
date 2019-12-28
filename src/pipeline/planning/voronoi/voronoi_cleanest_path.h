@@ -4,6 +4,7 @@
 #include "student_image_elab_interface.hpp"
 #include "student_planning_interface.hpp"
 #include "../Graph.h"
+#include "../collision_detection/CollisionDetector.h"
 #include <boost/polygon/voronoi.hpp>
 
 using boost::polygon::voronoi_diagram;
@@ -24,14 +25,14 @@ struct VoronoiSegment {
 
 
 namespace student {
-    Graph findCleanestPaths(const vector<Polygon> &obstaclesAndArena, const vector<Polygon> &obstacles);
+    Graph findCleanestPaths(const vector<Polygon> &obstaclesAndArena, CollisionDetector *collisionDetector);
 
     // private functions  (TODO: Consider creating a class to encapsulate them)
     vector<VoronoiSegment>
     mapPolygonsToVoronoiSegments(const vector<Polygon> &obstaclesAndArena);
 
-    Graph getCleanestPathFromVoroniDiagram(const voronoi_diagram<double> &vd, const vector<Polygon> &obstaclesAndArena, const vector<Polygon> &obstacles);
-    bool isEdgeInsideObstacle(const boost::polygon::voronoi_edge<double> edge, const vector<Polygon> &obstacles);
+    Graph getCleanestPathFromVoroniDiagram(const voronoi_diagram<double> &vd, const vector<Polygon> &obstaclesAndArena,
+                                           CollisionDetector *collisionDetector);
 }
 
 namespace boost {

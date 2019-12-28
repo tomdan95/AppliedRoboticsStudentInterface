@@ -74,11 +74,15 @@ namespace student {
                         // to the arriving theta
                         length += curvesTable[pathPoint + 1][thetaJ].second;
                     }
-                    if(!collisionDetector->doesCurveCollide(curve) && length < lengthOfShortestCurve) {
+                    if(length < lengthOfShortestCurve && !collisionDetector->doesCurveCollide(curve)) {
                         lengthOfShortestCurve = length;
                         shortestCurveForThetaI = curve;
                         thetaJForShortestCurve = thetaJ;
                     }
+                }
+                if(thetaJForShortestCurve == -1){
+                    // TODO: Handle this case
+                    cout << "not found!!!!!!!!" << endl;
                 }
                 if (pathPoint == path.size() - 2) {
                     // if the curve reaches the last point, we're n ot interested in the arriving theta.
@@ -93,7 +97,14 @@ namespace student {
         // all possible arriving orientations
         for (int i = 0; i < STEPS; i++) {
             DubinsCurve curve = invokeDubins(robotTheta, i * STEP, *path[0], *path[1]);
-            curvesTable[0].emplace_back(make_pair(curve, i), curve.L + curvesTable[1][i].second);
+            if (collisionDetector->doesCurveCollide(curve)) {
+                // TODO: Handle this case
+                cout << "not found!!!!!!!!" << endl;
+                curvesTable[0].emplace_back(make_pair(curve, i), 1000);
+                // TODO: Handle case were all the first curves collide
+            } else {
+                curvesTable[0].emplace_back(make_pair(curve, i), curve.L + curvesTable[1][i].second);
+            }
         }
 
         // find the first curve of the shortest list of curves

@@ -54,6 +54,7 @@ add_library(student SHARED
         src/pipeline/detection/digit_classification/DigitClassifier.cpp
         src/pipeline/detection/digit_classification/DigitClassifier.h
         src/pipeline/planning/planning.h
+        src/pipeline/planning/inflate.cpp
         src/pipeline/utils.cpp
         src/pipeline/utils.h
         src/pipeline/planning/voronoi/voronoi_cleanest_path.cpp

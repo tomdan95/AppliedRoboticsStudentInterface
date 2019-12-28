@@ -58,7 +58,7 @@ vector<Pose> dubinsCurveToPoseVector(DubinsCurve curve) {
 }
 
 void dubinsArcToPoseVector(DubinsArc arc, vector<Pose> &dst) {
-    const int numPoints = 20;
+    const int numPoints = 50.0 * arc.L;
     for (int i = 0; i < numPoints; i++) {
         DubinsArc temp;
         double s = arc.L / numPoints * ((float) i);

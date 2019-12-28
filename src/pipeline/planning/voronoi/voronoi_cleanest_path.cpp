@@ -25,11 +25,11 @@ using boost::polygon::high;
 
 namespace student {
 
-    Graph findCleanestPaths(const vector<Polygon> &obstaclesAndArena, const vector<Polygon> &obstacles) {
+    Graph findCleanestPaths(const vector<Polygon> &obstaclesAndArena, CollisionDetector*collisionDetector) {
         vector<VoronoiSegment> segments = mapPolygonsToVoronoiSegments(obstaclesAndArena);
         voronoi_diagram<double> vd;
         construct_voronoi(segments.begin(), segments.end(), &vd);
-        return getCleanestPathFromVoroniDiagram(vd, obstaclesAndArena, obstacles);
+        return getCleanestPathFromVoroniDiagram(vd, obstaclesAndArena, collisionDetector);
     }
 
     int coordinateToVornoi(double x) {
@@ -56,16 +56,18 @@ namespace student {
     }
 
     Graph getCleanestPathFromVoroniDiagram(const voronoi_diagram<double> &vd, const vector<Polygon> &obstaclesAndArena,
-                                           const vector<Polygon> &obstacles) {
+                                           CollisionDetector*collisionDetector) {
         Graph graph;
         for (auto edge : vd.edges()) {
             if (edge.is_primary() && edge.vertex0() && edge.vertex1()) {
-                if (!isEdgeInsideObstacle(edge, obstacles)) {
-                    double startX = edge.vertex0()->x() / VORONOI_DOUBLE_TO_INT;
-                    double startY = edge.vertex0()->y() / VORONOI_DOUBLE_TO_INT;
-                    double endX = edge.vertex1()->x() / VORONOI_DOUBLE_TO_INT;
-                    double endY = edge.vertex1()->y() / VORONOI_DOUBLE_TO_INT;
-                    graph.addEdge(Point(startX, startY), Point(endX, endY));
+                double startX = edge.vertex0()->x() / VORONOI_DOUBLE_TO_INT;
+                double startY = edge.vertex0()->y() / VORONOI_DOUBLE_TO_INT;
+                double endX = edge.vertex1()->x() / VORONOI_DOUBLE_TO_INT;
+                double endY = edge.vertex1()->y() / VORONOI_DOUBLE_TO_INT;
+                Point start(startX, startY);
+                Point end(endX, endY);
+                if (!collisionDetector->isPointInAnyObstacle(start) && !collisionDetector->isPointInAnyObstacle(end)) {
+                    graph.addEdge(start, end);
                 }
             }
         }
@@ -90,16 +92,6 @@ namespace student {
         }
         showImageAndWaitKeyPress(image);
     }
-
-    bool isEdgeInsideObstacle(const boost::polygon::voronoi_edge<double> edge, const vector<Polygon>& obstacles) {
-        CollisionDetector detector(obstacles);
-
-        Point a(((double)edge.vertex0()->x()) / VORONOI_DOUBLE_TO_INT, ((double)edge.vertex0()->y()) / VORONOI_DOUBLE_TO_INT);
-        Point b(((double)edge.vertex1()->x()) / VORONOI_DOUBLE_TO_INT, ((double)edge.vertex1()->y()) / VORONOI_DOUBLE_TO_INT);
-
-        return detector.isPointInAnyObstacle(a) || detector.isPointInAnyObstacle(b);
-    }
-
 
 
 }

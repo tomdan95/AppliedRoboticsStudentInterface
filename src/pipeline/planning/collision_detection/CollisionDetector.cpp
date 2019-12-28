@@ -1,14 +1,29 @@
-
-#include <iostream>
 #include "CollisionDetector.h"
-#include "../../DebugImage.h"
 #include "../dubins/curve.h"
 #include "../planning.h"
+#include "../../../opencv-utils.h"
 
 using namespace std;
 using namespace student;
 
-bool CollisionDetector::isPointInAnyObstacle(const Point &point) {
+// TODO: Use black and white image to save space
+CollisionDetector::CollisionDetector(vector<Polygon> obstacles) : obstaclesShadow(OBSTACLES_MATRIX_SIDE,
+                                                                                  OBSTACLES_MATRIX_SIDE, CV_8UC3,
+                                                                                  cv::Scalar(255, 255, 255)) {
+    vector<vector<cv::Point>> polygons;
+    for (auto obstacle:obstacles) {
+        vector<cv::Point> points;
+        for (auto point:obstacle) {
+            points.emplace_back(point.x * 800, point.y * 800);
+        }
+        polygons.push_back(points);
+    }
+    cv::fillPoly(obstaclesShadow, polygons, cv::Scalar(0, 0, 0));
+    //showImageAndWaitKeyPress(obstaclesShadow);
+}
+
+
+bool CollisionDetector::isPointInAnyObstacle(const Point &point, vector<Polygon> obstacles) {
     for (const auto &obstacle:obstacles) {
         if (isPointInObstacle(point, obstacle)) {
             return true;
@@ -45,3 +60,14 @@ bool CollisionDetector::doesCurveCollide(DubinsCurve curve) {
     }
     return false;
 }
+
+bool CollisionDetector::isPointInAnyObstacle(const Point &point) {
+    int approxX = point.x * 800;
+    int approxY = point.y * 800;
+    if(approxX < 0 || approxY < 0) {
+        return true;
+    }
+    auto pixel = obstaclesShadow.at<cv::Vec3b>(cv::Point(approxX, approxY));
+    return pixel[0] == 0;
+}
+

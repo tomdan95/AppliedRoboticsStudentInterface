@@ -63,9 +63,10 @@ namespace student {
         cout << "PATH = " << path->size() << endl;
         auto it = path->begin();
         while (it + 1 != path->end()) {
-
+            // TODO: This may add collisions, that then doublin can't fix!
+            // TODO: maybe, don't compute euclidian distances but path distances
             double distance = Graph::distanceBetween(**it, **(it + 1));
-            bool isShort = distance < 0.15;
+            bool isShort = distance < 0.1; // 10cm
             if (isShort && canSkip(toReach, it)) {
                 it = path->erase(it);
             } else if (isShort && canSkip(toReach, it + 1)) {
@@ -86,14 +87,23 @@ namespace student {
         auto t_start = std::chrono::high_resolution_clock::now();
 
 
-
         vector<Polygon> inflatedObstacles = inflateObstacles(obstacleList, borders);
-        Graph cleanestPaths = findCleanestPaths(inflatedObstacles, obstacleList);// TODO: OBSTACLES NOT INFLATED!!!
-        vector<Point *> toReach = addPointsToReach(&cleanestPaths, Point(x, y), getSortedVictimPoints(victimList), gate);
-        vector<Point *> shortestPath = computeShortestPath(&cleanestPaths, toReach);
-        prunePath(&shortestPath, toReach);
 
         CollisionDetector detector(obstacleList);// TODO: Not inflated!!
+
+        Graph cleanestPaths = findCleanestPaths(inflatedObstacles, &detector);// TODO: OBSTACLES NOT INFLATED!!!
+        vector<Point *> toReach = addPointsToReach(&cleanestPaths, Point(x, y), getSortedVictimPoints(victimList), gate);
+        vector<Point *> shortestPath = computeShortestPath(&cleanestPaths, toReach);
+
+       /* DebugImage::clear();
+        DebugImage::drawGraph(cleanestPaths);
+        DebugImage::drawPath(shortestPath);
+*/
+        prunePath(&shortestPath, toReach);
+/*
+        DebugImage::drawPath(shortestPath, cv::Scalar());
+        DebugImage::showAndWait();*/
+
         vector<DubinsCurve> curves = findBestDubinsCurves(shortestPath,
                                                           theta, &detector); // TODO: add obstacles to also do collision checking (and alsocheck border)
 
