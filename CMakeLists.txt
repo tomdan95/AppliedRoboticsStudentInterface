@@ -204,6 +204,7 @@ target_link_libraries(find_victim_demo
 ##### START of planning_demo ####
 add_executable(planning_demo
         src/demos/planning.cpp
+        src/pipeline/planning/inflate.cpp
         libs/clipper/clipper.hpp
         libs/clipper/clipper.cpp
         src/pipeline/unwrap.cpp
@@ -282,6 +283,8 @@ add_executable(best_theta_demo
         src/pipeline/planning/dubins/dubins.h
         src/pipeline/DebugImage.cpp
         src/opencv-utils.cpp
+        src/pipeline/planning/collision_detection/CollisionDetector.cpp
+        src/pipeline/planning/collision_detection/CollisionDetector.h
         )
 
 target_link_libraries(best_theta_demo
