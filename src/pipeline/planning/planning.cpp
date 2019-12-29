@@ -87,7 +87,7 @@ namespace student {
         auto t_start = std::chrono::high_resolution_clock::now();
 
 
-        vector<Polygon> inflatedObstacles = inflateObstacles(obstacleList, borders);
+        vector<Polygon> inflatedObstacles = inflateObstacles(obstacleList, borders, 10); //TODO:put correct robot size
 
         CollisionDetector detector(obstacleList);// TODO: Not inflated!!
 
