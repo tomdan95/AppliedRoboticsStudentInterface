@@ -1,5 +1,4 @@
 #include "best_theta.h"
-#include "../dubins/curve.h"
 #include "../dubins/dubins.h"
 #include "../collision_detection/CollisionDetector.h"
 
@@ -68,7 +67,7 @@ namespace student {
                 int thetaJForShortestCurve = -1;
                 for (int thetaJ = 0; thetaJ < STEPS; thetaJ++) { // we try with every arriving orientation
                     DubinsCurve curve = invokeDubins(thetaI * STEP, thetaJ * STEP, *path[pathPoint], *path[pathPoint + 1]);
-                    double length = curve.L;
+                    double length = curve.length();
                     if (pathPoint < path.size() - 2) {
                         // if the curve doesn't reach the last point, we add the length of the subpath corresponding
                         // to the arriving theta
@@ -103,7 +102,7 @@ namespace student {
                 curvesTable[0].emplace_back(make_pair(curve, i), 1000);
                 // TODO: Handle case were all the first curves collide
             } else {
-                curvesTable[0].emplace_back(make_pair(curve, i), curve.L + curvesTable[1][i].second);
+                curvesTable[0].emplace_back(make_pair(curve, i), curve.length() + curvesTable[1][i].second);
             }
         }
 

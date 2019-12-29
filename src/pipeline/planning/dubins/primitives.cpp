@@ -1,4 +1,5 @@
 #include "primitives.h"
+#include "utils.h"
 #include <cstdlib>
 #include <iostream>
 
@@ -15,7 +16,7 @@ DubinsResult DubinsResult::scaleFromStandard(double lambda) {
     return res;
 }
 
-DubinsResult LSL::solve(ScaledRobotPosition scale) {
+DubinsResult LSL::solve(StandardDubinsProblem scale) {
     double invK = 1.0 / scale.kMax;
     double C = cos(scale.thetaEnd) - cos(scale.thetaStart);
     double S = 2.0 * scale.kMax + sin(scale.thetaStart) - sin(scale.thetaEnd);
@@ -36,7 +37,7 @@ DubinsResult LSL::solve(ScaledRobotPosition scale) {
     return res;
 }
 
-DubinsResult RSR::solve(ScaledRobotPosition scale) {
+DubinsResult RSR::solve(StandardDubinsProblem scale) {
     double invK = 1.0 / scale.kMax;
     double C = cos(scale.thetaStart) - cos(scale.thetaEnd);
     double S = 2 * scale.kMax - sin(scale.thetaStart) + sin(scale.thetaEnd);
@@ -56,7 +57,7 @@ DubinsResult RSR::solve(ScaledRobotPosition scale) {
     return res;
 }
 
-DubinsResult LSR::solve(ScaledRobotPosition scale) {
+DubinsResult LSR::solve(StandardDubinsProblem scale) {
     double invK = 1.0 / scale.kMax;
     double C = cos(scale.thetaStart) + cos(scale.thetaEnd);
     double S = 2 * scale.kMax + sin(scale.thetaStart) + sin(scale.thetaEnd);
@@ -77,7 +78,7 @@ DubinsResult LSR::solve(ScaledRobotPosition scale) {
     return res;
 }
 
-DubinsResult RSL::solve(ScaledRobotPosition scale) {
+DubinsResult RSL::solve(StandardDubinsProblem scale) {
     double invK = 1.0 / scale.kMax;
     double C = cos(scale.thetaStart) + cos(scale.thetaEnd);
     double S = 2 * scale.kMax - sin(scale.thetaStart) - sin(scale.thetaEnd);
@@ -98,7 +99,7 @@ DubinsResult RSL::solve(ScaledRobotPosition scale) {
     return res;
 }
 
-DubinsResult RLR::solve(ScaledRobotPosition scale) {
+DubinsResult RLR::solve(StandardDubinsProblem scale) {
     double invK = 1.0 / scale.kMax;
     double C = cos(scale.thetaStart) - cos(scale.thetaEnd);
     double S = 2 * scale.kMax - sin(scale.thetaStart) + sin(scale.thetaEnd);
@@ -119,7 +120,7 @@ DubinsResult RLR::solve(ScaledRobotPosition scale) {
     return res;
 }
 
-DubinsResult LRL::solve(ScaledRobotPosition scale) {
+DubinsResult LRL::solve(StandardDubinsProblem scale) {
     double invK = 1.0 / scale.kMax;
     double C = cos(scale.thetaEnd) - cos(scale.thetaStart);
     double S = 2 * scale.kMax + sin(scale.thetaStart) - sin(scale.thetaEnd);

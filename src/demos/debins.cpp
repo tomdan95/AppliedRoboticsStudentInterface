@@ -1,9 +1,5 @@
 #include <iostream>
-#include <cmath>
-#include "../pipeline/planning/dubins/scale.h"
-#include "../pipeline/planning/dubins/temp.h"
 #include "../pipeline/planning/dubins/primitives.h"
-#include "../pipeline/planning/dubins/curve.h"
 #include "../pipeline/planning/dubins/dubins.h"
 
 using namespace std;
@@ -24,7 +20,7 @@ int main() {
     cout << "Arc 2 xf=" << res.a2.xf << " yf=" << res.a2.yf << " thf=" << res.a2.thf << endl;
     cout << "Arc 3 x0=" << res.a3.x0 << " y0=" << res.a3.y0 << " th0=" << res.a3.th0 << endl;
     cout << "Arc 3 xf=" << res.a3.xf << " yf=" << res.a3.yf << " thf=" << res.a3.thf << endl;
-    cout << "Length=" << res.L << endl;
+    cout << "Length=" << res.length() << endl;
     return 0;
 }
 

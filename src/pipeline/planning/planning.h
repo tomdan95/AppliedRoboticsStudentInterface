@@ -5,9 +5,7 @@
 #include "student_image_elab_interface.hpp"
 #include "student_planning_interface.hpp"
 
-#include "dubins/temp.h"
 #include "dubins/dubins.h"
-#include "dubins/curve.h"
 #include "../detection/find_robot.hpp"
 
 

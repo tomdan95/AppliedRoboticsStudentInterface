@@ -2,7 +2,7 @@
 #define DUBLINS_PRIMITIVES_H
 
 #include <math.h>
-#include "scale.h"
+#include "models.h"
 
 
 class DubinsResult {
@@ -33,7 +33,7 @@ private:
 public:
     ManeuverSolver(double k0, double k1, double k2) : kSigns(k0, k1, k2) {}
 
-    virtual DubinsResult solve(ScaledRobotPosition scale) = 0;
+    virtual DubinsResult solve(StandardDubinsProblem scale) = 0;
 
     KSigns getKSigns(double kMax) {
         return {
@@ -49,42 +49,42 @@ class LSL : public ManeuverSolver {
 public:
     LSL() : ManeuverSolver(1, 0, 1) {}
 
-    DubinsResult solve(ScaledRobotPosition scale) override;
+    DubinsResult solve(StandardDubinsProblem scale) override;
 };
 
 class RSR : public ManeuverSolver {
 public:
     RSR() : ManeuverSolver(-1, 0, -1) {}
 
-    DubinsResult solve(ScaledRobotPosition scale) override;
+    DubinsResult solve(StandardDubinsProblem scale) override;
 };
 
 class LSR : public ManeuverSolver {
 public:
     LSR() : ManeuverSolver(1, 0, -1) {}
 
-    DubinsResult solve(ScaledRobotPosition scale) override;
+    DubinsResult solve(StandardDubinsProblem scale) override;
 };
 
 class RSL : public ManeuverSolver {
 public:
     RSL() : ManeuverSolver(-1, 0, 1) {}
 
-    DubinsResult solve(ScaledRobotPosition scale) override;
+    DubinsResult solve(StandardDubinsProblem scale) override;
 };
 
 class RLR : public ManeuverSolver {
 public:
     RLR() : ManeuverSolver(-1, 1, -1) {}
 
-    DubinsResult solve(ScaledRobotPosition scale) override;
+    DubinsResult solve(StandardDubinsProblem scale) override;
 };
 
 class LRL : public ManeuverSolver {
 public:
     LRL() : ManeuverSolver(1, -1, 1) {}
 
-    DubinsResult solve(ScaledRobotPosition scale) override;
+    DubinsResult solve(StandardDubinsProblem scale) override;
 };
 
 #endif //DUBLINS_PRIMITIVES_H

@@ -26,14 +26,8 @@ add_library(student SHARED
         src/pipeline/detection/find_robot.cpp
         src/pipeline/detection/process_map.cpp
         src/pipeline/planning/planning.cpp
-        src/pipeline/planning/dubins/curve.cpp
-        src/pipeline/planning/dubins/curve.h
         src/pipeline/planning/dubins/primitives.cpp
         src/pipeline/planning/dubins/primitives.h
-        src/pipeline/planning/dubins/scale.cpp
-        src/pipeline/planning/dubins/scale.h
-        src/pipeline/planning/dubins/temp.cpp
-        src/pipeline/planning/dubins/temp.h
         src/pipeline/planning/dubins/utils.cpp
         src/pipeline/planning/dubins/utils.h
         src/pipeline/planning/dubins/dubins.cpp
@@ -61,7 +55,7 @@ add_library(student SHARED
         src/pipeline/planning/voronoi/voronoi_cleanest_path.h
         src/pipeline/planning/collision_detection/CollisionDetector.cpp
         src/pipeline/planning/collision_detection/CollisionDetector.h
-        src/pipeline/DebugImage.cpp src/pipeline/DebugImage.h src/pipeline/planning/best_theta/best_theta.cpp src/pipeline/planning/best_theta/best_theta.h)
+        src/pipeline/DebugImage.cpp src/pipeline/DebugImage.h src/pipeline/planning/best_theta/best_theta.cpp src/pipeline/planning/best_theta/best_theta.h src/pipeline/planning/dubins/models.cpp src/pipeline/planning/dubins/models.h)
 
 target_link_libraries(student
         ${OpenCV_LIBRARIES}
@@ -152,19 +146,13 @@ target_link_libraries(demo_match_template
 
 ##### START OF duins_demo #####
 add_executable(dubins_demo
-        src/pipeline/planning/dubins/curve.cpp
-        src/pipeline/planning/dubins/curve.h
         src/pipeline/planning/dubins/primitives.cpp
         src/pipeline/planning/dubins/primitives.h
-        src/pipeline/planning/dubins/scale.cpp
-        src/pipeline/planning/dubins/scale.h
-        src/pipeline/planning/dubins/temp.cpp
-        src/pipeline/planning/dubins/temp.h
         src/pipeline/planning/dubins/utils.cpp
         src/pipeline/planning/dubins/utils.h
         src/pipeline/planning/dubins/dubins.cpp
         src/pipeline/planning/dubins/dubins.h
-        src/demos/debins.cpp)
+        src/demos/debins.cpp src/pipeline/planning/dubins/models.cpp src/pipeline/planning/dubins/models.h)
 ##### END OF duins_demo #####
 
 
@@ -212,14 +200,8 @@ add_executable(planning_demo
         src/pipeline/detection/find_robot.cpp
         src/pipeline/detection/process_map.cpp
         src/pipeline/planning/planning.cpp
-        src/pipeline/planning/dubins/curve.cpp
-        src/pipeline/planning/dubins/curve.h
         src/pipeline/planning/dubins/primitives.cpp
         src/pipeline/planning/dubins/primitives.h
-        src/pipeline/planning/dubins/scale.cpp
-        src/pipeline/planning/dubins/scale.h
-        src/pipeline/planning/dubins/temp.cpp
-        src/pipeline/planning/dubins/temp.h
         src/pipeline/planning/dubins/utils.cpp
         src/pipeline/planning/dubins/utils.h
         src/pipeline/planning/dubins/dubins.cpp
@@ -246,7 +228,7 @@ add_executable(planning_demo
         src/pipeline/planning/voronoi/voronoi_cleanest_path.h
         src/pipeline/planning/collision_detection/CollisionDetector.cpp
         src/pipeline/planning/collision_detection/CollisionDetector.h
-        src/pipeline/DebugImage.cpp src/pipeline/DebugImage.h src/pipeline/planning/best_theta/best_theta.cpp src/pipeline/planning/best_theta/best_theta.h)
+        src/pipeline/DebugImage.cpp src/pipeline/DebugImage.h src/pipeline/planning/best_theta/best_theta.cpp src/pipeline/planning/best_theta/best_theta.h src/pipeline/planning/dubins/models.cpp src/pipeline/planning/dubins/models.h)
 
 target_link_libraries(planning_demo
         ${OpenCV_LIBRARIES}
@@ -270,14 +252,8 @@ target_link_libraries(planning_demo
 add_executable(best_theta_demo
         src/demos/best_theta.cpp
         src/pipeline/planning/best_theta/best_theta.cpp
-        src/pipeline/planning/dubins/curve.cpp
-        src/pipeline/planning/dubins/curve.h
         src/pipeline/planning/dubins/primitives.cpp
         src/pipeline/planning/dubins/primitives.h
-        src/pipeline/planning/dubins/scale.cpp
-        src/pipeline/planning/dubins/scale.h
-        src/pipeline/planning/dubins/temp.cpp
-        src/pipeline/planning/dubins/temp.h
         src/pipeline/planning/dubins/utils.cpp
         src/pipeline/planning/dubins/utils.h
         src/pipeline/planning/dubins/dubins.cpp
@@ -286,7 +262,7 @@ add_executable(best_theta_demo
         src/opencv-utils.cpp
         src/pipeline/planning/collision_detection/CollisionDetector.cpp
         src/pipeline/planning/collision_detection/CollisionDetector.h
-        )
+        src/pipeline/planning/dubins/models.cpp src/pipeline/planning/dubins/models.h)
 
 target_link_libraries(best_theta_demo
         ${OpenCV_LIBRARIES}

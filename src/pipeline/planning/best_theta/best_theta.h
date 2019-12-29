@@ -2,8 +2,8 @@
 #define STUDENT_PROJECT_BEST_THETA_H
 
 #include <utils.hpp>
-#include "../dubins/curve.h"
 #include "../collision_detection/CollisionDetector.h"
+#include "../dubins/models.h"
 
 using namespace std;
 

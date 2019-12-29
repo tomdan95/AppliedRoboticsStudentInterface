@@ -4,7 +4,7 @@
 #include <utility>
 #include <utils.hpp>
 #include <opencv2/core/mat.hpp>
-#include "../dubins/curve.h"
+#include "../dubins/models.h"
 
 #define OBSTACLES_MATRIX_SIDE 1500
 

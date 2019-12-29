@@ -1,7 +1,6 @@
 #include <vector>
 #include <utils.hpp>
 #include <iostream>
-#include "../pipeline/planning/dubins/curve.h"
 #include "../pipeline/planning/best_theta/best_theta.h"
 #include "../pipeline/planning/dubins/dubins.h"
 #include "../pipeline/DebugImage.h"
