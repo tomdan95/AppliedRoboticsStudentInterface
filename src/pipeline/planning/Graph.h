@@ -7,12 +7,14 @@
 using namespace std;
 
 namespace student {
+
     class Graph {
     public:
-        vector<pair<Point*, Point*>> edges;
+        map<Point*, vector<Point*>> edges;
         set<Point*> points;
 
         void addEdge(Point a, Point b);
+        void addEdge(Point* a, Point* b);
 
         /**
          * @param point point to add
@@ -27,8 +29,6 @@ namespace student {
     private:
         Point* findOrAddPoint(Point p);
         Point* getNearestPointTo(Point point);
-
-        vector<Point *> getAdjacentPoints(Point *pPoint);
     };
 }
 

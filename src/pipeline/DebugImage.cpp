@@ -23,8 +23,10 @@ void DebugImage::clear() {
 }
 
 void DebugImage::drawGraph(student::Graph graph) {
-    for (const auto edge : graph.edges) {
-        DebugImage::drawSegment(*edge.first, *edge.second, 800.0);// TODO: Move this constant away
+    for (const auto& pointWithAdjacents : graph.edges) {
+        for(const auto& adjacentPoint : pointWithAdjacents.second) {
+            DebugImage::drawSegment(*pointWithAdjacents.first, *adjacentPoint, 800.0);// TODO: Move this constant away
+        }
     }
 }
 

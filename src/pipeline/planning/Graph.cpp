@@ -4,12 +4,12 @@
 Point *student::Graph::addAndConnectToNearestPoint(Point point) {
     Point *nearestPoint = this->getNearestPointTo(point);
     Point *copyOfPoint = findOrAddPoint(point);
-    edges.emplace_back(nearestPoint, copyOfPoint);
+    addEdge(nearestPoint, copyOfPoint);
     return copyOfPoint;
 }
 
 Point *student::Graph::getNearestPointTo(Point a) {
-    double minDistance = 100000;
+    double minDistance = INFINITY;
     Point *nearest = NULL;
     for (auto *b:points) {
         double distance = distanceBetween(a, *b);
@@ -27,19 +27,21 @@ double student::Graph::distanceBetween(Point a, Point b) {
 
 
 void student::Graph::addEdge(Point a, Point b) {
-    edges.emplace_back(findOrAddPoint(a), findOrAddPoint(b));
+    addEdge(findOrAddPoint(a), findOrAddPoint(b));
+}
+
+void student::Graph::addEdge(Point *a, Point *b) {
+    edges[a].push_back(b);
+    edges[b].push_back(a);
 }
 
 Point *student::Graph::findOrAddPoint(Point p) {
-    auto *copy = new Point(p.x, p.y);
     for (auto *a : points) {
         if (a->x == p.x && a->y == p.y) {
-            copy = a;
+            return a;
         }
     }
-    if (copy == NULL) {
-        copy = new Point(p.x, p.y);
-    }
+    auto *copy = new Point(p.x, p.y);
     points.insert(copy);
     return copy;
 }
@@ -55,7 +57,7 @@ vector<Point *> student::Graph::shortestPathFromTo(Point *from, Point *to) {
     priority_queue<PointWithDistance, vector<PointWithDistance>, greater<PointWithDistance>> toVisit;
     map<Point *, double> distances;
     for (auto *p : points) {
-        distances[p] = 1000;
+        distances[p] = INFINITY;
     }
 
     toVisit.push(make_pair(0, from));
@@ -66,7 +68,7 @@ vector<Point *> student::Graph::shortestPathFromTo(Point *from, Point *to) {
         toVisit.pop();
 
         // TODO: Change structure of the graph
-        vector<Point *> adjacentPoints = getAdjacentPoints(u);
+        vector<Point *> adjacentPoints = edges[u];
         for (auto *v:adjacentPoints) {
 
 
@@ -86,19 +88,6 @@ vector<Point *> student::Graph::shortestPathFromTo(Point *from, Point *to) {
         path.insert(path.begin(), predecessor);
         predecessor = predecessorOf[predecessor];
     }
-    cout << "Shortest path consisting of " << path.size() << " points" << endl;
     return path;
-}
-
-vector<Point *> student::Graph::getAdjacentPoints(Point *p) {
-    vector<Point *> adjacentPoints;
-    for (auto edge:edges) {
-        if (edge.first == p) {
-            adjacentPoints.push_back(edge.second);
-        } else if (edge.second == p) {
-            adjacentPoints.push_back(edge.first);
-        }
-    }
-    return adjacentPoints;
 }
 
