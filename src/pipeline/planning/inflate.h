@@ -3,8 +3,8 @@
 
 #include "student_planning_interface.hpp"
 
+vector<Polygon> inflateObstacles(const vector<Polygon> &obstacles, const Polygon &borders, int robotSize);
 
-vector<Polygon> inflateObstacles(const vector<Polygon> &obstacles, const Polygon &borders);
 
 /*
 namespace student {

@@ -24,10 +24,10 @@ mergeInflatedObstaclesWithDeflatedArenaBorders(const vector<Polygon> &inflatedOb
 }
 */
 
-vector<Polygon> inflateObstacles(const vector<Polygon> &obstacles, const Polygon &borders) {
+vector<Polygon> inflateObstacles(const vector<Polygon> &obstacles, const Polygon &borders, int robotSize) {
     vector<Polygon> returnObstacles;
     ClipperLib::Clipper cl, clFinal;
-    ClipperLib::Paths MergedObstacles, FinalArena;
+    ClipperLib::Paths MergedObstacles, clipperInflatedBoarders, FinalArena;
     for (const Polygon &obstacle : obstacles) {
         ClipperLib::Path clipperObstacle;
         ClipperLib::Paths clipperInflatedObstacle;
@@ -40,7 +40,7 @@ vector<Polygon> inflateObstacles(const vector<Polygon> &obstacles, const Polygon
         cout << "inflating, size " << obstacle.size() << endl;
         co.AddPath(clipperObstacle, ClipperLib::jtMiter, ClipperLib::etClosedPolygon);
 
-        co.Execute(clipperInflatedObstacle, 30); // TODO: Change the offset value according to the robot size
+        co.Execute(clipperInflatedObstacle, robotSize); // TODO: Change the offset value according to the robot size
         cl.AddPaths(clipperInflatedObstacle, ClipperLib::ptSubject, true);
     }
     cl.Execute(ClipperLib::ctUnion, MergedObstacles, ClipperLib::pftNonZero, ClipperLib::pftNonZero);
@@ -50,7 +50,12 @@ vector<Polygon> inflateObstacles(const vector<Polygon> &obstacles, const Polygon
         clipperBorders << ClipperLib::IntPoint(point.x, point.y);
     }
 
-    clFinal.AddPath(clipperBorders, ClipperLib::ptSubject, true);
+    ClipperLib::ClipperOffset bor;
+
+    bor.AddPath(clipperBorders, ClipperLib::jtMiter, ClipperLib::etClosedPolygon);
+    bor.Execute(clipperInflatedBoarders, -robotSize);
+
+    clFinal.AddPaths(clipperInflatedBoarders, ClipperLib::ptSubject, true);
     clFinal.AddPaths(MergedObstacles, ClipperLib::ptClip, true);
     clFinal.Execute(ClipperLib::ctDifference, FinalArena, ClipperLib::pftEvenOdd, ClipperLib::pftEvenOdd);
     for (const auto &mergedPath : FinalArena) {

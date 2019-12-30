@@ -103,7 +103,8 @@ namespace student {
 
 
 
-        vector<Polygon> inflatedObstacles = inflateObstacles(scaledObstacles, scaledArenaBorders);
+        vector<Polygon> inflatedObstacles = inflateObstacles(scaledObstacles, scaledArenaBorders, 10); //TODO:put correct robot size
+
 
         CollisionDetector detector(scaledObstacles);// TODO: Not inflated!!
 
