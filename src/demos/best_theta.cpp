@@ -9,14 +9,14 @@ using namespace std;
 using namespace student;
 
 int main() {
-    vector<Point *> path;
+    vector<Point> path;
 
-    path.push_back(new Point(0.1, 0.1));
-    path.push_back(new Point(0.3, 0.1));
-    path.push_back(new Point(0.6, 0.1));
-    path.push_back(new Point(0.6, 1));
-    path.push_back(new Point(0.3, 1));
-    path.push_back(new Point(0.1, 1));
+    path.emplace_back(0.1, 0.1);
+    path.emplace_back(0.3, 0.1);
+    path.emplace_back(0.6, 0.1);
+    path.emplace_back(0.6, 1);
+    path.emplace_back(0.3, 1);
+    path.emplace_back(0.1, 1);
 
     vector<Polygon> obstacles;
     CollisionDetector detector(obstacles);
@@ -32,7 +32,7 @@ int main() {
     cout << "done" << endl;
 
     DebugImage::drawPoses(allPoses);
-    DebugImage::drawPath(path);
+//    DebugImage::drawPath(path);
     DebugImage::showAndWait();
 
     return 0;

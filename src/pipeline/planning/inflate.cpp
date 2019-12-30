@@ -9,7 +9,20 @@
 #include "planning.h"
 #include "inflate.h"
 
-#define INT_ROUND 1000.0
+
+using namespace student;
+
+/*
+vector<Polygon> Inflator::inflateObstacles(const vector<Polygon> &obstacles) {
+    return vector<Polygon>();
+}
+
+
+vector<Polygon>
+mergeInflatedObstaclesWithDeflatedArenaBorders(const vector<Polygon> &inflatedObstacles, const Polygon &borders) {
+
+}
+*/
 
 vector<Polygon> inflateObstacles(const vector<Polygon> &obstacles, const Polygon &borders) {
     vector<Polygon> returnObstacles;
@@ -19,9 +32,9 @@ vector<Polygon> inflateObstacles(const vector<Polygon> &obstacles, const Polygon
         ClipperLib::Path clipperObstacle;
         ClipperLib::Paths clipperInflatedObstacle;
         for (const auto &point : obstacle) {
-            clipperObstacle << ClipperLib::IntPoint(point.x * INT_ROUND, point.y * INT_ROUND);
+            clipperObstacle << ClipperLib::IntPoint(point.x, point.y);
         }
-        //clipperObstacle << ClipperLib::IntPoint(obstacle[0].x * INT_ROUND, obstacle[0].y * INT_ROUND);
+        //clipperObstacle << ClipperLib::IntPoint(obstacle[0].x , obstacle[0].y );
 
         ClipperLib::ClipperOffset co;
         cout << "inflating, size " << obstacle.size() << endl;
@@ -34,7 +47,7 @@ vector<Polygon> inflateObstacles(const vector<Polygon> &obstacles, const Polygon
 
     ClipperLib::Path clipperBorders;
     for (const auto &point : borders) {
-        clipperBorders << ClipperLib::IntPoint(point.x * INT_ROUND, point.y * INT_ROUND);
+        clipperBorders << ClipperLib::IntPoint(point.x, point.y);
     }
 
     clFinal.AddPath(clipperBorders, ClipperLib::ptSubject, true);
@@ -43,10 +56,11 @@ vector<Polygon> inflateObstacles(const vector<Polygon> &obstacles, const Polygon
     for (const auto &mergedPath : FinalArena) {
         Polygon mergedObstacle;
         for (const auto &point : mergedPath) {
-            mergedObstacle.emplace_back(point.X / INT_ROUND, point.Y / INT_ROUND);
+            mergedObstacle.emplace_back(point.X, point.Y);
         }
         //inflatedObstacle.erase()
         returnObstacles.push_back(mergedObstacle);
     }
     return returnObstacles;
 }
+

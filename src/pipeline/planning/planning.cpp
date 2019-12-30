@@ -13,21 +13,18 @@
 #include "../DebugImage.h"
 #include "best_theta/best_theta.h"
 #include "inflate.h"
+#include "Scaler.h"
 
 using namespace std;
 
 namespace student {
 
-    vector<Point *> addPointsToReach(Graph *cleanestPaths,
-                                     Point start,
-                                     vector<Point> victims,
-                                     Polygon gate) {
+    vector<Point *>
+    addPointsToReachToCleanestPaths(Graph *cleanestPaths, Point start, vector<Point> victims, Polygon gate) {
         vector<Point *> toReach;
         toReach.push_back(cleanestPaths->addAndConnectToNearestPoint(start));
-
         for (const auto &victim:victims) {
-            Point *copyOfVictim = cleanestPaths->addAndConnectToNearestPoint(victim); // TODO: Only one neighbor??
-            toReach.push_back(copyOfVictim);
+            toReach.push_back(cleanestPaths->addAndConnectToNearestPoint(victim));
         }
         toReach.push_back(cleanestPaths->addAndConnectToNearestPoint(getPolygonCenter(gate)));
         return toReach;
@@ -36,17 +33,18 @@ namespace student {
 
     vector<Point *>
     computeShortestPath(Graph *cleanestPaths, vector<Point *> toReach) {
-        vector<Point *> allPaths;
+        vector<Point *> completePath;
         for (int i = 0; i < toReach.size() - 1; i++) {
-            vector<Point *> path = cleanestPaths->shortestPathFromTo(toReach[i], toReach[i + 1]);
+            vector<Point *> subPath = cleanestPaths->shortestPathFromTo(toReach[i], toReach[i + 1]);
             if (i == 0) {
-                allPaths.insert(allPaths.end(), path.begin(), path.end());
-            }else{
-                allPaths.insert(allPaths.end(), path.begin() + 1, path.end());
+                completePath.insert(completePath.end(), subPath.begin(), subPath.end());
+            } else {
+                // don't insert two times the same path
+                completePath.insert(completePath.end(), subPath.begin() + 1, subPath.end());
             }
 
         }
-        return allPaths;
+        return completePath;
     }
 
 
@@ -59,14 +57,14 @@ namespace student {
         return true;
     }
 
-    void prunePath(vector<Point *> *path, vector<Point *> toReach) {
-        cout << "PATH = " << path->size() << endl;
+    void prunePath(vector<Point *> *path, const vector<Point *>& toReach) {
+        cout << "[PATH-PRUNING] Complete path has " << path->size() << " points" << endl;
         auto it = path->begin();
         while (it + 1 != path->end()) {
             // TODO: This may add collisions, that then doublin can't fix!
             // TODO: maybe, don't compute euclidian distances but path distances
             double distance = Graph::distanceBetween(**it, **(it + 1));
-            bool isShort = distance < 0.1; // 10cm
+            bool isShort = distance < (0.1 * 800.0); // 10cm // TODO: Depends on scale!!
             if (isShort && canSkip(toReach, it)) {
                 it = path->erase(it);
             } else if (isShort && canSkip(toReach, it + 1)) {
@@ -75,7 +73,15 @@ namespace student {
                 it++;
             }
         }
-        cout << "PATH AFTER = " << path->size() << endl;
+        cout << "[PATH-PRUNING] Path pruned, now it has " << path->size() << " points" << endl;
+    }
+
+    vector<Point> toPointVector(const vector<Point *>& pointers) {
+        vector<Point> points;
+        for(const auto *pointerToPoint:pointers){
+            points.push_back(*pointerToPoint);
+        }
+        return points;
     }
 
     bool planPath(const Polygon &borders, const vector<Polygon> &obstacleList,
@@ -86,43 +92,64 @@ namespace student {
 
         auto t_start = std::chrono::high_resolution_clock::now();
 
+        auto sortedVictims = getSortedVictimPoints(victimList);
 
-        vector<Polygon> inflatedObstacles = inflateObstacles(obstacleList, borders);
+        Scaler scaler(800.0);
+        auto scaledArenaBorders = scaler.scaleToInt(borders);
+        auto scaledObstacles = scaler.scaleToInt(obstacleList);
+        auto scaledVictims = scaler.scaleToInt(sortedVictims);
+        auto scaledGate = scaler.scaleToInt(gate);
+        auto scaledRobot = scaler.scaleToInt(Point(x, y));
 
-        CollisionDetector detector(obstacleList);// TODO: Not inflated!!
+
+
+        vector<Polygon> inflatedObstacles = inflateObstacles(scaledObstacles, scaledArenaBorders);
+
+        CollisionDetector detector(scaledObstacles);// TODO: Not inflated!!
 
         Graph cleanestPaths = findCleanestPaths(inflatedObstacles, &detector);// TODO: OBSTACLES NOT INFLATED!!!
-        vector<Point *> toReach = addPointsToReach(&cleanestPaths, Point(x, y), getSortedVictimPoints(victimList), gate);
+        vector<Point *> toReach = addPointsToReachToCleanestPaths(&cleanestPaths, scaledRobot,
+                                                                  scaledVictims, scaledGate);
         vector<Point *> shortestPath = computeShortestPath(&cleanestPaths, toReach);
 
-       /* DebugImage::clear();
-        DebugImage::drawGraph(cleanestPaths);
-        DebugImage::drawPath(shortestPath);
-*/
+        /*
+         DebugImage::clear();
+         DebugImage::drawGraph(cleanestPaths);
+         DebugImage::drawPath(shortestPath);
+         DebugImage::showAndWait();*/
+
+
+
         prunePath(&shortestPath, toReach);
+
+        auto rescaledShortestPath = scaler.rescaleBackToDouble(toPointVector(shortestPath));
+
 /*
         DebugImage::drawPath(shortestPath, cv::Scalar());
         DebugImage::showAndWait();*/
 
-        vector<DubinsCurve> curves = findBestDubinsCurves(shortestPath,
-                                                          theta, &detector); // TODO: add obstacles to also do collision checking (and alsocheck border)
+
+        vector<DubinsCurve> curves = findBestDubinsCurves(rescaledShortestPath,
+                                                          theta,
+                                                          &detector); // TODO: add obstacles to also do collision checking (and alsocheck border)
 
         vector<Pose> allPoses;
         for (auto curve:curves) {
             vector<Pose> poses = dubinsCurveToPoseVector(curve);
             allPoses.insert(allPoses.end(), poses.begin(), poses.end());
         }
+
         path.setPoints(allPoses);
 
 
         auto t_end = std::chrono::high_resolution_clock::now();
-        double elapsed_time_ms = std::chrono::duration<double, std::milli>(t_end-t_start).count();
+        double elapsed_time_ms = std::chrono::duration<double, std::milli>(t_end - t_start).count();
         cout << "planning took " << elapsed_time_ms << "ms" << endl;
 
         DebugImage::clear();
         DebugImage::drawGraph(cleanestPaths);
         DebugImage::drawPoses(allPoses);
-        DebugImage::drawPath(shortestPath, cv::Scalar());
+        //DebugImage::drawPath(shortestPath, cv::Scalar());
         DebugImage::showAndWait();
 
 

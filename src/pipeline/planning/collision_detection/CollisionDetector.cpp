@@ -13,7 +13,7 @@ CollisionDetector::CollisionDetector(vector<Polygon> obstacles) : obstaclesShado
     for (auto obstacle:obstacles) {
         vector<cv::Point> points;
         for (auto point:obstacle) {
-            points.emplace_back(point.x * 800, point.y * 800);
+            points.emplace_back(point.x, point.y);
         }
         polygons.push_back(points);
     }
@@ -61,8 +61,8 @@ bool CollisionDetector::doesCurveCollide(DubinsCurve curve) {
 }
 
 bool CollisionDetector::isPointInAnyObstacle(const Point &point) {
-    int approxX = point.x * 800;
-    int approxY = point.y * 800;
+    int approxX = point.x;
+    int approxY = point.y;
     if(approxX < 0 || approxY < 0) {
         return true;
     }

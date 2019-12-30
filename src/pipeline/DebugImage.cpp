@@ -25,7 +25,7 @@ void DebugImage::clear() {
 void DebugImage::drawGraph(student::Graph graph) {
     for (const auto& pointWithAdjacents : graph.edges) {
         for(const auto& adjacentPoint : pointWithAdjacents.second) {
-            DebugImage::drawSegment(*pointWithAdjacents.first, *adjacentPoint, 800.0);// TODO: Move this constant away
+            DebugImage::drawSegment(*pointWithAdjacents.first, *adjacentPoint, 1.0);// TODO: Move this constant away
         }
     }
 }
@@ -37,7 +37,7 @@ void DebugImage::drawImage(const cv::Mat &mat) {
 void DebugImage::drawPath(vector<Point *> path, cv::Scalar color) {
     Point *start = path[0];
     for (int i = 1; i < path.size(); i++) {
-        drawSegment(*start, *path[i], 800, color);
+        drawSegment(*start, *path[i], 1, color);
         start = path[i];
     }
 }
