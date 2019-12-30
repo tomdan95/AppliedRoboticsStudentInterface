@@ -9,7 +9,7 @@ using namespace std;
 
 namespace student {
     vector<DubinsCurve>
-    findBestDubinsCurves(const vector<Point>& path, double robotTheta, CollisionDetector *collisionDetector);
+    findBestDubinsCurves(vector<Point *> path, double robotTheta, CollisionDetector *collisionDetector);
 }
 
 #endif

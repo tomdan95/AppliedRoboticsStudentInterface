@@ -14,11 +14,11 @@ namespace student {
         static cv::Mat image;
 
     public:
+        static void clear();
+
         static void showAndWait(int wait = 0);
 
         static void drawSegment(const Point &a, const Point &b, int multiply = 1, cv::Scalar color = cv::Scalar(255, 0, 0));
-
-        static void clear();
 
         static void drawGraph(student::Graph graph);
 
@@ -31,6 +31,10 @@ namespace student {
         static void drawPoses(vector<Pose> poses);
 
         static void drawPose(Pose pose);
+
+        static void drawPolygons(const vector<Polygon> & polygons, int multiply = 1, cv::Scalar color = cv::Scalar(255, 0, 0));
+
+        static void drawPolygon(const Polygon & polygon, int multiply = 1, cv::Scalar color= cv::Scalar(255, 0, 0));
     };
 
 

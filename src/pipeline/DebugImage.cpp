@@ -23,9 +23,9 @@ void DebugImage::clear() {
 }
 
 void DebugImage::drawGraph(student::Graph graph) {
-    for (const auto& pointWithAdjacents : graph.edges) {
-        for(const auto& adjacentPoint : pointWithAdjacents.second) {
-            DebugImage::drawSegment(*pointWithAdjacents.first, *adjacentPoint, 1.0);// TODO: Move this constant away
+    for (const auto &pointWithAdjacents : graph.edges) {
+        for (const auto &adjacentPoint : pointWithAdjacents.second) {
+            DebugImage::drawSegment(*pointWithAdjacents.first, *adjacentPoint, 800.0);// TODO: Move this constant away
         }
     }
 }
@@ -37,14 +37,14 @@ void DebugImage::drawImage(const cv::Mat &mat) {
 void DebugImage::drawPath(vector<Point *> path, cv::Scalar color) {
     Point *start = path[0];
     for (int i = 1; i < path.size(); i++) {
-        drawSegment(*start, *path[i], 1, color);
+        drawSegment(*start, *path[i], 800, color);
         start = path[i];
     }
 }
 
 void DebugImage::drawPoint(Point point, cv::Scalar color) {
 
-    cv::circle(image, cv::Point(point.x * 800.0, point.y * 800.0),5, color, 3);
+    cv::circle(image, cv::Point(point.x * 800.0, point.y * 800.0), 5, color, 3);
 }
 
 void DebugImage::drawPoses(vector<Pose> poses) {
@@ -63,4 +63,21 @@ void DebugImage::drawPoses(vector<Pose> poses) {
 void DebugImage::drawPose(Pose pose) {
     // TODO: Draw triangle
     drawPoint(Point(pose.x, pose.y), cv::Scalar(200, 0, 200));
+}
+
+void DebugImage::drawPolygons(const vector<Polygon> &polygons, int multiply, cv::Scalar color) {
+    for (const auto &polygon:polygons) {
+        drawPolygon(polygon, multiply, color);
+    }
+}
+
+void DebugImage::drawPolygon(const Polygon &polygon, int multiply, cv::Scalar color) {
+    Point start(polygon[0].x, polygon[0].y);
+    for (int i = 1; i < polygon.size(); i++) {
+        Point end(polygon[i].x, polygon[i].y);
+        drawSegment(start, end, multiply, color);
+        start = end;
+    }
+    Point end(polygon[0].x, polygon[0].y);
+    drawSegment(start, end, multiply, color);
 }

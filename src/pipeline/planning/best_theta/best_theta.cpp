@@ -48,7 +48,7 @@ namespace student {
      * @return list of curves that the robot has to follow
      */
     vector<DubinsCurve>
-    findBestDubinsCurves(const vector<Point>& path, double robotTheta, CollisionDetector *collisionDetector) {
+    findBestDubinsCurves(vector<Point *> path, double robotTheta, CollisionDetector *collisionDetector) {
         /**
          * Table that contains the curves.
          * It is a vector that contains a vector for each edge of the path.
@@ -66,7 +66,7 @@ namespace student {
                 double lengthOfShortestCurve = INFINITY;
                 int thetaJForShortestCurve = -1;
                 for (int thetaJ = 0; thetaJ < STEPS; thetaJ++) { // we try with every arriving orientation
-                    DubinsCurve curve = invokeDubins(thetaI * STEP, thetaJ * STEP, path[pathPoint], path[pathPoint + 1]);
+                    DubinsCurve curve = invokeDubins(thetaI * STEP, thetaJ * STEP, *path[pathPoint], *path[pathPoint + 1]);
                     double length = curve.length();
                     if (pathPoint < path.size() - 2) {
                         // if the curve doesn't reach the last point, we add the length of the subpath corresponding
@@ -95,7 +95,7 @@ namespace student {
         // we already have a starting theta. Compute the curves from the starting point to the second point, using
         // all possible arriving orientations
         for (int i = 0; i < STEPS; i++) {
-            DubinsCurve curve = invokeDubins(robotTheta, i * STEP, path[0], path[1]);
+            DubinsCurve curve = invokeDubins(robotTheta, i * STEP, *path[0], *path[1]);
             if (collisionDetector->doesCurveCollide(curve)) {
                 // TODO: Handle this case
                 cout << "not found!!!!!!!!" << endl;

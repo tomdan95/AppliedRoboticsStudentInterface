@@ -21,13 +21,19 @@ using boost::polygon::y;
 using boost::polygon::low;
 using boost::polygon::high;
 
+#define VORONOI_DOUBLE_TO_INT 800.0
+
 namespace student {
 
-    Graph findCleanestPaths(const vector<Polygon> &obstaclesAndArena, CollisionDetector *collisionDetector) {
+    Graph findCleanestPaths(const vector<Polygon> &obstaclesAndArena, CollisionDetector*collisionDetector) {
         vector<VoronoiSegment> segments = mapPolygonsToVoronoiSegments(obstaclesAndArena);
         voronoi_diagram<double> vd;
         construct_voronoi(segments.begin(), segments.end(), &vd);
         return getCleanestPathFromVoroniDiagram(vd, obstaclesAndArena, collisionDetector);
+    }
+
+    int coordinateToVornoi(double x) {
+        return x * VORONOI_DOUBLE_TO_INT;
     }
 
     vector<VoronoiSegment> mapPolygonsToVoronoiSegments(const vector<Polygon> &obstaclesAndArena) {
@@ -36,26 +42,28 @@ namespace student {
             Point start = obstacle[0];
             for (int i = 1; i < obstacle.size(); i++) {
                 const Point end = obstacle[i];
-                segments.emplace_back(start.x, start.y, end.x, end.y);
+                segments.emplace_back(coordinateToVornoi(start.x), coordinateToVornoi(start.y),
+                                      coordinateToVornoi(end.x), coordinateToVornoi(end.y));
                 start = end;
             }
 
             // Add last point to close the polygon
             const Point end = obstacle[0];
-            segments.emplace_back(start.x, start.y, end.x, end.y);
+            segments.emplace_back(coordinateToVornoi(start.x), coordinateToVornoi(start.y),
+                                  coordinateToVornoi(end.x), coordinateToVornoi(end.y));
         }
         return segments;
     }
 
     Graph getCleanestPathFromVoroniDiagram(const voronoi_diagram<double> &vd, const vector<Polygon> &obstaclesAndArena,
-                                           CollisionDetector *collisionDetector) {
+                                           CollisionDetector*collisionDetector) {
         Graph graph;
         for (auto edge : vd.edges()) {
             if (edge.is_primary() && edge.vertex0() && edge.vertex1()) {
-                double startX = edge.vertex0()->x();
-                double startY = edge.vertex0()->y();
-                double endX = edge.vertex1()->x();
-                double endY = edge.vertex1()->y();
+                double startX = edge.vertex0()->x() / VORONOI_DOUBLE_TO_INT;
+                double startY = edge.vertex0()->y() / VORONOI_DOUBLE_TO_INT;
+                double endX = edge.vertex1()->x() / VORONOI_DOUBLE_TO_INT;
+                double endY = edge.vertex1()->y() / VORONOI_DOUBLE_TO_INT;
                 Point start(startX, startY);
                 Point end(endX, endY);
                 if (!collisionDetector->isPointInAnyObstacle(start) && !collisionDetector->isPointInAnyObstacle(end)) {
@@ -70,17 +78,16 @@ namespace student {
     void drawEdgeAndObstacles(const boost::polygon::voronoi_edge<double> edge, const vector<Polygon> obstacles) {
         cv::Mat image(1000, 1280, CV_8UC3, cv::Scalar(0, 0, 255));
 
-        cv::line(image, cv::Point(edge.vertex0()->x(), edge.vertex0()->y()),
-                 cv::Point(edge.vertex1()->x(), edge.vertex1()->y()), cv::Scalar(255, 255, 255), 5);
+        cv::line(image, cv::Point(edge.vertex0()->x(), edge.vertex0()->y()), cv::Point(edge.vertex1()->x(), edge.vertex1()->y()), cv::Scalar(255, 255, 255), 5);
 
-        for (const auto &obstacle:obstacles) {
-            cv::Point start(obstacle[0].x, obstacle[0].y);
-            for (int i = 1; i < obstacle.size(); i++) {
-                cv::Point end(obstacle[i].x, obstacle[i].y);
+        for (const auto&obstacle:obstacles) {
+            cv::Point start(obstacle[0].x * VORONOI_DOUBLE_TO_INT, obstacle[0].y * VORONOI_DOUBLE_TO_INT);
+            for(int i = 1; i < obstacle.size(); i++) {
+                cv::Point end(obstacle[i].x * VORONOI_DOUBLE_TO_INT, obstacle[i].y * VORONOI_DOUBLE_TO_INT);
                 cv::line(image, start, end, cv::Scalar(255, 255, 0));
                 start = end;
             }
-            cv::Point end(obstacle[0].x, obstacle[0].y);
+            cv::Point end(obstacle[0].x * VORONOI_DOUBLE_TO_INT, obstacle[0].y * VORONOI_DOUBLE_TO_INT);
             cv::line(image, start, end, cv::Scalar(255, 0, 0));
         }
         showImageAndWaitKeyPress(image);
