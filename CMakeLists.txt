@@ -55,7 +55,7 @@ add_library(student SHARED
         src/pipeline/planning/voronoi/voronoi_cleanest_path.h
         src/pipeline/planning/collision_detection/CollisionDetector.cpp
         src/pipeline/planning/collision_detection/CollisionDetector.h
-        src/pipeline/DebugImage.cpp src/pipeline/DebugImage.h src/pipeline/planning/best_theta/best_theta.cpp src/pipeline/planning/best_theta/best_theta.h src/pipeline/planning/dubins/models.cpp src/pipeline/planning/dubins/models.h)
+        src/pipeline/DebugImage.cpp src/pipeline/DebugImage.h src/pipeline/planning/best_theta/best_theta.cpp src/pipeline/planning/best_theta/best_theta.h src/pipeline/planning/dubins/models.cpp src/pipeline/planning/dubins/models.h src/pipeline/planning/MissionSolver.h src/pipeline/planning/Mission1.cpp src/pipeline/planning/Mission1.h src/pipeline/planning/MissionSolver.cpp)
 
 target_link_libraries(student
         ${OpenCV_LIBRARIES}
@@ -228,7 +228,7 @@ add_executable(planning_demo
         src/pipeline/planning/voronoi/voronoi_cleanest_path.h
         src/pipeline/planning/collision_detection/CollisionDetector.cpp
         src/pipeline/planning/collision_detection/CollisionDetector.h
-        src/pipeline/DebugImage.cpp src/pipeline/DebugImage.h src/pipeline/planning/best_theta/best_theta.cpp src/pipeline/planning/best_theta/best_theta.h src/pipeline/planning/dubins/models.cpp src/pipeline/planning/dubins/models.h)
+        src/pipeline/DebugImage.cpp src/pipeline/DebugImage.h src/pipeline/planning/best_theta/best_theta.cpp src/pipeline/planning/best_theta/best_theta.h src/pipeline/planning/dubins/models.cpp src/pipeline/planning/dubins/models.h src/pipeline/planning/MissionSolver.h src/pipeline/planning/Mission1.cpp src/pipeline/planning/Mission1.h src/pipeline/planning/MissionSolver.cpp)
 
 target_link_libraries(planning_demo
         ${OpenCV_LIBRARIES}

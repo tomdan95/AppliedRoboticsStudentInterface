@@ -48,7 +48,7 @@ namespace student {
      * @return list of curves that the robot has to follow
      */
     vector<DubinsCurve>
-    findBestDubinsCurves(vector<Point *> path, double robotTheta, CollisionDetector *collisionDetector) {
+    findBestDubinsCurves(const vector<Point *>& path, double robotTheta, const CollisionDetector *collisionDetector) {
         /**
          * Table that contains the curves.
          * It is a vector that contains a vector for each edge of the path.

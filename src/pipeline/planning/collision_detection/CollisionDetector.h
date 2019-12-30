@@ -6,8 +6,6 @@
 #include <opencv2/core/mat.hpp>
 #include "../dubins/models.h"
 
-#define OBSTACLES_MATRIX_SIDE 1500
-
 using namespace std;
 
 namespace student {
@@ -15,16 +13,13 @@ namespace student {
     class CollisionDetector {
     private:
         cv::Mat obstaclesShadow;
-        static bool isPointInAnyObstacle(const Point &point, vector<Polygon> obstacles);
-        static int isPointInObstacle(Point p, const Polygon& polygon);
-
 
     public:
-        explicit CollisionDetector(vector<Polygon> obstacles);
+        explicit CollisionDetector(const vector<Polygon>& obstacles);
 
-        bool isPointInAnyObstacle(const Point &point);
+        bool isPointInAnyObstacle(const Point &point) const;
 
-        bool doesCurveCollide(DubinsCurve curve);
+        bool doesCurveCollide(const DubinsCurve &curve) const;
     };
 }
 
