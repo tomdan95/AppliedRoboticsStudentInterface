@@ -14,7 +14,7 @@ namespace student {
     DubinsCurve invokeDubins(double startTheta, double endTheta, Point startPoint, Point endPoint) {
         RobotPosition start(startPoint.x, startPoint.y, startTheta);
         RobotPosition end(endPoint.x, endPoint.y, endTheta);
-        return dubinsShortestPath(start, end, MAX_K);
+        return dubinsShortestPath(start, end, MAX_K)[0];
     }
 
     /**

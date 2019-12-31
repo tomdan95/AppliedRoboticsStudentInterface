@@ -13,7 +13,7 @@ int main() {
     RobotPosition end(1.20315, 0.94575, 0);
     double kMax = 10;
 
-    auto res = dubinsShortestPath(start, end, kMax);
+    auto res = dubinsShortestPath(start, end, kMax)[0];
 
     cout << "Res: " << endl;
     cout << "Arc 1 xf=" << res.a1.xf << " yf=" << res.a1.yf << " thf=" << res.a1.thf << endl;

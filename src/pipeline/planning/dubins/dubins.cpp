@@ -1,11 +1,12 @@
 #include <utils.hpp>
+#include <algorithm>
 #include "dubins.h"
 
 using namespace std;
 
-DubinsCurve dubinsShortestPath(RobotPosition start, RobotPosition end, double kMax) {
+vector<DubinsCurve> dubinsShortestPath(RobotPosition start, RobotPosition end, double kMax) {
     StandardDubinsProblem scaledDubinsProblem = scaleToStandard(start, end, kMax);
-    static ManeuverSolver * solvers[] = {
+    static ManeuverSolver *solvers[] = {
             new LSL(),
             new RSR(),
             new LSR(),
@@ -13,31 +14,24 @@ DubinsCurve dubinsShortestPath(RobotPosition start, RobotPosition end, double kM
             new RLR(),
             new LRL()
     };
-    double minLength = INFINITY;
-    DubinsResult minCurve;
-    int minPidx = -1; // TODO: Rename pidx to i (for the for loop)
-    for (int i = 0; i < sizeof(solvers) / sizeof(ManeuverSolver*); i++) {
-        auto solver = solvers[i];
+
+    vector<DubinsCurve> dubinsCurves;
+
+    for (auto *solver:solvers) {
         auto res = solver->solve(scaledDubinsProblem);
-        if (res.ok && res.length() < minLength) {
-            minLength = res.length();
-            minCurve = res;
-            minPidx = i;
+        if (res.ok) {
+            DubinsResult scaledRes = res.scaleFromStandard(scaledDubinsProblem.lambda);
+            auto kSigns = solver->getKSigns(kMax);
+            auto curve = dubinsCurve(start.x, start.y, start.theta, scaledRes.sc_s1, scaledRes.sc_s2, scaledRes.sc_s3,
+                                     kSigns.k0, kSigns.k1, kSigns.k2);
+            dubinsCurves.push_back(curve);
         }
     }
 
-    if (minPidx == -1) {
-        DubinsCurve curve;
-        // TODO: Return pointers, so we can return NULL
-        return curve;
-    }
-
-    // Back from standard
-    DubinsResult scaled = minCurve.scaleFromStandard(scaledDubinsProblem.lambda);
-
-
-    auto kSigns = solvers[minPidx]->getKSigns(kMax);
-    return dubinsCurve(start.x, start.y, start.theta, scaled.sc_s1, scaled.sc_s2, scaled.sc_s3, kSigns.k0, kSigns.k1, kSigns.k2);
+    sort(dubinsCurves.begin(), dubinsCurves.end(), [](DubinsCurve &a, DubinsCurve &b) {
+        return a.length() < b.length();
+    });
+    return dubinsCurves;
 }
 
 
