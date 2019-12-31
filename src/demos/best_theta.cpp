@@ -1,7 +1,7 @@
 #include <vector>
 #include <utils.hpp>
 #include <iostream>
-#include "../pipeline/planning/best_theta/best_theta.h"
+#include "../pipeline/planning/best_theta/BestThetaFinder.h"
 #include "../pipeline/planning/dubins/dubins.h"
 #include "../pipeline/DebugImage.h"
 
@@ -20,7 +20,9 @@ int main() {
 
     vector<Polygon> obstacles;
     CollisionDetector detector(obstacles);
-    vector<DubinsCurve> curves = findBestDubinsCurves(path, 0, &detector);
+
+    BestThetaFinder finder(&detector);
+    vector<DubinsCurve> curves = finder.findBestDubinsCurves(path, 0);
 
 
     cout << "discretizing..." << endl;

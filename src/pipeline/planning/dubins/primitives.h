@@ -9,9 +9,6 @@ class DubinsResult {
 public:
     bool ok;
     double sc_s1, sc_s2, sc_s3;
-    int pidx;
-
-    double length();
 
     DubinsResult scaleFromStandard(double lambda);
 };

@@ -1,4 +1,4 @@
-#include "best_theta/best_theta.h"
+#include "best_theta/BestThetaFinder.h"
 #include "../DebugImage.h"
 #include "../../opencv-utils.h"
 #include "Graph.h"

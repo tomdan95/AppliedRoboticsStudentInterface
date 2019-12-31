@@ -42,6 +42,7 @@ public:
     double length() {
         return a1.length + a2.length + a3.length;
     }
+
 };
 
 

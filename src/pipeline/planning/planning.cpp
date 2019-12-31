@@ -11,7 +11,7 @@
 #include "Graph.h"
 #include "../../opencv-utils.h"
 #include "../DebugImage.h"
-#include "best_theta/best_theta.h"
+#include "best_theta/BestThetaFinder.h"
 #include "inflate.h"
 #include "Mission1.h"
 #include "Mission2.h"
@@ -31,15 +31,15 @@ namespace student {
                   const string &configFolder) {
 
         auto t_start = std::chrono::high_resolution_clock::now();
-
+/*
         DebugImage::clear();
         DebugImage::drawPolygons(obstacleList, 800, cv::Scalar(255, 0, 0));
-
+*/
         vector<Polygon> inflatedObstacles = inflateObstacles(obstacleList, borders, 30); //TODO:put correct robot size
-
+/*
         DebugImage::drawPolygons(inflatedObstacles, 800, cv::Scalar(255, 255, 0));
         DebugImage::showAndWait();
-
+*/
 
         CollisionDetector detector(obstacleList);// TODO: Not inflated!!
         Graph cleanestPaths = findCleanestPaths(inflatedObstacles, &detector);// TODO: OBSTACLES NOT INFLATED!!!

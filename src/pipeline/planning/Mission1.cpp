@@ -1,5 +1,5 @@
 #include "Mission1.h"
-#include "best_theta/best_theta.h"
+#include "best_theta/BestThetaFinder.h"
 #include "../DebugImage.h"
 
 
@@ -11,7 +11,8 @@ vector<DubinsCurve> Mission1::solve() {
     addPointsToReach();
     computeShortestPath();
     prunePath(&shortestPath, toReach);
-    return findBestDubinsCurves(shortestPath, start.theta, collisionDetector);
+    BestThetaFinder finder(collisionDetector);
+    return finder.findBestDubinsCurves(shortestPath, start.theta);
 }
 
 void Mission1::addPointsToReach() {

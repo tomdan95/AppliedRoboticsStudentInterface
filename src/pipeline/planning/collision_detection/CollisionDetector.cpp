@@ -34,7 +34,7 @@ bool CollisionDetector::doesCurveCollide(const DubinsCurve &curve) const {
     return false;
 }
 
-bool CollisionDetector::isPointInAnyObstacle(const Point &point) const {
+inline bool CollisionDetector::isPointInAnyObstacle(const Point &point) const {
     int approxX = point.x * POINT_DISCRETIZATION;
     int approxY = point.y * POINT_DISCRETIZATION;
     if (approxX < 0 || approxY < 0 || approxX > OBSTACLES_MATRIX_SIDE || approxY > OBSTACLES_MATRIX_SIDE) {
