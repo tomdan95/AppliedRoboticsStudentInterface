@@ -81,7 +81,7 @@ namespace student {
                 }
                 if(thetaJForShortestCurve == -1){
                     // TODO: Handle this case
-                    cout << "not found!!!!!!!!" << endl;
+                    //cout << "not found!!!!!!!!" << endl;
                 }
                 if (pathPoint == path.size() - 2) {
                     // if the curve reaches the last point, we're n ot interested in the arriving theta.
@@ -98,7 +98,7 @@ namespace student {
             DubinsCurve curve = invokeDubins(robotTheta, i * STEP, *path[0], *path[1]);
             if (collisionDetector->doesCurveCollide(curve)) {
                 // TODO: Handle this case
-                cout << "not found!!!!!!!!" << endl;
+                //cout << "not found!!!!!!!!" << endl;
                 curvesTable[0].emplace_back(make_pair(curve, i), 1000);
                 // TODO: Handle case were all the first curves collide
             } else {

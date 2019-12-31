@@ -12,10 +12,7 @@
 using namespace std;
 
 namespace student {
-    vector<Point> getSortedVictimPoints(const vector<pair<int, Polygon>> &victimList);
-
-    void dubinsArcToPoseVector(DubinsArc arc, vector<Pose>& vector);
-    vector<Pose> dubinsCurveToPoseVector(DubinsCurve curve, vector<Pose> &poseVector);
+    vector<pair<int, Point>> getVictimPoints(const vector<pair<int, Polygon>> &victims);
 }
 
 #endif //STUDENT_PROECT_PLANNING_H

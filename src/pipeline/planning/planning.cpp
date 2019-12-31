@@ -14,6 +14,7 @@
 #include "best_theta/best_theta.h"
 #include "inflate.h"
 #include "Mission1.h"
+#include "Mission2.h"
 
 using namespace std;
 
@@ -30,22 +31,24 @@ namespace student {
                   const string &configFolder) {
 
         auto t_start = std::chrono::high_resolution_clock::now();
-/*
+
         DebugImage::clear();
         DebugImage::drawPolygons(obstacleList, 800, cv::Scalar(255, 0, 0));
-*/
+
         vector<Polygon> inflatedObstacles = inflateObstacles(obstacleList, borders, 30); //TODO:put correct robot size
-/*
+
         DebugImage::drawPolygons(inflatedObstacles, 800, cv::Scalar(255, 255, 0));
         DebugImage::showAndWait();
-*/
+
 
         CollisionDetector detector(obstacleList);// TODO: Not inflated!!
         Graph cleanestPaths = findCleanestPaths(inflatedObstacles, &detector);// TODO: OBSTACLES NOT INFLATED!!!
 
-        auto solver = new Mission1(&detector, &cleanestPaths, RobotPosition(x, y, theta), getPolygonCenter(gate), getSortedVictimPoints(victimList));
+
+        auto solver = new Mission1(&detector, &cleanestPaths, RobotPosition(x, y, theta), getPolygonCenter(gate), getVictimPoints(victimList));
         //auto solver2 = new Mission2(&detector, &cleanestPaths, RobotPosition(x, y, theta), getPolygonCenter(gate), getSortedVictimPoints(victimList), {10, 20, 30, 40});
         auto curves = solver->solve();
+
 
         vector<Pose> allPoses;
         for (auto curve:curves) {
@@ -60,6 +63,7 @@ namespace student {
 
 
         DebugImage::clear();
+        DebugImage::drawPolygons(inflatedObstacles, 800, cv::Scalar(255, 255, 0));
         DebugImage::drawGraph(cleanestPaths);
         DebugImage::drawPoses(allPoses);
         DebugImage::showAndWait();
@@ -68,19 +72,12 @@ namespace student {
     }
 
 
-    // TODO: Split sorting and center
-    vector<Point> getSortedVictimPoints(const vector<pair<int, Polygon>> &victimList) {
-        vector<pair<int, Polygon>> sortedVictimList = victimList;
-        sort(sortedVictimList.begin(), sortedVictimList.end(), [](pair<int, Polygon> &a, pair<int, Polygon> &b) {
-            return a.first < b.first;
-        });
-        vector<Point> victimPoints;
-        for (const pair<int, Polygon> &victim:sortedVictimList) {
-            Point victimCenter = getPolygonCenter(victim.second);
-            victimPoints.push_back(victimCenter);
+    vector<pair<int, Point>> getVictimPoints(const vector<pair<int, Polygon>> &victims) {
+        vector<pair<int, Point>> victimPoints;
+        for (const pair<int, Polygon> &victim:victims) {
+            victimPoints.emplace_back(victim.first, getPolygonCenter(victim.second));
         }
         return victimPoints;
     }
-
 
 }

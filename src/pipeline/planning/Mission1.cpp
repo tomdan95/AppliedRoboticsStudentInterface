@@ -1,11 +1,13 @@
 #include "Mission1.h"
 #include "best_theta/best_theta.h"
+#include "../DebugImage.h"
 
 
 using namespace std;
 using namespace student;
 
 vector<DubinsCurve> Mission1::solve() {
+    sortVictims();
     addPointsToReach();
     computeShortestPath();
     prunePath(&shortestPath, toReach);
@@ -32,3 +34,16 @@ void Mission1::computeShortestPath() {
         }
     }
 }
+
+
+void Mission1::sortVictims() {
+    vector<pair<int, Point>> sortedVictimsWithIndex = victims;
+    sort(sortedVictimsWithIndex.begin(), sortedVictimsWithIndex.end(), [](pair<int, Point> &a, pair<int, Point> &b) {
+        return a.first < b.first;
+    });
+    for (const auto &victimWithIndex:sortedVictimsWithIndex) {
+        sortedVictims.push_back(victimWithIndex.second);
+    }
+}
+
+

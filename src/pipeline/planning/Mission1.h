@@ -10,14 +10,17 @@ namespace student {
     class Mission1 : public MissionSolver {
     public:
         Mission1(const student::CollisionDetector *collisionDetector, student::Graph *cleanestPaths,
-                 const RobotPosition &start, const Point &gate, const vector<Point> &sortedVictims)
-                : MissionSolver(collisionDetector, cleanestPaths, start, gate, sortedVictims) {}
+                 const RobotPosition &start, const Point &gate, const vector<pair<int, Point>>& victims)
+                : MissionSolver(collisionDetector, cleanestPaths, start, gate, victims) { }
 
         vector<DubinsCurve> solve() override;
 
     private:
+        vector<Point> sortedVictims;
         vector<Point *> toReach;
         vector<Point *> shortestPath;
+
+        void sortVictims();
 
         void addPointsToReach();
 

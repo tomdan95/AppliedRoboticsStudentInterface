@@ -15,7 +15,7 @@ namespace student {
         Graph *cleanestPaths;
         const RobotPosition start;
         const Point gate;
-        const vector<Point> sortedVictims;
+        const vector<pair<int, Point>> victims;
 
         void prunePath(vector<Point *> *path, vector<Point *> toReach);
 
@@ -24,9 +24,10 @@ namespace student {
         MissionSolver(const CollisionDetector *collisionDetector, Graph *cleanestPaths,
                       const RobotPosition &start,
                       const Point &gate,
-                      vector<Point> sortedVictims) : collisionDetector(collisionDetector), cleanestPaths(cleanestPaths),
-                                                     start(start), gate(gate),
-                                                     sortedVictims(std::move(sortedVictims)) {}
+                      const vector<pair<int, Point>> victims) : collisionDetector(collisionDetector),
+                                                                   cleanestPaths(cleanestPaths),
+                                                                   start(start), gate(gate),
+                                                                   victims(victims) {}
 
         virtual vector<DubinsCurve> solve() = 0;
 
