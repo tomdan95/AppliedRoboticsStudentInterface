@@ -28,6 +28,7 @@ namespace student {
     static atomic<bool> done;
     static int n;
     static double show_scale = 1.0;
+    static bool autoFindArenaEdges = true; //change to false to use old manual arena edges selector.
 
     void mouseCallback(int event, int x, int y, int, void *p) {
         if (event != cv::EVENT_LBUTTONDOWN || done.load()) return;
@@ -59,6 +60,51 @@ namespace student {
             cv::waitKey(500);
         }
 
+        cv::destroyWindow(name.c_str());
+        return result;
+    }
+
+    vector<cv::Point2f> findArenaEdge(const cv::Mat &img) {
+        result.clear();
+        cv::Mat hsv_img, black_mask, final_img;
+        //change img from rgb to hsv
+        cv::cvtColor(img, hsv_img, cv::COLOR_RGB2HSV);
+        //clear all color but black
+        cv::inRange(hsv_img, cv::Scalar(0, 0, 0), cv::Scalar(180, 255, 30), black_mask);
+        
+        //find arena contours
+        vector<vector<cv::Point>> contours;
+        cv::findContours(black_mask, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
+        
+        //aproximate arena contours
+        int approxPolyEpsilon = 10; //aproximation value
+        vector<vector<cv::Point>> approximatedContours;
+        for (vector<cv::Point> contour : contours) {
+            vector<cv::Point> approximatedContour;
+            cv::approxPolyDP(contour, approximatedContour, 10, true);
+            approximatedContours.push_back(approximatedContour);
+        }
+
+        //draw aproximated arena c  ontours on finalimg
+        final_img = img.clone();
+        cv::drawContours(final_img, approximatedContours, -1, cv::Scalar(255, 0, 0), 10);
+
+        //recover and draw arena edges form arenacontours
+        for (auto &contour : approximatedContours) {
+            for (int i=0; i<contour.size(); i++) {
+                int a=(i+2)%4;
+                result.emplace_back(contour[a].x, contour[a].y);
+                cv::circle(final_img, cv::Point(contour[a].x, contour[a].y), 10*(i+1), cv::Scalar(0, 0, 255), -1);
+            }
+        }
+
+        //show immage user check and return found edges
+        name = "Check if correct";
+        //int i = sizeof(approximatedContours);
+        //name = std::to_string(i);
+        cv::imshow(name.c_str(), final_img);
+        cv::namedWindow(name.c_str());
+        cv::waitKey(0);
         cv::destroyWindow(name.c_str());
         return result;
     }
@@ -108,11 +154,16 @@ namespace student {
                         cv::Mat &rvec, cv::Mat &tvec, const string &config_folder) {
         string file_path = config_folder + "/extrinsicCalib.csv";
         vector<cv::Point2f> edges;
-        if (!alreadyDidExtrinsicCalibBefore(file_path)) {
-            edges = askUserToClickArenaEdges(img_in);
-            storeArenaEdgesToFile(config_folder, file_path, edges);
-        } else {
-            edges = loadArenaEdgesFromFile(file_path);
+        if(autoFindArenaEdges){
+            edges = findArenaEdge(img_in);
+        }
+        else{
+            if (!alreadyDidExtrinsicCalibBefore(file_path)) {
+                edges = askUserToClickArenaEdges(img_in);
+                storeArenaEdgesToFile(config_folder, file_path, edges);
+            } else {
+                edges = loadArenaEdgesFromFile(file_path);
+            }
         }
 
         cv::Mat dist_coeffs;
