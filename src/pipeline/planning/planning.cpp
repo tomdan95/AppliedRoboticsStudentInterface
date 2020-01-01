@@ -31,18 +31,15 @@ namespace student {
                   const string &configFolder) {
 
         auto t_start = std::chrono::high_resolution_clock::now();
-/*
-        DebugImage::clear();
-        DebugImage::drawPolygons(obstacleList, 800, cv::Scalar(255, 0, 0));
-*/
-        vector<Polygon> inflatedObstacles = resizeObstaclesAndBorders(obstacleList, borders, 30); //TODO:put correct robot size
-/*
-        DebugImage::drawPolygons(inflatedObstacles, 800, cv::Scalar(255, 255, 0));
-        DebugImage::showAndWait();
-*/
 
-        CollisionDetector detector(obstacleList);// TODO: Not inflated!!
-        Graph cleanestPaths = findCleanestPaths(inflatedObstacles, &detector);// TODO: OBSTACLES NOT INFLATED!!!
+        int robotSize = 30;
+        auto inflatedObstacles = inflateObstacles(obstacleList, robotSize);
+        auto defaultedBorders = deflateArenaBorders(borders, robotSize);
+        auto inflatedObstaclesAndDeflatedBorders = resizeObstaclesAndBorders(obstacleList, borders, robotSize);
+
+
+        CollisionDetector detector(defaultedBorders[0], inflatedObstacles);// TODO: Not inflated!!
+        Graph cleanestPaths = findCleanestPaths(inflatedObstaclesAndDeflatedBorders, &detector);// TODO: OBSTACLES NOT INFLATED!!!
 
 
         auto solver = new Mission1(&detector, &cleanestPaths, RobotPosition(x, y, theta), getPolygonCenter(gate), getVictimPoints(victimList));

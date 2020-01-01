@@ -9,9 +9,19 @@ using namespace student;
 #define POINT_DISCRETIZATION  500.0
 
 // TODO: Use black and white image to save space
-CollisionDetector::CollisionDetector(const vector<Polygon> &obstacles) : obstaclesShadow(OBSTACLES_MATRIX_SIDE,
-                                                                                         OBSTACLES_MATRIX_SIDE, CV_8UC3,
-                                                                                         cv::Scalar(255, 255, 255)) {
+CollisionDetector::CollisionDetector(const Polygon &borders, const vector<Polygon> &obstacles) : obstaclesShadow(
+        OBSTACLES_MATRIX_SIDE,
+        OBSTACLES_MATRIX_SIDE, CV_8UC3,
+        cv::Scalar(0, 0, 0)) {
+    vector<cv::Point> borderPoints;
+    for (const auto &borderPoint:borders) {
+        borderPoints.emplace_back(borderPoint.x * POINT_DISCRETIZATION, borderPoint.y * POINT_DISCRETIZATION);
+    }
+    vector<vector<cv::Point>> container;
+    container.push_back(borderPoints);
+    cv::fillPoly(obstaclesShadow, container, cv::Scalar(255, 255, 255));
+
+
     vector<vector<cv::Point>> polygons;
     for (const auto &obstacle:obstacles) {
         vector<cv::Point> points;
@@ -21,7 +31,7 @@ CollisionDetector::CollisionDetector(const vector<Polygon> &obstacles) : obstacl
         polygons.push_back(points);
     }
     cv::fillPoly(obstaclesShadow, polygons, cv::Scalar(0, 0, 0));
-    //showImageAndWaitKeyPress(obstaclesShadow);
+    showImageAndWaitKeyPress(obstaclesShadow);
 }
 
 bool CollisionDetector::doesCurveCollide(const DubinsCurve &curve) const {

@@ -19,7 +19,8 @@ int main() {
     path.push_back(new Point(0.1, 1));
 
     vector<Polygon> obstacles;
-    CollisionDetector detector(obstacles);
+    vector<Point> border;
+    CollisionDetector detector(border, obstacles);
 
     BestThetaFinder finder(&detector);
     vector<DubinsCurve> curves = finder.findBestDubinsCurves(path, 0);
