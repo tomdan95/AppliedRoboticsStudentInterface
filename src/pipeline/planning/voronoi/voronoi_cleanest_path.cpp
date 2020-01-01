@@ -63,24 +63,6 @@ namespace student {
         return graph;
     }
 
-    // TODO: Move
-    void drawEdgeAndObstacles(const boost::polygon::voronoi_edge<double> edge, const vector<Polygon> obstacles) {
-        cv::Mat image(1000, 1280, CV_8UC3, cv::Scalar(0, 0, 255));
-
-        cv::line(image, cv::Point(edge.vertex0()->x(), edge.vertex0()->y()), cv::Point(edge.vertex1()->x(), edge.vertex1()->y()), cv::Scalar(255, 255, 255), 5);
-
-        for (const auto&obstacle:obstacles) {
-            cv::Point start(obstacle[0].x * VORONOI_DOUBLE_TO_INT, obstacle[0].y * VORONOI_DOUBLE_TO_INT);
-            for(int i = 1; i < obstacle.size(); i++) {
-                cv::Point end(obstacle[i].x * VORONOI_DOUBLE_TO_INT, obstacle[i].y * VORONOI_DOUBLE_TO_INT);
-                cv::line(image, start, end, cv::Scalar(255, 255, 0));
-                start = end;
-            }
-            cv::Point end(obstacle[0].x * VORONOI_DOUBLE_TO_INT, obstacle[0].y * VORONOI_DOUBLE_TO_INT);
-            cv::line(image, start, end, cv::Scalar(255, 0, 0));
-        }
-        showImageAndWaitKeyPress(image);
-    }
 
 
 }

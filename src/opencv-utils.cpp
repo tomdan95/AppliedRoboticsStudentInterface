@@ -22,12 +22,6 @@ cv::Mat loadImage(string fileName) {
 }
 
 
-void showImageAndWaitKeyPress(const cv::Mat &image, int wait) {
-    namedWindow("Loaded image", cv::WINDOW_AUTOSIZE);// Create a window for display.
-    imshow("Display window", image);
-    cv::waitKey(wait);
-}
-
 
 cv::Mat rotateImage(const cv::Mat &image, int degrees) {
     cv::Point2f src_center(image.cols / 2.0F, image.rows / 2.0F);

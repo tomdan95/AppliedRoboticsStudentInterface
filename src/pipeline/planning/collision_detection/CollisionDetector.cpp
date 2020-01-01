@@ -9,10 +9,14 @@ using namespace student;
 #define POINT_DISCRETIZATION  500.0
 
 // TODO: Use black and white image to save space
-CollisionDetector::CollisionDetector(const Polygon &borders, const vector<Polygon> &obstacles) : obstaclesShadow(
+CollisionDetector::CollisionDetector(
+        const Polygon &borders,
+        const vector<Polygon> &obstacles
+) : obstaclesShadow(
         OBSTACLES_MATRIX_SIDE,
         OBSTACLES_MATRIX_SIDE, CV_8UC3,
-        cv::Scalar(0, 0, 0)) {
+        cv::Scalar(0, 0, 0)
+) {
     vector<cv::Point> borderPoints;
     for (const auto &borderPoint:borders) {
         borderPoints.emplace_back(borderPoint.x * POINT_DISCRETIZATION, borderPoint.y * POINT_DISCRETIZATION);

@@ -5,7 +5,6 @@
 
 int main() {
     cv::Mat img = loadImage("/home/lar2019/robot/AppliedRoboticsStudentInterface/src/areana_samples/000.jpg");
-    showImageAndWaitKeyPress(img);
     Polygon triangle;
     double baricenterX, baricenterY;
     double theta;
