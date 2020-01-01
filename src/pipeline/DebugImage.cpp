@@ -9,7 +9,11 @@ cv::Mat DebugImage::image(1000, 1280, CV_8UC3, cv::Scalar(0, 0, 255));
 
 
 void student::DebugImage::showAndWait(int wait) {
-    showImageAndWaitKeyPress(image, wait);
+    string name = "planing";
+    cv::imshow(name.c_str(), image);
+    cv::namedWindow(name.c_str());
+    cv::waitKey(wait);
+    cv::destroyWindow(name.c_str());
 }
 
 
