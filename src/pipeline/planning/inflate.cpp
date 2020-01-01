@@ -11,47 +11,83 @@
 
 #define INT_ROUND 1000.0
 
-vector<Polygon> inflateObstacles(const vector<Polygon> &obstacles, const Polygon &borders, int robotSize) {
-    vector<Polygon> returnObstacles;
-    ClipperLib::Clipper cl, clFinal;
-    ClipperLib::Paths MergedObstacles, clipperInflatedBoarders, FinalArena;
+ClipperLib::Paths processClipperObstacles(const vector<Polygon> &obstacles, int robotSize){
+    ClipperLib::Clipper cl;
+    ClipperLib::Paths MergedObstacles;
+
     for (const Polygon &obstacle : obstacles) {
         ClipperLib::Path clipperObstacle;
         ClipperLib::Paths clipperInflatedObstacle;
         for (const auto &point : obstacle) {
             clipperObstacle << ClipperLib::IntPoint(point.x * INT_ROUND, point.y * INT_ROUND);
         }
-        //clipperObstacle << ClipperLib::IntPoint(obstacle[0].x * INT_ROUND, obstacle[0].y * INT_ROUND);
 
         ClipperLib::ClipperOffset co;
-        cout << "inflating, size " << obstacle.size() << endl;
         co.AddPath(clipperObstacle, ClipperLib::jtMiter, ClipperLib::etClosedPolygon);
+        co.Execute(clipperInflatedObstacle, robotSize);
 
-        co.Execute(clipperInflatedObstacle, robotSize); // TODO: Change the offset value according to the robot size
         cl.AddPaths(clipperInflatedObstacle, ClipperLib::ptSubject, true);
     }
     cl.Execute(ClipperLib::ctUnion, MergedObstacles, ClipperLib::pftNonZero, ClipperLib::pftNonZero);
+    return MergedObstacles;
+}
 
+ClipperLib::Paths processClipperBorders(const Polygon &borders, int robotSize){
+    ClipperLib::ClipperOffset bor;
     ClipperLib::Path clipperBorders;
+    ClipperLib::Paths clipperDeflatedBoarders;
+
     for (const auto &point : borders) {
         clipperBorders << ClipperLib::IntPoint(point.x * INT_ROUND, point.y * INT_ROUND);
     }
 
-    ClipperLib::ClipperOffset bor;
-
     bor.AddPath(clipperBorders, ClipperLib::jtMiter, ClipperLib::etClosedPolygon);
-    bor.Execute(clipperInflatedBoarders, -robotSize);
+    bor.Execute(clipperDeflatedBoarders, -robotSize);
+    return clipperDeflatedBoarders;
+}
 
-    clFinal.AddPaths(clipperInflatedBoarders, ClipperLib::ptSubject, true);
-    clFinal.AddPaths(MergedObstacles, ClipperLib::ptClip, true);
-    clFinal.Execute(ClipperLib::ctDifference, FinalArena, ClipperLib::pftEvenOdd, ClipperLib::pftEvenOdd);
-    for (const auto &mergedPath : FinalArena) {
-        Polygon mergedObstacle;
-        for (const auto &point : mergedPath) {
-            mergedObstacle.emplace_back(point.X / INT_ROUND, point.Y / INT_ROUND);
+vector<Polygon> inflateObstacles(const vector<Polygon> &obstacles, int robotSize){
+    vector<Polygon> returnObstacles;
+    ClipperLib::Paths clipperObstacles = processClipperObstacles(obstacles, robotSize);
+    for (const auto &clipperObstacle : clipperObstacles) {
+        Polygon Obstacle;
+        for (const auto &point : clipperObstacle) {
+            Obstacle.emplace_back(point.X / INT_ROUND, point.Y / INT_ROUND);
         }
-        //inflatedObstacle.erase()
-        returnObstacles.push_back(mergedObstacle);
+        returnObstacles.push_back(Obstacle);
     }
     return returnObstacles;
+}
+
+vector<Polygon> deflateArenaBorders(const Polygon &borders, int robotSize){
+    vector<Polygon> returnBorders;
+    ClipperLib::Paths clipperBorders = processClipperBorders(borders, robotSize);
+    for (const auto &clipperBorder : clipperBorders) {
+        Polygon border;
+        for (const auto &point : clipperBorder) {
+            border.emplace_back(point.X / INT_ROUND, point.Y / INT_ROUND);
+        }
+        returnBorders.push_back(border);
+    }
+    return returnBorders;
+}
+
+vector<Polygon> resizeObstaclesAndBorders(const vector<Polygon> &obstacles, const Polygon &borders, int robotSize){
+    vector<Polygon> returnArena;
+    ClipperLib::Clipper clFinal;
+    ClipperLib::Paths arena;
+    ClipperLib::Paths clipperObstacles = processClipperObstacles(obstacles, robotSize);
+    ClipperLib::Paths clipperBorders = processClipperBorders(borders, robotSize);
+
+    clFinal.AddPaths(clipperBorders, ClipperLib::ptSubject, true);
+    clFinal.AddPaths(clipperObstacles, ClipperLib::ptClip, true);
+    clFinal.Execute(ClipperLib::ctDifference, arena, ClipperLib::pftEvenOdd, ClipperLib::pftEvenOdd);
+    for (const auto &arenaPath : arena){
+        Polygon arenaComponent;
+        for (const auto &point : arenaPath) {
+            arenaComponent.emplace_back(point.X / INT_ROUND, point.Y / INT_ROUND);
+        }
+        returnArena.push_back(arenaComponent);
+    }
+    return returnArena;
 }

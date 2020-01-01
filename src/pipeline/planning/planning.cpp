@@ -35,7 +35,7 @@ namespace student {
         DebugImage::clear();
         DebugImage::drawPolygons(obstacleList, 800, cv::Scalar(255, 0, 0));
 */
-        vector<Polygon> inflatedObstacles = inflateObstacles(obstacleList, borders, 30); //TODO:put correct robot size
+        vector<Polygon> inflatedObstacles = resizeObstaclesAndBorders(obstacleList, borders, 30); //TODO:put correct robot size
 /*
         DebugImage::drawPolygons(inflatedObstacles, 800, cv::Scalar(255, 255, 0));
         DebugImage::showAndWait();
