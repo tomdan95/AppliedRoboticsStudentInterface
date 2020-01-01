@@ -23,20 +23,20 @@ int main() {
     CollisionDetector detector(border, obstacles);
 
     BestThetaFinder finder(&detector);
-    vector<DubinsCurve> curves = finder.findBestDubinsCurves(path, 0);
+    if(auto curves = finder.findBestDubinsCurves(path, 0)) {
 
+        vector<Pose> allPoses;
+        for (auto curve:*curves) {
+            vector<Pose> poses = dubinsCurveToPoseVector(curve);
+            allPoses.insert(allPoses.end(), poses.begin(), poses.end());
+        }
 
-    cout << "discretizing..." << endl;
-    vector<Pose> allPoses;
-    for (auto curve:curves) {
-        vector<Pose> poses = dubinsCurveToPoseVector(curve);
-        allPoses.insert(allPoses.end(), poses.begin(), poses.end());
+        DebugImage::drawPoses(allPoses);
+        DebugImage::drawPath(path);
+        DebugImage::showAndWait();
+    } else {
+        cout << "didn't find a solution" << endl;
     }
-    cout << "done" << endl;
-
-    DebugImage::drawPoses(allPoses);
-    DebugImage::drawPath(path);
-    DebugImage::showAndWait();
 
     return 0;
 }

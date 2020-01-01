@@ -46,9 +46,13 @@ namespace student {
         //auto solver2 = new Mission2(&detector, &cleanestPaths, RobotPosition(x, y, theta), getPolygonCenter(gate), getSortedVictimPoints(victimList), {10, 20, 30, 40});
         auto curves = solver->solve();
 
+        if(!curves.is_initialized()) {
+            cout << "planning failed" << endl;
+            return false;
+        }
 
         vector<Pose> allPoses;
-        for (auto curve:curves) {
+        for (auto curve:*curves) {
             vector<Pose> poses = dubinsCurveToPoseVector(curve);
             allPoses.insert(allPoses.end(), poses.begin(), poses.end());
         }

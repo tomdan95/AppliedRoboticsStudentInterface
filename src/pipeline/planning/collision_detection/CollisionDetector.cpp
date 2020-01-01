@@ -31,7 +31,6 @@ CollisionDetector::CollisionDetector(const Polygon &borders, const vector<Polygo
         polygons.push_back(points);
     }
     cv::fillPoly(obstaclesShadow, polygons, cv::Scalar(0, 0, 0));
-    showImageAndWaitKeyPress(obstaclesShadow);
 }
 
 bool CollisionDetector::doesCurveCollide(const DubinsCurve &curve) const {

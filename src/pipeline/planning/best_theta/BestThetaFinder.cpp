@@ -8,7 +8,6 @@
 
 using namespace std;
 
-
 namespace student {
 
     /**
@@ -41,7 +40,7 @@ namespace student {
      * @param robotTheta Starting theta of the robot
      * @return list of curves that the robot has to follow
      */
-    vector<DubinsCurve> BestThetaFinder::findBestDubinsCurves(const vector<Point *> &path, double robotTheta) {
+    boost::optional<vector<DubinsCurve>> BestThetaFinder::findBestDubinsCurves(const vector<Point *> &path, double robotTheta) {
         /**
          * Table that contains the curves.
          * It is a vector that contains a vector for each edge of the path.
@@ -59,13 +58,13 @@ namespace student {
                 double lengthOfShortestCurve = INFINITY;
                 int thetaJForShortestCurve = -1;
                 for (int thetaJ = 0; thetaJ < STEPS; thetaJ++) { // we try with every arriving orientation
-                    DubinsCurve curve;
-                    bool found = findShortestNotCollidingCurve(curve, thetaI * STEP, thetaJ * STEP, *path[pathPoint],
-                                                               *path[pathPoint + 1]);
-                    if(!found) {
+                    auto curve = findShortestNotCollidingCurve(thetaI * STEP, thetaJ * STEP,
+                                                                                *path[pathPoint], *path[pathPoint + 1]);
+                    if (!curve.is_initialized()) {
+                        cout << "not found middle!!!!!!!!" << endl;
                         continue;
                     }
-                    double length = curve.length();
+                    double length = curve->length();
                     if (pathPoint < path.size() - 2) {
                         // if the curve doesn't reach the last point, we add the length of the subpath corresponding
                         // to the arriving theta
@@ -73,13 +72,13 @@ namespace student {
                     }
                     if (length < lengthOfShortestCurve) {
                         lengthOfShortestCurve = length;
-                        shortestCurveForThetaI = curve;
+                        shortestCurveForThetaI = *curve;
                         thetaJForShortestCurve = thetaJ;
                     }
                 }
                 if (thetaJForShortestCurve == -1) {
                     // TODO: Handle this case
-                    cout << "not found!!!!!!!!" << endl;
+                    cout << "not found middle!!!!!!!!" << endl;
                 }
                 if (pathPoint == path.size() - 2) {
                     // if the curve reaches the last point, we're n ot interested in the arriving theta.
@@ -94,12 +93,15 @@ namespace student {
         // we already have a starting theta. Compute the curves from the starting point to the second point, using
         // all possible arriving orientations
         for (int i = 0; i < STEPS; i++) {
-            DubinsCurve curve;
-            bool found = findShortestNotCollidingCurve(curve, robotTheta, i * STEP, *path[0], *path[1]);
-            if(!found) {
-                cout << "not found!!!!!!!!" << endl;
+            auto curve = findShortestNotCollidingCurve(robotTheta, i * STEP, *path[0], *path[1]);
+            if (!curve.is_initialized()) {
+                cout << "not found start!!!!!!!!" << endl;
+
+                DubinsCurve empty;
+                curvesTable[0].emplace_back(make_pair(empty, i), INFINITY);
+            } else {
+                curvesTable[0].emplace_back(make_pair(*curve, i), curve->length() + curvesTable[1][i].second);
             }
-            curvesTable[0].emplace_back(make_pair(curve, i), curve.length() + curvesTable[1][i].second);
         }
 
         // find the first curve of the shortest list of curves
@@ -124,21 +126,22 @@ namespace student {
     }
 
 
-    inline bool BestThetaFinder::findShortestNotCollidingCurve(DubinsCurve &shortestCurve, double thetaStart, double thetaEnd, const Point &start, const Point &end) {
+    inline boost::optional<DubinsCurve>
+    BestThetaFinder::findShortestNotCollidingCurve(double thetaStart, double thetaEnd, const Point &start,
+                                                   const Point &end) {
         return findShortestNotCollidingCurve(RobotPosition(start.x, start.y, thetaStart),
-                                             RobotPosition(end.x, end.y, thetaEnd), shortestCurve);
+                                             RobotPosition(end.x, end.y, thetaEnd));
     }
 
-    inline bool
-    BestThetaFinder::findShortestNotCollidingCurve(const RobotPosition &start, const RobotPosition &end, DubinsCurve &shortestCurve) {
+    inline boost::optional<DubinsCurve>
+    BestThetaFinder::findShortestNotCollidingCurve(const RobotPosition &start, const RobotPosition &end) {
         auto curves = dubinsShortestPath(start, end, MAX_K);
         for (const auto &curve:curves) {
             if (!collisionDetector->doesCurveCollide(curve)) {
-                shortestCurve = curve;
-                return true;
+                return curve;
             }
         }
-        return false;
+        return boost::none;
     }
 
 

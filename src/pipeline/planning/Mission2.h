@@ -14,7 +14,7 @@ namespace student {
                  const Point &gate, const vector<pair<int, Point>> &sortedVictims, const vector<int> &victimBonus) : MissionSolver(
                 collisionDetector, cleanestPaths, start, gate, sortedVictims), victimBonus(victimBonus) {}
 
-        vector<DubinsCurve> solve() override;
+        boost::optional<vector<DubinsCurve>> solve() override;
     };
 }
 

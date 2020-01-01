@@ -6,7 +6,7 @@
 using namespace std;
 using namespace student;
 
-vector<DubinsCurve> Mission1::solve() {
+boost::optional<vector<DubinsCurve>> Mission1::solve() {
     sortVictims();
     addPointsToReach();
     computeShortestPath();

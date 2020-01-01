@@ -1,10 +1,12 @@
 #ifndef STUDENT_PROJECT_MISSIONSOLVER_H
 #define STUDENT_PROJECT_MISSIONSOLVER_H
 
+#include <boost/optional.hpp>
 #include "Graph.h"
 #include "dubins/models.h"
 #include "../detection/find_obstacles.hpp"
 #include "collision_detection/CollisionDetector.h"
+
 
 using namespace std;
 
@@ -29,7 +31,7 @@ namespace student {
                                                                    start(start), gate(gate),
                                                                    victims(victims) {}
 
-        virtual vector<DubinsCurve> solve() = 0;
+        virtual boost::optional<vector<DubinsCurve>> solve() = 0;
 
 
     };

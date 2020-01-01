@@ -5,7 +5,7 @@ using namespace std;
 
 namespace student {
 
-    vector<DubinsCurve> Mission2::solve() {
-
+    boost::optional<vector<DubinsCurve>> Mission2::solve() {
+        return boost::none;
     }
 }

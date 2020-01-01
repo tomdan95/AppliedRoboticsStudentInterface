@@ -13,7 +13,7 @@ namespace student {
                  const RobotPosition &start, const Point &gate, const vector<pair<int, Point>>& victims)
                 : MissionSolver(collisionDetector, cleanestPaths, start, gate, victims) { }
 
-        vector<DubinsCurve> solve() override;
+        boost::optional<vector<DubinsCurve>> solve() override;
 
     private:
         vector<Point> sortedVictims;
