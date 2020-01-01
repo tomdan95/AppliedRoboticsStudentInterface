@@ -30,23 +30,26 @@ namespace student {
                   Path &path,
                   const string &configFolder) {
 
-        auto t_start = std::chrono::high_resolution_clock::now();
-
         int robotSize = 30;
         auto inflatedObstacles = inflateObstacles(obstacleList, robotSize);
         auto defaultedBorders = deflateArenaBorders(borders, robotSize);
         auto inflatedObstaclesAndDeflatedBorders = resizeObstaclesAndBorders(obstacleList, borders, robotSize);
 
+        auto t_start = std::chrono::high_resolution_clock::now();
 
-        CollisionDetector detector(defaultedBorders[0], inflatedObstacles);// TODO: Not inflated!!
-        Graph cleanestPaths = findCleanestPaths(inflatedObstaclesAndDeflatedBorders, &detector);// TODO: OBSTACLES NOT INFLATED!!!
+        CollisionDetector detector(defaultedBorders[0], inflatedObstacles);
+        Graph cleanestPaths = findCleanestPaths(inflatedObstaclesAndDeflatedBorders, &detector);
 
 
         auto solver = new Mission1(&detector, &cleanestPaths, RobotPosition(x, y, theta), getPolygonCenter(gate), getVictimPoints(victimList));
         //auto solver2 = new Mission2(&detector, &cleanestPaths, RobotPosition(x, y, theta), getPolygonCenter(gate), getSortedVictimPoints(victimList), {10, 20, 30, 40});
         auto curves = solver->solve();
 
-        if(!curves.is_initialized()) {
+        auto t_end = std::chrono::high_resolution_clock::now();
+        double elapsed_time_ms = std::chrono::duration<double, std::milli>(t_end-t_start).count();
+        cout << "planning took " << elapsed_time_ms << "ms" << endl;
+
+        if(!curves) {
             cout << "planning failed" << endl;
             return false;
         }
@@ -58,17 +61,11 @@ namespace student {
         }
         path.setPoints(allPoses);
 
-        auto t_end = std::chrono::high_resolution_clock::now();
-        double elapsed_time_ms = std::chrono::duration<double, std::milli>(t_end-t_start).count();
-        cout << "planning took " << elapsed_time_ms << "ms" << endl;
-
-
         DebugImage::clear();
         DebugImage::drawPolygons(inflatedObstacles, 800, cv::Scalar(255, 255, 0));
         DebugImage::drawGraph(cleanestPaths);
         DebugImage::drawPoses(allPoses);
         DebugImage::showAndWait();
-
         return true;
     }
 

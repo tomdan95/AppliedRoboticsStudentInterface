@@ -22,8 +22,8 @@ int main() {
     vector<Point> border;
     CollisionDetector detector(border, obstacles);
 
-    BestThetaFinder finder(&detector);
-    if(auto curves = finder.findBestDubinsCurves(path, 0)) {
+    BestThetaFinder finder(10, 0, &detector);
+    if(auto curves = finder.findBestDubinsCurves(path)) {
 
         vector<Pose> allPoses;
         for (auto curve:*curves) {

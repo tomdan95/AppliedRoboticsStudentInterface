@@ -11,8 +11,8 @@ boost::optional<vector<DubinsCurve>> Mission1::solve() {
     addPointsToReach();
     computeShortestPath();
     prunePath(&shortestPath, toReach);
-    BestThetaFinder finder(collisionDetector);
-    return finder.findBestDubinsCurves(shortestPath, start.theta);
+    BestThetaFinder finder(10, start.theta, collisionDetector);// TODO: Move maxK
+    return finder.findBestDubinsCurves(shortestPath);
 }
 
 void Mission1::addPointsToReach() {

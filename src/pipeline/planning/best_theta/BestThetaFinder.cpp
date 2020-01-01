@@ -4,145 +4,143 @@
 
 #define STEPS 32
 #define STEP  ((2.0 * M_PI) / STEPS)
-#define MAX_K 10
 
 using namespace std;
+using namespace boost;
 
 namespace student {
 
-    /**
-     * Computes the best Dubins curves using multipoint Dubins interpolation.
-     *
-     * Description of the algorithm:
-     *
-     * Our problem is that we want to make the robot follow a path (list of points). Th robot moves on a 2D surface,
-     * so it has an x and y coordinate. The robot also has a starting orientation (theta). We don't care about which
-     * theta the robot will have when it reaches a point of the path, but we want to compute the shortest path.
-     * It is important to notice that the shortest path may consist of non-local optima curve, so we cannot use a greedy
-     * approach. This algorithm is indeed based on Dynamic programming.
-     *
-     * Steps of the algorithm:
-     * - we choose a finite number of angles that we want to try. Currently this number is defined ad a macro. We will
-     *   use this number to evenly divide the range of possible orientations for which we can leave/reach a point.
-     * - we compute all the possibles Dubins curves to reach last point (j) from the previous point (i) with all the
-     *   possible starting and arriving orientations. We store in a table the shortest curve for each possible starting
-     *   orientation.
-     *   We know know the best curve to reach point j from point i given any possible starting orientation from i
-     * - we now compute all the Dubins curves from point i - 1 to i. This time, instead of storing the shortest curve
-     *   into the table, for each starting orientation we store the curve that, when summed with the previous curves is
-     *   shortest (subpath from i to j). We repeat this until we reach the starting point (each time the subpath is
-     *   longer).
-     * - we know chose the best arriving theta from the first point to the second point
-     *
-     * Once we filled the table, we can use it to create the shortest list of curves.
-     *
-     * @param path Path that the robot has to follow
-     * @param robotTheta Starting theta of the robot
-     * @return list of curves that the robot has to follow
-     */
-    boost::optional<vector<DubinsCurve>> BestThetaFinder::findBestDubinsCurves(const vector<Point *> &path, double robotTheta) {
-        /**
-         * Table that contains the curves.
-         * It is a vector that contains a vector for each edge of the path.
-         * Each vector associated to a path contains a vector of best curves. These vectors have the same size as the
-         * number of orientations that we're going to try. For each curve we store the curve itself, the arriving theta
-         * and the length of the subpath (from that point to the end).
-         */
-        vector<vector<pair<pair<DubinsCurve, int>, double>>> curvesTable;
+
+    optional<vector<DubinsCurve>> BestThetaFinder::findBestDubinsCurves(const vector<Point *> &path) {
+        initializeTable(path);
+        fillTableFromLastToFirstPathPoint(path);
+        fillTableWithFirstPathPoint(path);
+        return getBestCurvesFromTable();
+    }
+
+    void BestThetaFinder::initializeTable(const vector<Point *> &path) {
+        curvesTable.clear();
         curvesTable.resize(path.size() - 1);
+    }
 
-        // fill the table, starting from the last point
-        for (int pathPoint = path.size() - 2; pathPoint >= 1; pathPoint--) {
-            for (int thetaI = 0; thetaI < STEPS; thetaI++) { // we try with every starting orientation
-                DubinsCurve shortestCurveForThetaI;
-                double lengthOfShortestCurve = INFINITY;
-                int thetaJForShortestCurve = -1;
-                for (int thetaJ = 0; thetaJ < STEPS; thetaJ++) { // we try with every arriving orientation
-                    auto curve = findShortestNotCollidingCurve(thetaI * STEP, thetaJ * STEP,
-                                                                                *path[pathPoint], *path[pathPoint + 1]);
-                    if (!curve.is_initialized()) {
-                        cout << "not found middle!!!!!!!!" << endl;
-                        continue;
-                    }
-                    double length = curve->length();
-                    if (pathPoint < path.size() - 2) {
-                        // if the curve doesn't reach the last point, we add the length of the subpath corresponding
-                        // to the arriving theta
-                        length += curvesTable[pathPoint + 1][thetaJ].second;
-                    }
-                    if (length < lengthOfShortestCurve) {
-                        lengthOfShortestCurve = length;
-                        shortestCurveForThetaI = *curve;
-                        thetaJForShortestCurve = thetaJ;
-                    }
-                }
-                if (thetaJForShortestCurve == -1) {
-                    // TODO: Handle this case
-                    cout << "not found middle!!!!!!!!" << endl;
-                }
-                if (pathPoint == path.size() - 2) {
-                    // if the curve reaches the last point, we're n ot interested in the arriving theta.
-                    // we store -1 so later we know when we computed the list of curves
-                    thetaJForShortestCurve = -1;
-                }
-                curvesTable[pathPoint].emplace_back(make_pair(shortestCurveForThetaI, thetaJForShortestCurve),
-                                                    lengthOfShortestCurve);
-            }
+    inline void BestThetaFinder::fillTableFromLastToFirstPathPoint(const vector<Point *> &path) {
+        for (int start = path.size() - 2; start >= 1; start--) {
+            computeTableRow(start, path);
+        }
+    }
+
+    inline void BestThetaFinder::computeTableRow(int start, const vector<Point *> &path) {
+        for (int startTheta = 0; startTheta < STEPS; startTheta++) {
+            computeTableCell(start, startTheta, path);
+        }
+    }
+
+    inline void BestThetaFinder::computeTableCell(int start, int startTheta, const vector<Point *> &path) {
+        int end = start + 1;
+        auto startPoint = *path[start];
+        auto endPoint = *path[end];
+        bool isLast = start == path.size() - 2;
+
+        optional<vector<optional<SubPathCurve>>> after;
+        if (!isLast) {
+            after.emplace(curvesTable[end]);
         }
 
-        // we already have a starting theta. Compute the curves from the starting point to the second point, using
-        // all possible arriving orientations
-        for (int i = 0; i < STEPS; i++) {
-            auto curve = findShortestNotCollidingCurve(robotTheta, i * STEP, *path[0], *path[1]);
-            if (!curve.is_initialized()) {
-                cout << "not found start!!!!!!!!" << endl;
+        auto bestCurveForStartingTheta = findBestCurveForStartingTheta(RobotPosition(startPoint, startTheta * STEP),
+                                                                       endPoint, after);
+        curvesTable[start].push_back(bestCurveForStartingTheta);
+    }
 
-                DubinsCurve empty;
-                curvesTable[0].emplace_back(make_pair(empty, i), INFINITY);
+    inline optional<SubPathCurve>
+    BestThetaFinder::findBestCurveForStartingTheta(const RobotPosition &start, const Point &endPoint,
+                                                   optional<vector<optional<SubPathCurve>>> after) {
+        optional<SubPathCurve> bestCurve;
+        for (int endTheta = 0; endTheta < STEPS; endTheta++) {
+            /**
+             * If the subpath has a successor (it's not the last), we'll need to connect it to the successor. But if the
+             * successor doesn't exists there is no point in computing the curve.
+             */
+            if (after && !(*after)[endTheta]) {
+                continue;
+            }
+            auto curve = findShortestNotCollidingCurve(start, RobotPosition(endPoint, endTheta * STEP));
+            if (!curve) {
+                continue;
+            }
+
+            double length = curve->length();
+            if (after) {
+                length += (*after)[endTheta]->length;
+            }
+
+            if (!bestCurve || length < bestCurve->length) {
+                SubPathCurve subPath(*curve, endTheta, length);
+                bestCurve.emplace(subPath);
+            }
+        }
+        return bestCurve;
+    }
+
+    inline void BestThetaFinder::fillTableWithFirstPathPoint(const vector<Point *> &path) {
+        for (int endTheta = 0; endTheta < STEPS; endTheta++) {
+            auto curve = findShortestNotCollidingCurve(
+                    RobotPosition(*path[0], startingTheta),
+                    RobotPosition(*path[1], endTheta * STEP)
+            );
+            if (!curve) {
+                curvesTable[0].push_back(none);
             } else {
-                curvesTable[0].emplace_back(make_pair(*curve, i), curve->length() + curvesTable[1][i].second);
+                SubPathCurve subPathCurve(*curve, endTheta, curve->length() + curvesTable[1][endTheta]->length);
+                curvesTable[0].emplace_back(subPathCurve);
             }
         }
-
-        // find the first curve of the shortest list of curves
-        double minLength = INFINITY;
-        int bestTheta = -1;
-        for (int i = 0; i < STEPS; i++) {
-            if (curvesTable[0][i].second < minLength) {
-                minLength = curvesTable[0][i].second;
-                bestTheta = i;
-            }
-        }
-
-        // build the list of curves
-        vector<DubinsCurve> curves;
-        int pathPoint = 0;
-        while (bestTheta != -1) {
-            curves.push_back(curvesTable[pathPoint][bestTheta].first.first);
-            bestTheta = curvesTable[pathPoint][bestTheta].first.second;
-            pathPoint++;
-        }
-        return curves;
     }
 
-
-    inline boost::optional<DubinsCurve>
-    BestThetaFinder::findShortestNotCollidingCurve(double thetaStart, double thetaEnd, const Point &start,
-                                                   const Point &end) {
-        return findShortestNotCollidingCurve(RobotPosition(start.x, start.y, thetaStart),
-                                             RobotPosition(end.x, end.y, thetaEnd));
-    }
-
-    inline boost::optional<DubinsCurve>
-    BestThetaFinder::findShortestNotCollidingCurve(const RobotPosition &start, const RobotPosition &end) {
-        auto curves = dubinsShortestPath(start, end, MAX_K);
+    optional<DubinsCurve>
+    BestThetaFinder::findShortestNotCollidingCurve(const RobotPosition &start, const RobotPosition &end) const {
+        auto curves = dubinsShortestPath(start, end, maxK);
         for (const auto &curve:curves) {
             if (!collisionDetector->doesCurveCollide(curve)) {
                 return curve;
             }
         }
-        return boost::none;
+        return none;
     }
+
+    optional<vector<DubinsCurve>> BestThetaFinder::getBestCurvesFromTable() const {
+        auto bestTheta = findBestFirstPointArrivingTheta();
+        if (!bestTheta){
+            return none;
+        }
+        return buildBestCurvesVector(*bestTheta);
+    }
+
+    optional<int> BestThetaFinder::findBestFirstPointArrivingTheta () const {
+        double minLength = INFINITY;
+        int bestTheta = -1;
+        for (int i = 0; i < STEPS; i++) {
+            if (curvesTable[0][i] && curvesTable[0][i]->length < minLength) {
+                minLength = curvesTable[0][i]->length;
+                bestTheta = i;
+            }
+        }
+        if (minLength == INFINITY) {
+            return none;
+        }
+        return bestTheta;
+    }
+
+    vector<DubinsCurve> BestThetaFinder::buildBestCurvesVector(int bestTheta) const {
+        vector<DubinsCurve> curves;
+        for (int startPathPoint = 0; startPathPoint < curvesTable.size(); startPathPoint++) {
+            auto subPathCurve = curvesTable[startPathPoint][bestTheta];
+            curves.push_back(subPathCurve->curve);
+            bestTheta = subPathCurve->arrivingTheta;
+        }
+        return curves;
+    }
+
+
 
 
 }

@@ -1,6 +1,8 @@
 #ifndef STUDENT_PROJECT_MODELS_H
 #define STUDENT_PROJECT_MODELS_H
 
+#include <utils.hpp>
+
 class RobotPosition {
 
 public:
@@ -9,6 +11,7 @@ public:
 
 public:
     RobotPosition(double x, double y, double theta) : x(x), y(y), theta(theta) {}
+    RobotPosition(Point p, double theta) : x(p.x), y(p.y), theta(theta) {}
 };
 
 
