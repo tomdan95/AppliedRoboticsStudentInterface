@@ -4,6 +4,7 @@
 #include "../pipeline/planning/best_theta/BestThetaFinder.h"
 #include "../pipeline/planning/dubins/dubins.h"
 #include "../pipeline/DebugImage.h"
+#include "../pipeline/planning/collision_detection/ShadowCollisionDetector.h"
 
 using namespace std;
 using namespace student;
@@ -20,7 +21,7 @@ int main() {
 
     vector<Polygon> obstacles;
     vector<Point> border;
-    CollisionDetector detector(border, obstacles);
+    ShadowCollisionDetector detector(border, obstacles);
 
     BestThetaFinder finder(10, 0, &detector);
     if(auto curves = finder.findBestDubinsCurves(path)) {

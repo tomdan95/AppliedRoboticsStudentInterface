@@ -1,4 +1,4 @@
-#include "CollisionDetector.h"
+#include "ShadowCollisionDetector.h"
 #include "../planning.h"
 #include "../../../opencv-utils.h"
 
@@ -8,8 +8,8 @@ using namespace student;
 #define OBSTACLES_MATRIX_SIDE 1000
 #define POINT_DISCRETIZATION  500.0
 
-// TODO: Use black and white image to save space
-CollisionDetector::CollisionDetector(
+
+ShadowCollisionDetector::ShadowCollisionDetector(
         const Polygon &borders,
         const vector<Polygon> &obstacles
 ) : obstaclesShadow(
@@ -37,7 +37,8 @@ CollisionDetector::CollisionDetector(
     cv::fillPoly(obstaclesShadow, polygons, cv::Scalar(0, 0, 0));
 }
 
-bool CollisionDetector::doesCurveCollide(const DubinsCurve &curve) const {
+
+bool ShadowCollisionDetector::doesCurveCollide(const DubinsCurve &curve) const {
     vector<Pose> poses = dubinsCurveToPoseVector(curve);
     for (auto pose:poses) {
         if (isPointInAnyObstacle(Point(pose.x, pose.y))) {
@@ -47,7 +48,7 @@ bool CollisionDetector::doesCurveCollide(const DubinsCurve &curve) const {
     return false;
 }
 
-inline bool CollisionDetector::isPointInAnyObstacle(const Point &point) const {
+inline bool ShadowCollisionDetector::isPointInAnyObstacle(const Point &point) const {
     int approxX = point.x * POINT_DISCRETIZATION;
     int approxY = point.y * POINT_DISCRETIZATION;
     if (approxX < 0 || approxY < 0 || approxX > OBSTACLES_MATRIX_SIDE || approxY > OBSTACLES_MATRIX_SIDE) {

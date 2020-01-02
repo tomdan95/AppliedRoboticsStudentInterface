@@ -15,6 +15,7 @@
 #include "inflate.h"
 #include "Mission1.h"
 #include "Mission2.h"
+#include "collision_detection/ShadowCollisionDetector.h"
 
 using namespace std;
 
@@ -37,11 +38,11 @@ namespace student {
 
         auto t_start = std::chrono::high_resolution_clock::now();
 
-        CollisionDetector detector(defaultedBorders[0], inflatedObstacles);
-        Graph cleanestPaths = findCleanestPaths(inflatedObstaclesAndDeflatedBorders, &detector);
+        CollisionDetector* detector = new ShadowCollisionDetector(defaultedBorders[0], inflatedObstacles);
+        Graph cleanestPaths = findCleanestPaths(inflatedObstaclesAndDeflatedBorders, detector);
 
 
-        auto solver = new Mission1(&detector, &cleanestPaths, RobotPosition(x, y, theta), getPolygonCenter(gate), getVictimPoints(victimList));
+        auto solver = new Mission1(detector, &cleanestPaths, RobotPosition(x, y, theta), getPolygonCenter(gate), getVictimPoints(victimList));
         //auto solver2 = new Mission2(&detector, &cleanestPaths, RobotPosition(x, y, theta), getPolygonCenter(gate), getSortedVictimPoints(victimList), {10, 20, 30, 40});
         auto curves = solver->solve();
 

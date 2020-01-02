@@ -1,5 +1,5 @@
 #include <iostream>
-#include "../pipeline/planning/collision_detection/CollisionDetector.h"
+#include "../pipeline/planning/collision_detection/ShadowCollisionDetector.h"
 
 
 using namespace std;

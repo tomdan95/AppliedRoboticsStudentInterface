@@ -1,9 +1,8 @@
-#ifndef STUDENT_PROJECT_COLLISIONDETECTOR_H
-#define STUDENT_PROJECT_COLLISIONDETECTOR_H
+#ifndef STUDENT_PROJECT_COLLISION_DETECTOR_H
+#define STUDENT_PROJECT_COLLISION_DETECTOR_H
 
 #include <utility>
 #include <utils.hpp>
-#include <opencv2/core/mat.hpp>
 #include "../dubins/models.h"
 
 using namespace std;
@@ -11,15 +10,10 @@ using namespace std;
 namespace student {
 
     class CollisionDetector {
-    private:
-        cv::Mat obstaclesShadow;
 
     public:
-        explicit CollisionDetector(const Polygon &borders, const vector<Polygon>& obstacles);
-
-        bool isPointInAnyObstacle(const Point &point) const;
-
-        bool doesCurveCollide(const DubinsCurve &curve) const;
+        virtual bool isPointInAnyObstacle(const Point &point) const = 0;
+        virtual bool doesCurveCollide(const DubinsCurve &curve) const = 0;
     };
 }
 
