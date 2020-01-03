@@ -8,14 +8,16 @@ using namespace std;
 
 namespace student {
 
-    class ShadowCollisionDetector:public CollisionDetector {
+    class ShadowCollisionDetector : public CollisionDetector {
     private:
         cv::Mat obstaclesShadow;
 
     public:
-        explicit ShadowCollisionDetector(const Polygon &borders, const vector<Polygon>& obstacles);
+        explicit ShadowCollisionDetector(const Polygon &borders, const vector<Polygon> &obstacles);
 
         bool isPointInAnyObstacle(const Point &point) const override;
+
+        //bool doesSegmentCollid(const Point &start, const Point &end)const;
 
         bool doesCurveCollide(const DubinsCurve &curve) const override;
     };

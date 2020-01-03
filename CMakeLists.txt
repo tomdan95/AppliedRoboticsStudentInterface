@@ -56,7 +56,7 @@ add_library(student SHARED
         src/pipeline/planning/collision_detection/ShadowCollisionDetector.cpp
         src/pipeline/planning/collision_detection/ShadowCollisionDetector.h
         src/pipeline/DebugImage.cpp src/pipeline/DebugImage.h src/pipeline/planning/best_theta/BestThetaFinder.cpp src/pipeline/planning/best_theta/BestThetaFinder.h
-        src/pipeline/planning/dubins/models.cpp src/pipeline/planning/dubins/models.h src/pipeline/planning/MissionSolver.h src/pipeline/planning/Mission1.cpp src/pipeline/planning/Mission1.h src/pipeline/planning/MissionSolver.cpp src/pipeline/planning/Mission2.cpp src/pipeline/planning/Mission2.h src/pipeline/planning/collision_detection/CollisionDetector.h)
+        src/pipeline/planning/dubins/models.cpp src/pipeline/planning/dubins/models.h src/pipeline/planning/MissionSolver.h src/pipeline/planning/Mission1.cpp src/pipeline/planning/Mission1.h src/pipeline/planning/MissionSolver.cpp src/pipeline/planning/Mission2.cpp src/pipeline/planning/Mission2.h src/pipeline/planning/collision_detection/CollisionDetector.h src/pipeline/Config.cpp src/pipeline/Config.h)
 
 target_link_libraries(student
         ${OpenCV_LIBRARIES}
@@ -234,7 +234,7 @@ add_executable(planning_demo
         src/pipeline/planning/best_theta/BestThetaFinder.h
         src/pipeline/planning/dubins/models.cpp src/pipeline/planning/dubins/models.h
         src/pipeline/planning/MissionSolver.h src/pipeline/planning/Mission1.cpp
-        src/pipeline/planning/Mission1.h src/pipeline/planning/MissionSolver.cpp src/pipeline/planning/Mission2.cpp src/pipeline/planning/Mission2.h src/pipeline/planning/collision_detection/CollisionDetector.h)
+        src/pipeline/planning/Mission1.h src/pipeline/planning/MissionSolver.cpp src/pipeline/planning/Mission2.cpp src/pipeline/planning/Mission2.h src/pipeline/planning/collision_detection/CollisionDetector.h src/pipeline/Config.cpp src/pipeline/Config.h)
 
 target_link_libraries(planning_demo
         ${OpenCV_LIBRARIES}
@@ -268,7 +268,7 @@ add_executable(best_theta_demo
         src/opencv-utils.cpp
         src/pipeline/planning/collision_detection/ShadowCollisionDetector.cpp
         src/pipeline/planning/collision_detection/ShadowCollisionDetector.h
-        src/pipeline/planning/dubins/models.cpp src/pipeline/planning/dubins/models.h src/pipeline/planning/collision_detection/CollisionDetector.h)
+        src/pipeline/planning/dubins/models.cpp src/pipeline/planning/dubins/models.h src/pipeline/planning/collision_detection/CollisionDetector.h src/pipeline/Config.cpp src/pipeline/Config.h)
 
 target_link_libraries(best_theta_demo
         ${OpenCV_LIBRARIES}

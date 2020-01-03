@@ -3,9 +3,9 @@
 
 #include "student_planning_interface.hpp"
 
-vector<Polygon> inflateObstacles(const vector<Polygon> &obstacles, int robotSize);
-vector<Polygon> deflateArenaBorders(const Polygon &borders, int robotSize);
-vector<Polygon> resizeObstaclesAndBorders(const vector<Polygon> &obstacles, const Polygon &borders, int robotSize);
+vector<Polygon> inflateObstacles(const vector<Polygon> &obstacles, double robotSize);
+vector<Polygon> deflateArenaBorders(const Polygon &borders, double robotSize);
+vector<Polygon> resizeObstaclesAndBorders(const vector<Polygon> &obstacles, const Polygon &borders, double robotSize);
 
 #include "student_image_elab_interface.hpp"
 #include "student_planning_interface.hpp"

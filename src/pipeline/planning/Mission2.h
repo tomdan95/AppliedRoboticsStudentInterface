@@ -8,11 +8,11 @@ using namespace std;
 namespace student {
     class Mission2 : public MissionSolver {
     private:
-        const vector<int> &victimBonus;
+        const int victimBonus;
     public:
         Mission2(const CollisionDetector *collisionDetector, Graph *cleanestPaths, const RobotPosition &start,
-                 const Point &gate, const vector<pair<int, Point>> &sortedVictims, const vector<int> &victimBonus) : MissionSolver(
-                collisionDetector, cleanestPaths, start, gate, sortedVictims), victimBonus(victimBonus) {}
+                 const Point &gate, const vector<pair<int, Point>> &victims, int victimBonus) : MissionSolver(
+                collisionDetector, cleanestPaths, start, gate, victims), victimBonus(victimBonus) {}
 
         boost::optional<vector<DubinsCurve>> solve() override;
     };

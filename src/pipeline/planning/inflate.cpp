@@ -11,6 +11,8 @@
 
 #define INT_ROUND 1000.0
 
+// TODO: The following functions contain a lot of duplication. Refactor them
+
 ClipperLib::Paths processClipperObstacles(const vector<Polygon> &obstacles, int robotSize){
     ClipperLib::Clipper cl;
     ClipperLib::Paths MergedObstacles;
@@ -46,9 +48,9 @@ ClipperLib::Paths processClipperBorders(const Polygon &borders, int robotSize){
     return clipperDeflatedBoarders;
 }
 
-vector<Polygon> inflateObstacles(const vector<Polygon> &obstacles, int robotSize){
+vector<Polygon> inflateObstacles(const vector<Polygon> &obstacles, double robotSize){
     vector<Polygon> returnObstacles;
-    ClipperLib::Paths clipperObstacles = processClipperObstacles(obstacles, robotSize);
+    ClipperLib::Paths clipperObstacles = processClipperObstacles(obstacles, robotSize * INT_ROUND);
     for (const auto &clipperObstacle : clipperObstacles) {
         Polygon Obstacle;
         for (const auto &point : clipperObstacle) {
@@ -59,9 +61,9 @@ vector<Polygon> inflateObstacles(const vector<Polygon> &obstacles, int robotSize
     return returnObstacles;
 }
 
-vector<Polygon> deflateArenaBorders(const Polygon &borders, int robotSize){
+vector<Polygon> deflateArenaBorders(const Polygon &borders, double robotSize){
     vector<Polygon> returnBorders;
-    ClipperLib::Paths clipperBorders = processClipperBorders(borders, robotSize);
+    ClipperLib::Paths clipperBorders = processClipperBorders(borders, robotSize * INT_ROUND);
     for (const auto &clipperBorder : clipperBorders) {
         Polygon border;
         for (const auto &point : clipperBorder) {
@@ -72,12 +74,12 @@ vector<Polygon> deflateArenaBorders(const Polygon &borders, int robotSize){
     return returnBorders;
 }
 
-vector<Polygon> resizeObstaclesAndBorders(const vector<Polygon> &obstacles, const Polygon &borders, int robotSize){
+vector<Polygon> resizeObstaclesAndBorders(const vector<Polygon> &obstacles, const Polygon &borders, double robotSize){
     vector<Polygon> returnArena;
     ClipperLib::Clipper clFinal;
     ClipperLib::Paths arena;
-    ClipperLib::Paths clipperObstacles = processClipperObstacles(obstacles, robotSize);
-    ClipperLib::Paths clipperBorders = processClipperBorders(borders, robotSize);
+    ClipperLib::Paths clipperObstacles = processClipperObstacles(obstacles, robotSize * INT_ROUND);
+    ClipperLib::Paths clipperBorders = processClipperBorders(borders, robotSize * INT_ROUND);
 
     clFinal.AddPaths(clipperBorders, ClipperLib::ptSubject, true);
     clFinal.AddPaths(clipperObstacles, ClipperLib::ptClip, true);

@@ -1,0 +1,40 @@
+#ifndef STUDENT_PROJECT_CONFIG_H
+#define STUDENT_PROJECT_CONFIG_H
+
+#include <string>
+#include <nlohmann/json.hpp>
+
+using namespace std;
+using json = nlohmann::json;
+
+namespace student {
+
+    class Config {
+
+    private:
+        double robotSize;
+        int mission;
+        int victimBonus;
+
+        static json loadJsonFile(string fileName);
+
+        bool missionHasVictimBonus() {return mission == 2; }
+
+    public:
+        Config(string fileName);
+
+        double getRobotSize() { return robotSize; }
+
+        int getMission() { return mission; }
+
+        int getVictimBonus() {
+            if(!missionHasVictimBonus()) {
+                throw runtime_error("getVictimBonus() can be called only for mission 1");
+            }
+            return victimBonus;
+        }
+    };
+}
+
+
+#endif

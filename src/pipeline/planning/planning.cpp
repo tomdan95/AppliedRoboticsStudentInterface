@@ -2,28 +2,21 @@
  * To execute this function, set 'planning' to false.
  */
 
-#include "planning.h"
 #include <chrono>
-#include "clipper/clipper.hpp"
+#include "planning.h"
 #include "../utils.h"
-
 #include "voronoi/voronoi_cleanest_path.h"
 #include "Graph.h"
-#include "../../opencv-utils.h"
 #include "../DebugImage.h"
-#include "best_theta/BestThetaFinder.h"
 #include "inflate.h"
 #include "Mission1.h"
 #include "Mission2.h"
 #include "collision_detection/ShadowCollisionDetector.h"
+#include "../Config.h"
 
 using namespace std;
 
 namespace student {
-
-
-
-
 
     bool planPath(const Polygon &borders, const vector<Polygon> &obstacleList,
                   const vector<pair<int, Polygon>> &victimList,
@@ -31,7 +24,10 @@ namespace student {
                   Path &path,
                   const string &configFolder) {
 
-        int robotSize = 30;
+        Config config(configFolder + "/config.json");
+
+        double robotSize = config.getRobotSize();
+
         auto inflatedObstacles = inflateObstacles(obstacleList, robotSize);
         auto defaultedBorders = deflateArenaBorders(borders, robotSize);
         auto inflatedObstaclesAndDeflatedBorders = resizeObstaclesAndBorders(obstacleList, borders, robotSize);
@@ -41,9 +37,12 @@ namespace student {
         CollisionDetector* detector = new ShadowCollisionDetector(defaultedBorders[0], inflatedObstacles);
         Graph cleanestPaths = findCleanestPaths(inflatedObstaclesAndDeflatedBorders, detector);
 
-
-        auto solver = new Mission1(detector, &cleanestPaths, RobotPosition(x, y, theta), getPolygonCenter(gate), getVictimPoints(victimList));
-        //auto solver2 = new Mission2(&detector, &cleanestPaths, RobotPosition(x, y, theta), getPolygonCenter(gate), getSortedVictimPoints(victimList), {10, 20, 30, 40});
+        MissionSolver* solver;
+        if(config.getMission() == 1) {
+            solver = new Mission1(detector, &cleanestPaths, RobotPosition(x, y, theta), getPolygonCenter(gate), getVictimPoints(victimList));
+        } else {
+            solver = new Mission2(detector, &cleanestPaths, RobotPosition(x, y, theta), getPolygonCenter(gate), getVictimPoints(victimList), config.getVictimBonus());
+        }
         auto curves = solver->solve();
 
         auto t_end = std::chrono::high_resolution_clock::now();

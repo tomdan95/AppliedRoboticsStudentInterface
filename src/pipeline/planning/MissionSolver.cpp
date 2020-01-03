@@ -20,7 +20,7 @@ void MissionSolver::prunePath(vector<Point *> *path, vector<Point *> toReach) {
         // TODO: This may add collisions, that then doublin can't fix!
         // TODO: maybe, don't compute euclidian distances but path distances
         double distance = Graph::distanceBetween(**it, **(it + 1));
-        bool isShort = distance < 0.1; // 10cm
+        bool isShort = distance < 0.075; // 7,5cm
         if (isShort && canSkip(toReach, it)) {
             it = path->erase(it);
         } else if (isShort && canSkip(toReach, it + 1)) {
