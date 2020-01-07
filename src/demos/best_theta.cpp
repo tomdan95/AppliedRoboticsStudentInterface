@@ -21,7 +21,8 @@ int main() {
 
     vector<Polygon> obstacles;
     vector<Point> border;
-    ShadowCollisionDetector detector(border, obstacles);
+    Polygon gate;
+    ShadowCollisionDetector detector(border, obstacles, gate);
 
     BestThetaFinder finder(10, 0, &detector);
     if(auto curves = finder.findBestDubinsCurves(path)) {

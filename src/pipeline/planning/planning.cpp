@@ -36,8 +36,18 @@ namespace student {
 
         auto t_start = std::chrono::high_resolution_clock::now();
 
-        CollisionDetector* detector = new ShadowCollisionDetector(defaultedBorders[0], inflatedObstacles);
+        CollisionDetector* detector = new ShadowCollisionDetector(defaultedBorders[0], inflatedObstacles, gate);
         Graph cleanestPaths = findCleanestPaths(inflatedObstaclesAndDeflatedBorders, detector);
+
+        DebugImage::clear();
+        DebugImage::drawPoint(Point(x, y));
+        DebugImage::drawPolygon(borders, 400);
+        DebugImage::drawPolygons(defaultedBorders, 400);
+        DebugImage::drawPolygons(obstacleList, 400, cv::Scalar(255, 100, 0));
+        DebugImage::drawPolygons(inflatedObstacles, 400, cv::Scalar(255, 255, 0));
+        DebugImage::drawGraph(cleanestPaths);
+        DebugImage::showAndWait();
+
 
         MissionSolver* solver;
         if(config.getMission() == 1) {
@@ -55,13 +65,6 @@ namespace student {
         if(!curves) {
             cout << "planning failed" << endl;
 
-            DebugImage::clear();
-            DebugImage::drawPoint(Point(x, y));
-            DebugImage::drawPolygons(defaultedBorders, 400);
-            DebugImage::drawPolygons(inflatedObstacles, 400, cv::Scalar(255, 255, 0));
-            DebugImage::drawGraph(cleanestPaths);
-            DebugImage::showAndWait();
-
 
             return false;
         }
@@ -74,6 +77,7 @@ namespace student {
         path.setPoints(allPoses);
 
         DebugImage::clear();
+        DebugImage::drawPolygon(borders, 400);
         DebugImage::drawPolygons(defaultedBorders, 400);
         DebugImage::drawPolygons(inflatedObstacles, 400, cv::Scalar(255, 255, 0));
         DebugImage::drawGraph(cleanestPaths);

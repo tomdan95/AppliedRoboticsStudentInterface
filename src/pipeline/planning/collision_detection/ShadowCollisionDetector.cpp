@@ -11,12 +11,14 @@ using namespace student;
 
 ShadowCollisionDetector::ShadowCollisionDetector(
         const Polygon &borders,
-        const vector<Polygon> &obstacles
+        const vector<Polygon> &obstacles,
+        const Polygon &gate
 ) : obstaclesShadow(
         OBSTACLES_MATRIX_SIDE,
         OBSTACLES_MATRIX_SIDE, CV_8UC3,
         cv::Scalar(0, 0, 0)
 ) {
+    // border
     vector<cv::Point> borderPoints;
     for (const auto &borderPoint:borders) {
         borderPoints.emplace_back(borderPoint.x * POINT_DISCRETIZATION, borderPoint.y * POINT_DISCRETIZATION);
@@ -26,6 +28,7 @@ ShadowCollisionDetector::ShadowCollisionDetector(
     cv::fillPoly(obstaclesShadow, container, cv::Scalar(255, 255, 255));
 
 
+    // polygons
     vector<vector<cv::Point>> polygons;
     for (const auto &obstacle:obstacles) {
         vector<cv::Point> points;
@@ -35,6 +38,17 @@ ShadowCollisionDetector::ShadowCollisionDetector(
         polygons.push_back(points);
     }
     cv::fillPoly(obstaclesShadow, polygons, cv::Scalar(0, 0, 0));
+
+    // gate
+    vector<cv::Point> gatePoints;
+    for (const auto &gatePoint:gate) {
+        gatePoints.emplace_back(gatePoint.x * POINT_DISCRETIZATION, gatePoint.y * POINT_DISCRETIZATION);
+    }
+    vector<vector<cv::Point>> gateContainer;
+    gateContainer.push_back(gatePoints);
+    cv::fillPoly(obstaclesShadow, gateContainer, cv::Scalar(255, 255, 255));
+
+    showImageAndWaitKeyPress(obstaclesShadow);
 }
 
 
