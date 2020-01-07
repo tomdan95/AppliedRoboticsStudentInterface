@@ -15,9 +15,9 @@ private:
     const vector<pair<cv::Mat, int>> templates;
 
     static vector<pair<cv::Mat, int>> loadTemplates(Config config);
-    static cv::Mat preprocessImage(const cv::Mat &imageWithDigits);
 
-    int recognizeDigit(const cv::Mat &hsvImage, const cv::Mat &preprocessedImage, const cv::Rect &rect) const;
+    int recognizeDigit(const cv::Mat &image, const cv::Mat &hsvImage, const cv::Mat &greenMask,
+                       const cv::Rect &rect) const;
 
 public:
 
@@ -29,7 +29,7 @@ public:
      * @param polygons
      * @return
      */
-    vector<int> recognizeDigits(const cv::Mat &hsvImage, const cv::Mat &filteredImage, const vector<cv::Rect> &rects) const;
+    vector<int> recognizeDigits(const cv::Mat &image, const cv::Mat &hsvImage, const cv::Mat &filteredImage, const vector<cv::Rect> &rects) const;
 };
 
 

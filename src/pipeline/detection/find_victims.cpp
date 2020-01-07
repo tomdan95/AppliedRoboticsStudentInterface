@@ -39,7 +39,7 @@ namespace student {
         }
 
 
-        vector<int> digits = digitClassifier.recognizeDigits(hsvImage, filteredImage, rects);
+        vector<int> digits = digitClassifier.recognizeDigits(rgbImage, hsvImage, filteredImage, rects);
         vector<Victim> victims;
         for (vector<Polygon>::size_type i = 0; i < polygons.size(); i++) {
             victims.emplace_back(polygons[i], digits[i]);

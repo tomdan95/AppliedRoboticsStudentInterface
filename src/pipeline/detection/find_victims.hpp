@@ -20,6 +20,7 @@ namespace student {
     class VictimDetector : public ShapeDetector<Victim> {
     private:
         const DigitClassifier digitClassifier;
+        const cv::Mat &rgbImage;
     protected:
         cv::Mat applyColorMask(const cv::Mat &hsvImage) override;
 
@@ -29,7 +30,8 @@ namespace student {
                                    const cv::Mat &hsvImage, const cv::Mat &filteredImage) override;
 
     public:
-        VictimDetector(Config config) : ShapeDetector(10), digitClassifier(config) {}
+        VictimDetector(const cv::Mat &rgbImage, const Config &config) : ShapeDetector(10), digitClassifier(config),
+                                                                 rgbImage(rgbImage) {}
     };
 }
 

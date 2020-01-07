@@ -12,7 +12,7 @@ int main() {
 
     string configFolder = "/tmp";
     Config config(configFolder);
-    VictimDetector detector(config);
+    VictimDetector detector(img, config);
     auto victims = detector.findPolygons(hsv, 256);
     
     cout << "Found " << victims.size() << " victims" << endl;
