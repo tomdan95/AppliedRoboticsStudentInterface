@@ -18,6 +18,8 @@ using namespace std;
 
 namespace student {
 
+    vector<Polygon> getVictimPolygons(const vector<pair<int, Polygon>> &victims);
+
     bool planPath(const Polygon &borders, const vector<Polygon> &obstacleList,
                   const vector<pair<int, Polygon>> &victimList,
                   const Polygon &gate, const float x, const float y, const float theta,
@@ -35,7 +37,7 @@ namespace student {
 
         auto t_start = std::chrono::high_resolution_clock::now();
 
-        CollisionDetector* detector = new ShadowCollisionDetector(defaultedBorders[0], inflatedObstacles, gate);
+        CollisionDetector* detector = new ShadowCollisionDetector(defaultedBorders[0], inflatedObstacles, gate, getVictimPolygons(victimList));
         Graph cleanestPaths = findCleanestPaths(inflatedObstaclesAndDeflatedBorders, detector);
 
         DebugImage::clear();
@@ -88,6 +90,15 @@ namespace student {
             victimPoints.emplace_back(victim.first, getPolygonCenter(victim.second));
         }
         return victimPoints;
+    }
+
+
+    vector<Polygon> getVictimPolygons(const vector<pair<int, Polygon>> &victims) {
+        vector<Polygon> polygons;
+        for (const pair<int, Polygon> &victim:victims) {
+            polygons.emplace_back(victim.second);
+        }
+        return polygons;
     }
 
 }

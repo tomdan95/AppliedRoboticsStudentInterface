@@ -12,12 +12,14 @@ using namespace student;
 ShadowCollisionDetector::ShadowCollisionDetector(
         const Polygon &borders,
         const vector<Polygon> &obstacles,
-        const Polygon &gate
+        const Polygon &gate,
+        const vector<Polygon> &victims
 ) : obstaclesShadow(
         OBSTACLES_MATRIX_SIDE,
         OBSTACLES_MATRIX_SIDE, CV_8UC3,
         cv::Scalar(0, 0, 0)
 ) {
+    // TODO: remove duplication!
     // border
     vector<cv::Point> borderPoints;
     for (const auto &borderPoint:borders) {
@@ -47,6 +49,17 @@ ShadowCollisionDetector::ShadowCollisionDetector(
     vector<vector<cv::Point>> gateContainer;
     gateContainer.push_back(gatePoints);
     cv::fillPoly(obstaclesShadow, gateContainer, cv::Scalar(255, 255, 255));
+
+    // victims
+    vector<vector<cv::Point>> victimPolygons;
+    for (const auto &victim:victims) {
+        vector<cv::Point> points;
+        for (const auto &point:victim) {
+            points.emplace_back(point.x * POINT_DISCRETIZATION, point.y * POINT_DISCRETIZATION);
+        }
+        victimPolygons.push_back(points);
+    }
+    cv::fillPoly(obstaclesShadow, victimPolygons, cv::Scalar(255, 255, 255));
 
     showImageAndWaitKeyPress(obstaclesShadow);
 }

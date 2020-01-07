@@ -13,7 +13,7 @@ namespace student {
         cv::Mat obstaclesShadow;
 
     public:
-        explicit ShadowCollisionDetector(const Polygon &borders, const vector<Polygon> &obstacles, const Polygon &gate);
+        explicit ShadowCollisionDetector(const Polygon &borders, const vector<Polygon> &obstacles, const Polygon &gate, const vector<Polygon> &victims);
 
         bool isPointInAnyObstacle(const Point &point) const override;
 
