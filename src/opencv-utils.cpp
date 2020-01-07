@@ -30,3 +30,11 @@ cv::Mat rotateImage(const cv::Mat &image, int degrees) {
     warpAffine(image, rotated_image, rot_mat, image.size());
     return rotated_image;
 }
+
+void showImageAndWaitKeyPress(const cv::Mat &image) {
+    string name = "debug";
+    cv::imshow(name.c_str(), image);
+    cv::namedWindow(name.c_str());
+    cv::waitKey(0);
+    cv::destroyWindow(name.c_str());
+}

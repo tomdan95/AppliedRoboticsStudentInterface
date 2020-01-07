@@ -12,4 +12,6 @@ cv::Mat loadImage(string fileName);
 
 cv::Mat rotateImage(const cv::Mat &image, int degrees);
 
+void showImageAndWaitKeyPress(const cv::Mat &image);
+
 #endif //STUDENT_PROECT_OPENCV_UTILS_H
