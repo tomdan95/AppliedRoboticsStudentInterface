@@ -10,8 +10,6 @@ namespace student {
     template<class DetectedShape>
     vector<DetectedShape> ShapeDetector<DetectedShape>::findPolygons(const cv::Mat &hsvImage, double scale) {
         
-        cout << "calling applyColorMask" << endl;
-        
         cv::Mat filteredImage = applyColorMask(hsvImage);
         vector<vector<cv::Point>> contours = findContours(filteredImage);
         vector<vector<cv::Point>> filteredContours = filterContours(contours);

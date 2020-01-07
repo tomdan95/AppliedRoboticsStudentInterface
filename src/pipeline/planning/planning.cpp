@@ -24,6 +24,8 @@ namespace student {
                   Path &path,
                   const string &configFolder) {
 
+        cout << configFolder << endl;
+
         Config config(configFolder + "/config.json");
 
         double robotSize = config.getRobotSize();
@@ -49,8 +51,18 @@ namespace student {
         double elapsed_time_ms = std::chrono::duration<double, std::milli>(t_end-t_start).count();
         cout << "planning took " << elapsed_time_ms << "ms" << endl;
 
+
         if(!curves) {
             cout << "planning failed" << endl;
+
+            DebugImage::clear();
+            DebugImage::drawPoint(Point(x, y));
+            DebugImage::drawPolygons(defaultedBorders, 400);
+            DebugImage::drawPolygons(inflatedObstacles, 400, cv::Scalar(255, 255, 0));
+            DebugImage::drawGraph(cleanestPaths);
+            DebugImage::showAndWait();
+
+
             return false;
         }
 
@@ -62,7 +74,8 @@ namespace student {
         path.setPoints(allPoses);
 
         DebugImage::clear();
-        DebugImage::drawPolygons(inflatedObstacles, 800, cv::Scalar(255, 255, 0));
+        DebugImage::drawPolygons(defaultedBorders, 400);
+        DebugImage::drawPolygons(inflatedObstacles, 400, cv::Scalar(255, 255, 0));
         DebugImage::drawGraph(cleanestPaths);
         DebugImage::drawPoses(allPoses);
         DebugImage::showAndWait();

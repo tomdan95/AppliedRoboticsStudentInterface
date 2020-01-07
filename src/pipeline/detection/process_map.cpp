@@ -41,9 +41,7 @@ namespace student {
     }
 
     bool processVictims(const cv::Mat &hsvImage, const double scale, std::vector<std::pair<int, Polygon>> &victim_list) {
-        cout << "process victims called"  << endl;
 
-        return false;
         VictimDetector detector;
         vector<Victim> victims = detector.findPolygons(hsvImage, scale);
         cout << "[PROCESS_MAP] Found " << victims.size() << " victims" << endl;
@@ -66,7 +64,7 @@ namespace student {
         bool foundObstacles = processObstacles(hsv_img, scale, obstacleList);
         bool foundVictims = processVictims(hsv_img, scale, victimList);
         bool foundGate = processGate(hsv_img, scale, gate);
-        return foundObstacles && /*foundVictims &&*/ foundGate;
+        return foundObstacles && foundVictims && foundGate;
     }
 
 }

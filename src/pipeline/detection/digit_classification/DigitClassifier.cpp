@@ -93,7 +93,8 @@ int DigitClassifier::recognizeDigit(const cv::Mat &hsvImage, const cv::Mat &prep
 
 
 vector<pair<cv::Mat, int>> DigitClassifier::loadTemplates() {
-    std::string template_folder = "/home/lar2019/robot/AppliedRoboticsStudentInterface/src/victim_templates/";
+    //std::string template_folder = "/home/lar2019/robot/AppliedRoboticsStudentInterface/src/victim_templates/";
+    std::string template_folder = "/home/robotics/workspace/bender/src/victim_templates/";
     vector<pair<cv::Mat, int>> templates;
 
     for (int i = 1; i <= 5; ++i) {

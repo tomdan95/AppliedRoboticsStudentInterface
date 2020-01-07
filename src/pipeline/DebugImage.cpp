@@ -2,6 +2,8 @@
 #include "DebugImage.h"
 #include "../opencv-utils.h"
 
+#define DEFAULT_MULTIPLY 400
+
 using namespace student;
 
 
@@ -29,7 +31,7 @@ void DebugImage::clear() {
 void DebugImage::drawGraph(student::Graph graph) {
     for (const auto &pointWithAdjacents : graph.edges) {
         for (const auto &adjacentPoint : pointWithAdjacents.second) {
-            DebugImage::drawSegment(*pointWithAdjacents.first, *adjacentPoint, 800.0);// TODO: Move this constant away
+            DebugImage::drawSegment(*pointWithAdjacents.first, *adjacentPoint, DEFAULT_MULTIPLY);// TODO: Move this constant away
         }
     }
 }
@@ -41,14 +43,14 @@ void DebugImage::drawImage(const cv::Mat &mat) {
 void DebugImage::drawPath(vector<Point *> path, cv::Scalar color) {
     Point *start = path[0];
     for (int i = 1; i < path.size(); i++) {
-        drawSegment(*start, *path[i], 800, color);
+        drawSegment(*start, *path[i], DEFAULT_MULTIPLY, color);
         start = path[i];
     }
 }
 
 void DebugImage::drawPoint(Point point, cv::Scalar color) {
 
-    cv::circle(image, cv::Point(point.x * 800.0, point.y * 800.0), 5, color, 3);
+    cv::circle(image, cv::Point(point.x * DEFAULT_MULTIPLY, point.y * DEFAULT_MULTIPLY), 5, color, 3);
 }
 
 void DebugImage::drawPoses(vector<Pose> poses) {
@@ -56,12 +58,12 @@ void DebugImage::drawPoses(vector<Pose> poses) {
     drawPose(start);
     for (int i = 1; i < poses.size(); i++) {
         Pose end = poses[i];
-        drawSegment(Point(start.x, start.y), Point(end.x, end.y), 800, cv::Scalar(122, 122, 0));
+        drawSegment(Point(start.x, start.y), Point(end.x, end.y), DEFAULT_MULTIPLY, cv::Scalar(122, 122, 0));
         drawPose(end);
         start = end;
     }
     Pose end = poses[0];
-    drawSegment(Point(start.x, start.y), Point(end.x, end.y), 800, cv::Scalar(122, 122, 0));
+    drawSegment(Point(start.x, start.y), Point(end.x, end.y), DEFAULT_MULTIPLY, cv::Scalar(122, 122, 0));
 }
 
 void DebugImage::drawPose(Pose pose) {
