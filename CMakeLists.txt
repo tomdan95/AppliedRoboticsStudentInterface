@@ -183,6 +183,8 @@ add_executable(find_victim_demo
         src/pipeline/detection/ShapeDetector.h
         src/pipeline/detection/digit_classification/DigitClassifier.cpp
         src/pipeline/detection/digit_classification/DigitClassifier.h
+        src/pipeline/Config.cpp
+        src/pipeline/Config.h
         src/opencv-utils.cpp
         src/opencv-utils.h)
 

@@ -5,6 +5,7 @@
 
 #include "ShapeDetector.h"
 #include "digit_classification/DigitClassifier.h"
+#include "../Config.h"
 
 namespace student {
 
@@ -28,7 +29,7 @@ namespace student {
                                    const cv::Mat &hsvImage, const cv::Mat &filteredImage) override;
 
     public:
-        VictimDetector() : ShapeDetector(10), digitClassifier() {}
+        VictimDetector(Config config) : ShapeDetector(10), digitClassifier(config) {}
     };
 }
 

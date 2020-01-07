@@ -28,7 +28,7 @@ namespace student {
     static atomic<bool> done;
     static int n;
     static double show_scale = 1.0;
-    static bool autoFindArenaEdges = false; //change to false to use old manual arena edges selector.
+    static bool autoFindArenaEdges = true; //change to false to use old manual arena edges selector.
 
     void mouseCallback(int event, int x, int y, int, void *p) {
         if (event != cv::EVENT_LBUTTONDOWN || done.load()) return;

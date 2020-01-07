@@ -15,13 +15,14 @@ namespace student {
         double robotSize;
         int mission;
         int victimBonus;
+        string numberTemplatesFolder;
 
-        static json loadJsonFile(string fileName);
+        static json loadJsonFile(string configFolder);
 
         bool missionHasVictimBonus() {return mission == 2; }
 
     public:
-        Config(string fileName);
+        explicit Config(string configFolder);
 
         double getRobotSize() { return robotSize; }
 
@@ -32,6 +33,10 @@ namespace student {
                 throw runtime_error("getVictimBonus() can be called only for mission 1");
             }
             return victimBonus;
+        }
+
+        string getNumberTemplatesFolder() {
+            return numberTemplatesFolder;
         }
     };
 }

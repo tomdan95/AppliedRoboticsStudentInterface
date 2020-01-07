@@ -9,8 +9,10 @@ using namespace student;
 int main() {
     cv::Mat img = loadImage("/home/lar2019/robot/AppliedRoboticsStudentInterface/src/areana_samples/000.jpg");
     cv::Mat hsv = convertRGBToHSV(img);
-    
-    VictimDetector detector;
+
+    string configFolder = "/tmp";
+    Config config(configFolder);
+    VictimDetector detector(config);
     auto victims = detector.findPolygons(hsv, 256);
     
     cout << "Found " << victims.size() << " victims" << endl;

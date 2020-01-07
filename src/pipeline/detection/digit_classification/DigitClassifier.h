@@ -4,22 +4,24 @@
 
 #include <opencv2/core/mat.hpp>
 #include <utils.hpp>
+#include "../../Config.h"
 
 using namespace std;
+using namespace student;
 
 class DigitClassifier {
 
 private:
     const vector<pair<cv::Mat, int>> templates;
 
-    static vector<pair<cv::Mat, int>> loadTemplates();
+    static vector<pair<cv::Mat, int>> loadTemplates(Config config);
     static cv::Mat preprocessImage(const cv::Mat &imageWithDigits);
 
     int recognizeDigit(const cv::Mat &hsvImage, const cv::Mat &preprocessedImage, const cv::Rect &rect) const;
 
 public:
 
-    DigitClassifier() : templates(loadTemplates()) {}
+    DigitClassifier(Config config) : templates(loadTemplates(config)) {}
 
     /**
      *

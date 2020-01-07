@@ -26,7 +26,7 @@ namespace student {
                   Path &path,
                   const string &configFolder) {
 
-        Config config(configFolder + "config.json");
+        Config config(configFolder + "/config.json");
 
         double robotSize = config.getRobotSize();
         cout << "using robot size: " << robotSize << endl;
