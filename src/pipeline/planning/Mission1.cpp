@@ -10,7 +10,11 @@ boost::optional<vector<DubinsCurve>> Mission1::solve() {
     sortVictims();
     addPointsToReach();
     computeShortestPath();
+
     prunePath(&shortestPath, toReach);
+    DebugImage::drawPath(shortestPath, cv::Scalar(150, 150, 150));
+    DebugImage::showAndWait();
+
     BestThetaFinder finder(10, start.theta, collisionDetector);// TODO: Move maxK
     return finder.findBestDubinsCurves(shortestPath);
 }
@@ -34,6 +38,11 @@ void Mission1::computeShortestPath() {
             shortestPath.insert(shortestPath.end(), path.begin() + 1, path.end());
         }
     }
+
+
+    
+    DebugImage::drawPath(shortestPath);
+    DebugImage::showAndWait();
 }
 
 

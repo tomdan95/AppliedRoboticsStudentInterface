@@ -75,11 +75,7 @@ namespace student {
         }
         path.setPoints(allPoses);
 
-        DebugImage::clear();
-        DebugImage::drawPolygon(borders, 400);
-        DebugImage::drawPolygons(defaultedBorders, 400);
-        DebugImage::drawPolygons(inflatedObstacles, 400, cv::Scalar(255, 255, 0));
-        DebugImage::drawGraph(cleanestPaths);
+        
         DebugImage::drawPoses(allPoses);
         DebugImage::showAndWait();
         return true;

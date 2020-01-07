@@ -42,8 +42,10 @@ void DebugImage::drawImage(const cv::Mat &mat) {
 
 void DebugImage::drawPath(vector<Point *> path, cv::Scalar color) {
     Point *start = path[0];
+    drawPoint(*start, color);
     for (int i = 1; i < path.size(); i++) {
         drawSegment(*start, *path[i], DEFAULT_MULTIPLY, color);
+        drawPoint(*path[i], color);
         start = path[i];
     }
 }
@@ -62,8 +64,6 @@ void DebugImage::drawPoses(vector<Pose> poses) {
         drawPose(end);
         start = end;
     }
-    Pose end = poses[0];
-    drawSegment(Point(start.x, start.y), Point(end.x, end.y), DEFAULT_MULTIPLY, cv::Scalar(122, 122, 0));
 }
 
 void DebugImage::drawPose(Pose pose) {
