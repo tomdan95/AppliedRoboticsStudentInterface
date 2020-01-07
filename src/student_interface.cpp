@@ -56,7 +56,8 @@ namespace student {
 
         if (pressedKey == 's') {
             std::string fileName =
-                    "/home/lar2019/AppliedRoboticsStudentInterface/calibrationImages/" + std::to_string(imageCounter) +
+                    "/home/robotics/workspace/bender/calibrationImages/" + std::to_string(imageCounter) +
+                    //"/home/lar2019/AppliedRoboticsStudentInterface/calibrationImages/" + std::to_string(imageCounter) +
                     ".png";
             cv::imwrite(fileName, img_in);
             std::cout << "written image " << fileName << std::endl;

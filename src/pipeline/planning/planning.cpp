@@ -24,11 +24,10 @@ namespace student {
                   Path &path,
                   const string &configFolder) {
 
-        cout << configFolder << endl;
-
-        Config config(configFolder + "/config.json");
+        Config config(configFolder + "config.json");
 
         double robotSize = config.getRobotSize();
+        cout << "using robot size: " << robotSize << endl;
 
         auto inflatedObstacles = inflateObstacles(obstacleList, robotSize);
         auto defaultedBorders = deflateArenaBorders(borders, robotSize);

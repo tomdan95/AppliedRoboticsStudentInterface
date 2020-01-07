@@ -1,4 +1,5 @@
 #include <fstream>
+#include <iostream>
 #include "Config.h"
 
 using namespace std;
@@ -15,6 +16,7 @@ Config::Config(string fileName) {
 }
 
 json Config::loadJsonFile(string fileName) {
+    cout << "loading config file '" << fileName << "'" << endl;
     ifstream input(fileName);
     json jsonContent;
     input >> jsonContent;

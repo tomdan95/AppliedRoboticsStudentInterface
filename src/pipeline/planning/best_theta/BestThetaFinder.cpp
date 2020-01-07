@@ -14,7 +14,9 @@ namespace student {
     optional<vector<DubinsCurve>> BestThetaFinder::findBestDubinsCurves(const vector<Point *> &path) {
         initializeTable(path);
         fillTableFromLastToFirstPathPoint(path);
+        cout << "fillTableWithFirstPathPoint" << endl;
         fillTableWithFirstPathPoint(path);
+        cout << "getBestCurvesFromTable" << endl;
         return getBestCurvesFromTable();
     }
 
@@ -83,6 +85,10 @@ namespace student {
 
     inline void BestThetaFinder::fillTableWithFirstPathPoint(const vector<Point *> &path) {
         for (int endTheta = 0; endTheta < STEPS; endTheta++) {
+            if (!curvesTable[1][endTheta]) {
+                curvesTable[0].push_back(none);
+                continue;
+            }
             auto curve = findShortestNotCollidingCurve(
                     RobotPosition(*path[0], startingTheta),
                     RobotPosition(*path[1], endTheta * STEP)
@@ -134,6 +140,10 @@ namespace student {
         vector<DubinsCurve> curves;
         for (int startPathPoint = 0; startPathPoint < curvesTable.size(); startPathPoint++) {
             auto subPathCurve = curvesTable[startPathPoint][bestTheta];
+            if(!subPathCurve) {
+                cout << "problem" << endl;
+                // TODO: Handle (this shouldn't happen)
+            }
             curves.push_back(subPathCurve->curve);
             bestTheta = subPathCurve->arrivingTheta;
         }
