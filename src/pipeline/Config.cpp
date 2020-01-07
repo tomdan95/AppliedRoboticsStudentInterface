@@ -16,10 +16,15 @@ Config::Config(string configFolder) {
     numberTemplatesFolder = jsonConfig["numberTemplatesFolder"];
 }
 
+string getConfigFileName(string configFolder) {
+    if (configFolder[configFolder.length() - 1] == '/') {
+        configFolder = configFolder.substr(0, configFolder.length() - 1);
+    }
+    return configFolder + "/config.json";
+}
+
 json Config::loadJsonFile(string configFolder) {
-
-    string fileName = configFolder + "/config.json";
-
+    string fileName = getConfigFileName(configFolder);
     cout << "loading config file '" << fileName << "'" << endl;
     ifstream input(fileName);
     json jsonContent;
