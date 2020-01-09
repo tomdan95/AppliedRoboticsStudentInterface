@@ -277,4 +277,15 @@ target_link_libraries(best_theta_demo
         )
 ##### END of planning_demo ####
 
+##### START of tesseract_ocr_demo ####
+
+add_executable(tesseract_ocr_demo
+        src/demos/tesseract_ocr.cpp
+        )
+
+target_link_libraries(tesseract_ocr_demo
+        ${OpenCV_LIBRARIES}
+        tesseract
+        )
+##### END of tesseract_ocr_demo ####
 
