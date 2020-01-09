@@ -13,7 +13,7 @@ bool canSkip(vector<Point *> toReach, Point* p) {
 }
 
 
-void MissionSolver::prunePath(vector<Point *> *path, vector<Point *> toReach) {
+void MissionSolver::prunePath(vector<Point *> *path, vector<Point *> toReach, double threshold) {
     cout << "PATH = " << path->size() << endl;
     auto it = path->begin();
     while (it + 1 != path->end()) {
@@ -24,7 +24,7 @@ void MissionSolver::prunePath(vector<Point *> *path, vector<Point *> toReach) {
         // TODO: maybe, don't compute euclidian distances but path distances
         double distance = Graph::distanceBetween(*p, *next);
         cout << distance << endl;
-        bool isShort = distance < 0.075;
+        bool isShort = distance < threshold;
         if (isShort && canSkip(toReach, p)) {
             it = path->erase(it);
         } else if (isShort && canSkip(toReach, next)) {

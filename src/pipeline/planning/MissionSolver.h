@@ -11,6 +11,11 @@
 using namespace std;
 
 namespace student {
+
+    /**
+     * MissionSolver represents the logic to solve a mission.
+     * It's an abstract class implemented by Mission1 and Mission2
+     */
     class MissionSolver {
     protected:
         const CollisionDetector *collisionDetector;
@@ -19,7 +24,7 @@ namespace student {
         const Point gate;
         const vector<pair<int, Point>> victims;
 
-        void prunePath(vector<Point *> *path, vector<Point *> toReach);
+        void prunePath(vector<Point *> *path, vector<Point *> toReach, double threshold);
 
 
     public:

@@ -14,9 +14,7 @@ namespace student {
     optional<vector<DubinsCurve>> BestThetaFinder::findBestDubinsCurves(const vector<Point *> &path) {
         initializeTable(path);
         fillTableFromLastToFirstPathPoint(path);
-        cout << "fillTableWithFirstPathPoint" << endl;
         fillTableWithFirstPathPoint(path);
-        cout << "getBestCurvesFromTable" << endl;
         return getBestCurvesFromTable();
     }
 

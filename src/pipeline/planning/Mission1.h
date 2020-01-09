@@ -20,9 +20,9 @@ namespace student {
         vector<Point *> toReach;
         vector<Point *> shortestPath;
 
-        void sortVictims();
+        void sortVictimsByTheirNumber();
 
-        void addPointsToReach();
+        void addRobotVictimsAndGateToCleanestPathsGraph();
 
         void computeShortestPath();
     };
