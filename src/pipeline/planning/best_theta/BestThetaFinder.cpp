@@ -104,9 +104,9 @@ namespace student {
     BestThetaFinder::findShortestNotCollidingCurve(const RobotPosition &start, const RobotPosition &end) const {
         auto curves = dubinsShortestPath(start, end, maxK);
         for (const auto &curve:curves) {
-            if (!collisionDetector->doesCurveCollide(curve)) {
+            //if (!collisionDetector->doesCurveCollide(curve)) {
                 return curve;
-            }
+            //}
         }
         return none;
     }

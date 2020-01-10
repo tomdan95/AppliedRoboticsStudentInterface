@@ -25,9 +25,9 @@ void MissionSolver::prunePath(vector<Point *> *path, vector<Point *> toReach, do
         double distance = Graph::distanceBetween(*p, *next);
         cout << distance << endl;
         bool isShort = distance < threshold;
-        if (isShort && canSkip(toReach, p)) {
+        if (isShort && canSkip(toReach, p) && !collisionDetector->doesSegmentCollide(**(it - 1), *next)) {
             it = path->erase(it);
-        } else if (isShort && canSkip(toReach, next)) {
+        } else if (isShort && canSkip(toReach, next)) { // TODO: Check collision also here
             path->erase(it + 1);
         } else {
             it++;
