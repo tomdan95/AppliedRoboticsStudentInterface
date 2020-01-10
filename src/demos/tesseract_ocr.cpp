@@ -12,7 +12,7 @@
 #include <tesseract/baseapi.h>
 #include <leptonica/allheaders.h>
 
-const double MIN_AREA_SIZE = 100;
+const double MIN_AREA_SIZE = 5000;
 
 void processImage(const std::string& filename)
 {
@@ -32,7 +32,8 @@ void processImage(const std::string& filename)
   
   // Find green regions
   cv::Mat green_mask;
-  cv::inRange(hsv_img, cv::Scalar(45, 30, 30), cv::Scalar(75, 255, 255), green_mask);
+  //cv::inRange(hsv_img, cv::Scalar(45, 30, 30), cv::Scalar(75, 255, 255), green_mask);
+  cv::inRange(hsv_img, cv::Scalar(40, 40, 50), cv::Scalar(75, 255, 255), green_mask);
 
   // Apply some filtering
   cv::Mat kernel = cv::getStructuringElement(cv::MORPH_RECT, cv::Size((1*2) + 1, (1*2)+1));
@@ -93,12 +94,31 @@ void processImage(const std::string& filename)
     if (processROI.empty()) continue;
     
     cv::resize(processROI, processROI, cv::Size(200, 200)); // resize the ROI
-    cv::threshold( processROI, processROI, 100, 255, 0 ); // threshold and binarize the image, to suppress some noise
+    cv::Mat prova(processROI.rows, processROI.cols, CV_8SC1);
+    cv::threshold( processROI, prova, 100, 255, 0 ); // threshold and binarize the image, to suppress some noise
     
     // Apply some additional smoothing and filtering
-    cv::erode(processROI, processROI, kernel);
-    cv::GaussianBlur(processROI, processROI, cv::Size(5, 5), 2, 2);
-    cv::erode(processROI, processROI, kernel);
+    //cv::erode(processROI, processROI, kernel);
+    //cv::GaussianBlur(processROI, processROI, cv::Size(5, 5), 2, 2);
+    //cv::erode(processROI, processROI, kernel);
+
+    
+    ///MEGA TEST
+    std::vector<std::vector<cv::Point>> contoursD, contours_approxD;
+    std::vector<cv::Point> approx_curveD;
+    cv::Mat contours_imgD;
+    cv::findContours(prova, contoursD, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);  
+    for (int i=0; i<contoursD.size(); ++i)
+    {
+      double area = cv::contourArea(contoursD[i]);
+      if (area < MIN_AREA_SIZE) continue; // filter too small contours to remove false positives
+      approxPolyDP(contoursD[i], approx_curveD, 2, true);
+      contours_approxD = {approx_curveD};
+      drawContours(contours_imgD, contours_approxD, -1, cv::Scalar(0,170,220), 3, cv::LINE_AA);
+    }
+
+
+
     
     // Show the actual image passed to the ocr engine
     cv::imshow("ROI", processROI);
