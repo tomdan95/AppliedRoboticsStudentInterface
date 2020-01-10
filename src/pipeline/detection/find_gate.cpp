@@ -6,9 +6,9 @@ namespace student {
     cv::Mat GateDetector::applyColorMask(const cv::Mat &hsvImage) {
         // Find green regions
         cv::Mat green_mask;
-        cv::inRange(hsvImage, cv::Scalar(45, 50, 50), cv::Scalar(75, 255, 255), green_mask);
+        cv::inRange(hsvImage, cv::Scalar(40, 40, 50), cv::Scalar(75, 255, 255), green_mask);
 
-        //showImageAndWaitKeyPress(green_mask);
+        showImageAndWaitKeyPress(green_mask);
 
 
         return green_mask;

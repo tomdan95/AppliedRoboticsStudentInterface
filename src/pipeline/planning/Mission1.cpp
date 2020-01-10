@@ -21,7 +21,7 @@ boost::optional<vector<DubinsCurve>> Mission1::solve() {
     DebugImage::showAndWait();
 
     // since Voronoi generated a lot of points, we prune the shortest path, removing close points
-    prunePath(&shortestPath, toReach, 0.075);
+    prunePath(&shortestPath, toReach, 0.06);
 
     // draw pruned shortest path for debugging purposes
     DebugImage::drawPath(shortestPath, cv::Scalar(150, 150, 150));

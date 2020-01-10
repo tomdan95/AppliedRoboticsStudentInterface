@@ -83,7 +83,7 @@ int DigitClassifier::recognizeDigit(const cv::Mat &image, const cv::Mat &hsvImag
 }
 
 
-#define TEMPLATES_ROTATION_DEGREES  5
+#define TEMPLATES_ROTATION_DEGREES  3
 #define TEMPLATES_ROTATIONS         (360 / TEMPLATES_ROTATION_DEGREES)
 
 vector<pair<cv::Mat, int>> DigitClassifier::loadTemplates(Config config) {

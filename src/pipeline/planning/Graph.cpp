@@ -4,19 +4,21 @@
 Point *student::Graph::addAndConnectToNearNotCollidingPoints(Point point, const CollisionDetector *collisionDetector) {
     Point *copyOfPoint = findOrAddPoint(point);
     int addedTo = 0;
-    for (auto *b:points) {
-        double distance = distanceBetween(*copyOfPoint, *b);
-        if (distance < 0.3) { // TODO: add threshold variable
-            //TODO: Check if collide
-            //TODO: If not collide add point
-            if(!collisionDetector->doesSegmentCollide(point, *b)) {
-                addEdge(b, copyOfPoint);
-                addedTo++;
+    double threshold = 0.3;
+    while(addedTo <= 0) {
+        for (auto *b:points) {
+            double distance = distanceBetween(*copyOfPoint, *b);
+            if (distance < threshold) { // TODO: add threshold variable
+                //TODO: Check if collide
+                //TODO: If not collide add point
+                if(!collisionDetector->doesSegmentCollide(point, *b)) {
+                    addEdge(b, copyOfPoint);
+                    addedTo++;
+                }
             }
         }
+        threshold += 0.1;
     }
-
-    cout << "added to = " << addedTo << endl;
     return copyOfPoint;
 }
 
