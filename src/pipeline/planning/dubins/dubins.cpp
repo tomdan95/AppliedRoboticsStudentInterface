@@ -46,13 +46,13 @@ vector<Pose> dubinsCurveToPoseVector(DubinsCurve curve) {
 void dubinsArcToPoseVector(DubinsArc arc, vector<Pose> &dst) {
     //const int numPoints = 100.0 * arc.length;
     const int numPoints = 30.0 * arc.length;
+    const double delta = arc.length / (double)numPoints;
     for (int i = 0; i < numPoints; i++) {
         DubinsArc temp;
-        double s = arc.length / numPoints * ((float) i);
+        double s = delta * ((double) i);
+
         circleLine(s, arc.x0, arc.y0, arc.th0, arc.k, &temp);
         // TODO: temp.k doesn't get updated. Do we need it in this data structure??
-        dst.emplace_back(1, temp.xf, temp.yf, temp.thf, arc.k);
+        dst.emplace_back(delta, temp.xf, temp.yf, temp.thf, arc.k);
     }
 }
-
-

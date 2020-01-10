@@ -13,6 +13,11 @@ using namespace std;
 
 namespace student {
     vector<pair<int, Point>> getVictimPoints(const vector<pair<int, Polygon>> &victims);
+
+    void fixS(vector<Pose> &poses);
+
+    vector<Pose> discretizeListOfDubinsCurves(const vector<DubinsCurve> &curves);
+
 }
 
 #endif //STUDENT_PROECT_PLANNING_H

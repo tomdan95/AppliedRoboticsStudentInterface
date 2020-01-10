@@ -38,7 +38,8 @@ namespace student {
         auto t_start = std::chrono::high_resolution_clock::now();
 
         // instantiate collision detector. The intatiation is slow, so we do it only once here, and then we share the instance
-        CollisionDetector* detector = new ShadowCollisionDetector(defaultedBorders[0], inflatedObstacles, gate, getVictimPolygons(victimList));
+        CollisionDetector *detector = new ShadowCollisionDetector(defaultedBorders[0], inflatedObstacles, gate,
+                                                                  getVictimPolygons(victimList));
 
         // execute Voronoi to get the cleanest paths graph
         Graph cleanestPaths = findCleanestPaths(inflatedObstaclesAndDeflatedBorders, detector);
@@ -55,11 +56,13 @@ namespace student {
 
 
         // create the MissionSolver accordingly to the configuration file
-        MissionSolver* solver;
-        if(config.getMission() == 1) {
-            solver = new Mission1(detector, &cleanestPaths, RobotPosition(x, y, theta), getPolygonCenter(gate), getVictimPoints(victimList));
+        MissionSolver *solver;
+        if (config.getMission() == 1) {
+            solver = new Mission1(detector, &cleanestPaths, RobotPosition(x, y, theta), getPolygonCenter(gate),
+                                  getVictimPoints(victimList));
         } else {
-            solver = new Mission2(detector, &cleanestPaths, RobotPosition(x, y, theta), getPolygonCenter(gate), getVictimPoints(victimList), config.getVictimBonus());
+            solver = new Mission2(detector, &cleanestPaths, RobotPosition(x, y, theta), getPolygonCenter(gate),
+                                  getVictimPoints(victimList), config.getVictimBonus());
         }
 
         // execute the planning (sort victims + dijkstra + best_theta with collision detection)
@@ -67,29 +70,42 @@ namespace student {
 
         // print how much time the planning took
         auto t_end = std::chrono::high_resolution_clock::now();
-        double elapsed_time_ms = std::chrono::duration<double, std::milli>(t_end-t_start).count();
+        double elapsed_time_ms = std::chrono::duration<double, std::milli>(t_end - t_start).count();
         cout << "planning took " << elapsed_time_ms << "ms" << endl;
 
         // if the MissionSolver didn't gave us a list of DubisCurve, the planning failed
-        if(!curves) {
+        if (!curves) {
             cout << "planning failed" << endl;
             return false;
         }
 
-        // Discretize the DubinsCurves to a list of poses
-        vector<Pose> allPoses;
-        for (auto curve:*curves) {
-            vector<Pose> poses = dubinsCurveToPoseVector(curve);
-            allPoses.insert(allPoses.end(), poses.begin(), poses.end());
-        }
-        path.setPoints(allPoses);
+        auto poses = discretizeListOfDubinsCurves(*curves);
+        path.setPoints(poses);
 
         // Draw the poses to the debug image
-        DebugImage::drawPoses(allPoses);
+        DebugImage::drawPoses(poses);
         DebugImage::showAndWait();
 
         // planning was succesfull
         return true;
+    }
+
+    vector<Pose> discretizeListOfDubinsCurves(const vector<DubinsCurve> &curves) {
+        vector<Pose> allPoses;
+        for (const auto &curve:curves) {
+            vector<Pose> poses = dubinsCurveToPoseVector(curve);
+            allPoses.insert(allPoses.end(), poses.begin(), poses.end());
+        }
+        fixS(allPoses);
+        return allPoses;
+    }
+
+    void fixS(vector<Pose> &poses) {
+        double s = 0;
+        for (auto &pose:poses) {
+            s += pose.s;
+            pose.s = s;
+        }
     }
 
 
