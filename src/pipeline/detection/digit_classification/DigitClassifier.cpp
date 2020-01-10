@@ -53,9 +53,9 @@ int DigitClassifier::recognizeDigit(const cv::Mat &image, const cv::Mat &hsvImag
     cv::threshold(processROI, processROI, 100, 255, 0); // threshold and binarize the image, to suppress some noise
 
     // Apply some additional smoothing and filtering
-    cv::erode(processROI, processROI, kernel);
-    cv::GaussianBlur(processROI, processROI, cv::Size(5, 5), 2, 2);
-    cv::erode(processROI, processROI, kernel);
+    //cv::erode(processROI, processROI, kernel);
+    //cv::GaussianBlur(processROI, processROI, cv::Size(5, 5), 2, 2);
+    //cv::erode(processROI, processROI, kernel);
 
     // Show the actual image used for the template matching
     //showImageAndWaitKeyPress(processROI);
