@@ -12,7 +12,7 @@
     <!-- Victim section -->
     <include>
       <uri>model://victim_1</uri>
-      <pose>0.1 0.9 0 0 0 1.5</pose>
+      <pose>0.2 0.9 0 0 0 1.5</pose>
       <name>victim1</name>
     </include>
 
