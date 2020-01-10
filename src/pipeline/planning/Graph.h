@@ -3,6 +3,7 @@
 
 #include "student_image_elab_interface.hpp"
 #include "student_planning_interface.hpp"
+#include "collision_detection/CollisionDetector.h"
 
 using namespace std;
 
@@ -20,12 +21,12 @@ namespace student {
          * @param point point to add
          * @return Pointer to the copy of the new added point
          */
-        Point * addAndConnectToNearestPoint(Point point);
+        Point * addAndConnectToNearNotCollidingPoints(Point point, const CollisionDetector *collisionDetector);
 
         vector<Point *> shortestPathFromTo(Point *a, Point *b);
 
 
-        static double distanceBetween(Point a, Point b); // TODO :move
+        static double distanceBetween(Point a, Point b);
     private:
         Point* findOrAddPoint(Point p);
         Point* getNearestPointTo(Point point);

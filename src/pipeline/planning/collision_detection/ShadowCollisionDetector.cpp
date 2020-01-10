@@ -1,6 +1,8 @@
 #include "ShadowCollisionDetector.h"
 #include "../planning.h"
 #include "../../../opencv-utils.h"
+#include "../Graph.h"
+#include "../../DebugImage.h"
 
 using namespace std;
 using namespace student;
@@ -74,6 +76,32 @@ bool ShadowCollisionDetector::doesCurveCollide(const DubinsCurve &curve) const {
     }
     return false;
 }
+
+
+bool ShadowCollisionDetector::doesSegmentCollide(const Point &a, const Point &b) const {
+    // TODO: Move discretization somewhere else
+    double length = Graph::distanceBetween(a, b);
+    double delta = 0.01;
+    int numPoints = (length / delta);
+
+    double xDiff = (b.x - a.x) / ((double) numPoints);
+    double yDiff = (b.y - a.y) / ((double) numPoints);
+
+    //DebugImage::drawPoint(a, cv::Scalar(200, 0, 0));
+    //DebugImage::drawPoint(b, cv::Scalar(200, 0, 0));
+    //DebugImage::showAndWait();
+
+    for (int i = 0; i < numPoints; i++) {
+        Point p(a.x + xDiff * (double)i, a.y + yDiff * (double)i);
+        //DebugImage::drawPoint(p, cv::Scalar(100, 200, 100));
+        //DebugImage::showAndWait();
+        if(isPointInAnyObstacle(p)) {
+            return true;
+        }
+    }
+    return false;
+}
+
 
 inline bool ShadowCollisionDetector::isPointInAnyObstacle(const Point &point) const {
     int approxX = point.x * POINT_DISCRETIZATION;

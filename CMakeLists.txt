@@ -266,6 +266,8 @@ add_executable(best_theta_demo
         src/pipeline/planning/dubins/utils.h
         src/pipeline/planning/dubins/dubins.cpp
         src/pipeline/planning/dubins/dubins.h
+        src/pipeline/planning/Graph.cpp
+        src/pipeline/planning/Graph.h
         src/pipeline/DebugImage.cpp
         src/opencv-utils.cpp
         src/pipeline/planning/collision_detection/ShadowCollisionDetector.cpp

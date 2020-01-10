@@ -86,4 +86,5 @@ void DebugImage::drawPolygon(const Polygon &polygon, int multiply, cv::Scalar co
     }
     Point end(polygon[0].x, polygon[0].y);
     drawSegment(start, end, multiply, color);
+
 }

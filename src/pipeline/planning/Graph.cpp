@@ -1,25 +1,25 @@
 #include "Graph.h"
 #include "../DebugImage.h"
 
-Point *student::Graph::addAndConnectToNearestPoint(Point point) {
-    Point *nearestPoint = this->getNearestPointTo(point);
+Point *student::Graph::addAndConnectToNearNotCollidingPoints(Point point, const CollisionDetector *collisionDetector) {
     Point *copyOfPoint = findOrAddPoint(point);
-    addEdge(nearestPoint, copyOfPoint);
+    int addedTo = 0;
+    for (auto *b:points) {
+        double distance = distanceBetween(*copyOfPoint, *b);
+        if (distance < 0.3) { // TODO: add threshold variable
+            //TODO: Check if collide
+            //TODO: If not collide add point
+            if(!collisionDetector->doesSegmentCollide(point, *b)) {
+                addEdge(b, copyOfPoint);
+                addedTo++;
+            }
+        }
+    }
+
+    cout << "added to = " << addedTo << endl;
     return copyOfPoint;
 }
 
-Point *student::Graph::getNearestPointTo(Point a) {
-    double minDistance = INFINITY;
-    Point *nearest = NULL;
-    for (auto *b:points) {
-        double distance = distanceBetween(a, *b);
-        if (distance < minDistance) {
-            minDistance = distance;
-            nearest = b;
-        }
-    }
-    return nearest;
-}
 
 double student::Graph::distanceBetween(Point a, Point b) {
     return sqrt(pow(a.x - b.x, 2) + pow(a.y - b.y, 2));

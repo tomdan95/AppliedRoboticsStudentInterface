@@ -13,6 +13,7 @@ namespace student {
 
     public:
         virtual bool isPointInAnyObstacle(const Point &point) const = 0;
+        virtual bool doesSegmentCollide(const Point &a, const Point &b) const = 0;
         virtual bool doesCurveCollide(const DubinsCurve &curve) const = 0;
     };
 }

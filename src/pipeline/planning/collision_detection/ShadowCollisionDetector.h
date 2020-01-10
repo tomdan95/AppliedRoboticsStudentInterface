@@ -17,7 +17,7 @@ namespace student {
 
         bool isPointInAnyObstacle(const Point &point) const override;
 
-        //bool doesSegmentCollid(const Point &start, const Point &end)const;
+        bool doesSegmentCollide(const Point &a, const Point &b) const override;
 
         bool doesCurveCollide(const DubinsCurve &curve) const override;
     };

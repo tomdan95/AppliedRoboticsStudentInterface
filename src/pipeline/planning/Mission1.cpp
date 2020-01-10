@@ -16,10 +16,11 @@ boost::optional<vector<DubinsCurve>> Mission1::solve() {
     computeShortestPath();
 
     // draw shortest path for debugging purposes
+    DebugImage::drawGraph(*cleanestPaths);
     DebugImage::drawPath(shortestPath);
     DebugImage::showAndWait();
 
-    // since Votonoi generated a lot of points, we prune the shortest path, removing close points
+    // since Voronoi generated a lot of points, we prune the shortest path, removing close points
     prunePath(&shortestPath, toReach, 0.075);
 
     // draw pruned shortest path for debugging purposes
@@ -36,12 +37,12 @@ boost::optional<vector<DubinsCurve>> Mission1::solve() {
  * we can execute Dijkstra)
  */
 void Mission1::addRobotVictimsAndGateToCleanestPathsGraph() {
-    toReach.push_back(cleanestPaths->addAndConnectToNearestPoint(Point(start.x, start.y)));
+    toReach.push_back(cleanestPaths->addAndConnectToNearNotCollidingPoints(Point(start.x, start.y), collisionDetector));
     for (const auto &victim:sortedVictims) {
-        Point *copyOfVictim = cleanestPaths->addAndConnectToNearestPoint(victim);
+        Point *copyOfVictim = cleanestPaths->addAndConnectToNearNotCollidingPoints(victim, collisionDetector);
         toReach.push_back(copyOfVictim);
     }
-    toReach.push_back(cleanestPaths->addAndConnectToNearestPoint(gate));
+    toReach.push_back(cleanestPaths->addAndConnectToNearNotCollidingPoints(gate, collisionDetector));
 }
 
 /**
