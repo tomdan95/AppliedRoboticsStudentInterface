@@ -16,6 +16,7 @@ namespace student {
         int mission;
         int victimBonus;
         string numberTemplatesFolder;
+        bool autoFindArenaEdges;
 
         static json loadJsonFile(string configFolder);
 
@@ -37,6 +38,10 @@ namespace student {
 
         string getNumberTemplatesFolder() {
             return numberTemplatesFolder;
+        }
+
+        bool getAutoFindArenaEdges() {
+            return autoFindArenaEdges;
         }
     };
 }

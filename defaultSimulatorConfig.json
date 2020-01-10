@@ -1,5 +1,6 @@
 {
-  "robotSize": 0.03,
+  "robotSize": 0.06,
   "mission": 1,
-  "numberTemplatesFolder": "/home/lar2019/robot/AppliedRoboticsStudentInterface/src/victim_templates"
+  "numberTemplatesFolder": "/home/lar2019/robot/AppliedRoboticsStudentInterface/src/victim_templates",
+  "autoFindArenaEdges": true
 }

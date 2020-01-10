@@ -4,6 +4,7 @@
  */
 #include "student_image_elab_interface.hpp"
 #include "student_planning_interface.hpp"
+#include "Config.h"
 
 #include <stdexcept>
 #include <sstream>
@@ -28,7 +29,6 @@ namespace student {
     static atomic<bool> done;
     static int n;
     static double show_scale = 1.0;
-    static bool autoFindArenaEdges = false; //change to false to use old manual arena edges selector.
 
     void mouseCallback(int event, int x, int y, int, void *p) {
         if (event != cv::EVENT_LBUTTONDOWN || done.load()) return;
@@ -154,7 +154,8 @@ namespace student {
                         cv::Mat &rvec, cv::Mat &tvec, const string &config_folder) {
         string file_path = config_folder + "/extrinsicCalib.csv";
         vector<cv::Point2f> edges;
-        if(autoFindArenaEdges){
+        Config config(config_folder);
+        if(config.getAutoFindArenaEdges()){
             edges = findArenaEdge(img_in);
         }
         else{

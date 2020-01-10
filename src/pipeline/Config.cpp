@@ -14,6 +14,7 @@ Config::Config(string configFolder) {
         victimBonus = jsonConfig["victimBonus"];
     }
     numberTemplatesFolder = jsonConfig["numberTemplatesFolder"];
+    autoFindArenaEdges = jsonConfig["autoFindArenaEdges"];
 }
 
 string getConfigFileName(string configFolder) {

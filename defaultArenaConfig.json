@@ -1,5 +1,6 @@
 {
-  "robotSize": 0.03,
+  "robotSize": 0.06,
   "mission": 1,
-  "numberTemplatesFolder": "/home/robotics/workspace/bender/src/victim_templates"
+  "numberTemplatesFolder": "/home/robotics/workspace/bender/src/victim_templates",
+  "autoFindArenaEdges": false
 }
