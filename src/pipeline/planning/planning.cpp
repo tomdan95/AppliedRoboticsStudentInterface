@@ -28,58 +28,64 @@ namespace student {
 
         Config config(configFolder);
 
-        double robotSize = config.getRobotSize();
-        cout << "using robot size: " << robotSize << endl;
-
-        auto inflatedObstacles = inflateObstacles(obstacleList, robotSize);
-        auto defaultedBorders = deflateArenaBorders(borders, robotSize);
-        auto inflatedObstaclesAndDeflatedBorders = resizeObstaclesAndBorders(obstacleList, borders, robotSize);
-
         auto t_start = std::chrono::high_resolution_clock::now();
+        double robotSize = config.getRobotSize();
+        boost::optional<vector<DubinsCurve>> solution;
 
-        // instantiate collision detector. The intatiation is slow, so we do it only once here, and then we share the instance
-        CollisionDetector *detector = new ShadowCollisionDetector(defaultedBorders[0], inflatedObstacles, gate,
-                                                                  getVictimPolygons(victimList));
+        do {
+            cout << "[PLANNING] Using robot size: " << robotSize << endl;
 
-        // execute Voronoi to get the cleanest paths graph
-        Graph cleanestPaths = findCleanestPaths(inflatedObstaclesAndDeflatedBorders, detector);
+            auto inflatedObstacles = inflateObstacles(obstacleList, robotSize);
+            auto defaultedBorders = deflateArenaBorders(borders, robotSize);
+            auto inflatedObstaclesAndDeflatedBorders = resizeObstaclesAndBorders(obstacleList, borders, robotSize);
 
-        // draw map for debugging purposes
-        DebugImage::clear();
-        DebugImage::drawPoint(Point(x, y));
-        DebugImage::drawPolygon(borders, 400);
-        DebugImage::drawPolygons(defaultedBorders, 400);
-        DebugImage::drawPolygons(obstacleList, 400, cv::Scalar(255, 100, 0));
-        DebugImage::drawPolygons(inflatedObstacles, 400, cv::Scalar(255, 255, 0));
-        DebugImage::drawGraph(cleanestPaths);
-        DebugImage::showAndWait();
+            // instantiate collision detector. The intatiation is slow, so we do it only once here, and then we share the instance
+            CollisionDetector *detector = new ShadowCollisionDetector(defaultedBorders[0], inflatedObstacles, gate,
+                                                                      getVictimPolygons(victimList));
+
+            // execute Voronoi to get the cleanest paths graph
+            Graph cleanestPaths = findCleanestPaths(inflatedObstaclesAndDeflatedBorders, detector);
+
+            // draw map for debugging purposes
+            DebugImage::clear();
+            DebugImage::drawPoint(Point(x, y));
+            DebugImage::drawPolygon(borders, 400);
+            DebugImage::drawPolygons(defaultedBorders, 400);
+            DebugImage::drawPolygons(obstacleList, 400, cv::Scalar(255, 100, 0));
+            DebugImage::drawPolygons(inflatedObstacles, 400, cv::Scalar(255, 255, 0));
+            DebugImage::drawGraph(cleanestPaths);
+            DebugImage::showAndWait();
 
 
-        // create the MissionSolver accordingly to the configuration file
-        MissionSolver *solver;
-        if (config.getMission() == 1) {
-            solver = new Mission1(detector, &cleanestPaths, RobotPosition(x, y, theta), getPolygonCenter(gate),
-                                  getVictimPoints(victimList));
-        } else {
-            solver = new Mission2(detector, &cleanestPaths, RobotPosition(x, y, theta), getPolygonCenter(gate),
-                                  getVictimPoints(victimList), config.getVictimBonus());
+            // create the MissionSolver accordingly to the configuration file
+            MissionSolver *solver;
+            if (config.getMission() == 1) {
+                solver = new Mission1(detector, &cleanestPaths, RobotPosition(x, y, theta), getPolygonCenter(gate),
+                                      getVictimPoints(victimList));
+            } else {
+                solver = new Mission2(detector, &cleanestPaths, RobotPosition(x, y, theta), getPolygonCenter(gate),
+                                      getVictimPoints(victimList), config.getVictimBonus());
+            }
+
+            // execute the planning (sort victims + dijkstra + best_theta with collision detection)
+            solution = solver->solve();
+            if (!solution) {
+                cout << "[PLANNING] Planning with robot size = " << robotSize << " failed. Trying again" << endl;
+                robotSize -= 0.01;
+            }
+        } while (!solution && robotSize > 0);
+
+        if (!solution) {
+            cout << "[PLANNING] Planning failed. Giving up..." << endl;
+            return false;
         }
-
-        // execute the planning (sort victims + dijkstra + best_theta with collision detection)
-        auto curves = solver->solve();
 
         // print how much time the planning took
         auto t_end = std::chrono::high_resolution_clock::now();
         double elapsed_time_ms = std::chrono::duration<double, std::milli>(t_end - t_start).count();
-        cout << "planning took " << elapsed_time_ms << "ms" << endl;
+        cout << "[PLANNING] Planning took " << elapsed_time_ms << "ms" << endl;
 
-        // if the MissionSolver didn't gave us a list of DubisCurve, the planning failed
-        if (!curves) {
-            cout << "planning failed" << endl;
-            return false;
-        }
-
-        auto poses = discretizeListOfDubinsCurves(*curves);
+        auto poses = discretizeListOfDubinsCurves(*solution);
         path.setPoints(poses);
 
         // Draw the poses to the debug image
