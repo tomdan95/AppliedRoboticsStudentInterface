@@ -19,8 +19,8 @@ namespace student {
         vector<vector<cv::Point>> filtered;
         for (auto &contour : contours) {
             double area = cv::contourArea(contour);
-            //cout << "n lati =" << contour.size() << endl;
-            if (contour.size() == 4) {
+            cout << "[FIND-GATE] contours = " << contour.size() << endl;
+            if (contour.size() == 4 || contour.size() == 5) {
                 filtered.push_back(contour);
             }
             /*

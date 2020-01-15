@@ -13,6 +13,7 @@
 #include "Mission2.h"
 #include "collision_detection/ShadowCollisionDetector.h"
 #include "../Config.h"
+#include "Mission1RTT.h"
 
 using namespace std;
 
@@ -60,8 +61,11 @@ namespace student {
             // create the MissionSolver accordingly to the configuration file
             MissionSolver *solver;
             if (config.getMission() == 1) {
-                solver = new Mission1(detector, &cleanestPaths, RobotPosition(x, y, theta), getPolygonCenter(gate),
-                                      getVictimPoints(victimList), config.getPruneThreshold());
+
+                //solver = new Mission1(detector, &cleanestPaths, RobotPosition(x, y, theta), getPolygonCenter(gate),
+                //                      getVictimPoints(victimList), config.getPruneThreshold());
+                solver = new Mission1RTT(detector, &cleanestPaths, RobotPosition(x, y, theta), getPolygonCenter(gate),
+                                      getVictimPoints(victimList));
             } else {
                 solver = new Mission2(detector, &cleanestPaths, RobotPosition(x, y, theta), getPolygonCenter(gate),
                                       getVictimPoints(victimList), config.getVictimBonus());

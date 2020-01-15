@@ -67,7 +67,7 @@ add_library(student SHARED
         src/pipeline/planning/Mission2.cpp
         src/pipeline/planning/Mission2.h
         src/pipeline/planning/collision_detection/CollisionDetector.h
-        src/pipeline/Config.cpp src/pipeline/Config.h)
+        src/pipeline/Config.cpp src/pipeline/Config.h src/pipeline/planning/Mission1RTT.cpp src/pipeline/planning/Mission1RTT.h)
 
 target_link_libraries(student
         ${OpenCV_LIBRARIES}
