@@ -31,6 +31,8 @@ namespace student {
     private:
         const int maxK;
         const double startingTheta;
+        const int STEPS;
+        const double STEP;
         const CollisionDetector *collisionDetector;
 
         /**
@@ -67,8 +69,9 @@ namespace student {
         vector<DubinsCurve> buildBestCurvesVector(int bestTheta) const;
 
     public:
-        BestThetaFinder(const int maxK, const double robotTheta, const CollisionDetector *collisionDetector) : maxK(
-                maxK), startingTheta(robotTheta), collisionDetector(collisionDetector) {}
+        BestThetaFinder(const int steps, const int maxK, const double robotTheta,
+                        const CollisionDetector *collisionDetector) :
+                STEPS(steps),STEP((2.0 * M_PI) / steps), maxK(maxK), startingTheta(robotTheta), collisionDetector(collisionDetector){}
 
         /**
          * Computes the best Dubins curves using multipoint Dubins interpolation.

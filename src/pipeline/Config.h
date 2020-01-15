@@ -18,6 +18,8 @@ namespace student {
         string numberTemplatesFolder;
         bool autoFindArenaEdges;
         double pruneThreshold;
+        int bestThetaSteps;
+        int maxK;
 
         static json loadJsonFile(string configFolder);
 
@@ -47,6 +49,14 @@ namespace student {
 
         double getPruneThreshold () {
             return pruneThreshold;
+        }
+
+        int getMaxK(){
+            return maxK;
+        }
+
+        int getBestThetaSteps(){
+            return bestThetaSteps;
         }
     };
 }

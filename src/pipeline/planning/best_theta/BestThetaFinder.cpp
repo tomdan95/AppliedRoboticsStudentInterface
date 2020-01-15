@@ -2,8 +2,6 @@
 #include "../dubins/dubins.h"
 #include "../collision_detection/CollisionDetector.h"
 
-#define STEPS 32
-#define STEP  ((2.0 * M_PI) / STEPS)
 
 using namespace std;
 using namespace boost;

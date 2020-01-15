@@ -33,9 +33,6 @@ void generate(vector<vector<pair<int, Point>>>& permutations, vector<pair<int, P
 namespace student {
 
     boost::optional<vector<DubinsCurve>> Mission2::solve() {
-        //addRobotVictimsAndGateToCleanestPathsGraph();
-        BestThetaFinder finder(10, start.theta, collisionDetector);
-
         auto permutations = generatePermutations();
 
         double shortestLength = INFINITY;

@@ -16,6 +16,8 @@ Config::Config(string configFolder) {
     numberTemplatesFolder = jsonConfig["numberTemplatesFolder"];
     autoFindArenaEdges = jsonConfig["autoFindArenaEdges"];
     pruneThreshold = jsonConfig["pruneThreshold"];
+    bestThetaSteps = jsonConfig["bestThetaSteps"];
+    maxK = jsonConfig["maxK"];
 }
 
 string getConfigFileName(string configFolder) {

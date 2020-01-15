@@ -6,6 +6,8 @@
 #include "dubins/models.h"
 #include "../detection/find_obstacles.hpp"
 #include "collision_detection/CollisionDetector.h"
+#include "best_theta/BestThetaFinder.h"
+#include "../Config.h"
 
 
 using namespace std;
@@ -26,6 +28,7 @@ namespace student {
         vector<Point *> toReach;
         vector<Point *> shortestPath;
         const double pruneThreshold;
+        BestThetaFinder finder;
 
         void addRobotVictimsAndGateToCleanestPathsGraph(const vector<Point>& sortedVictims);
 
@@ -38,10 +41,13 @@ namespace student {
         MissionSolver(const CollisionDetector *collisionDetector, Graph *cleanestPaths,
                       const RobotPosition &start,
                       const Point &gate,
-                      const vector<pair<int, Point>> victims,double pruneThreshold) : collisionDetector(collisionDetector),
+                      const vector<pair<int, Point>> victims,
+                      Config& config) : collisionDetector(collisionDetector),
                                                                    cleanestPaths(cleanestPaths),
                                                                    start(start), gate(gate),
-                                                                   victims(victims),pruneThreshold(pruneThreshold) {}
+                                                                   victims(victims),
+                                                                   pruneThreshold(config.getPruneThreshold()),
+                                                                   finder(config.getBestThetaSteps(), config.getMaxK(), start.theta, collisionDetector) {}
 
         virtual boost::optional<vector<DubinsCurve>> solve() = 0;
 

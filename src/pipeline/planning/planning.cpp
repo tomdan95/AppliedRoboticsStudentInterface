@@ -61,10 +61,10 @@ namespace student {
             MissionSolver *solver;
             if (config.getMission() == 1) {
                 solver = new Mission1(&detector, &cleanestPaths, RobotPosition(x, y, theta), getPolygonCenter(gate),
-                                      getVictimPoints(victimList), config.getPruneThreshold());
+                                      getVictimPoints(victimList), config);
             } else {
                 solver = new Mission2(&detector, &cleanestPaths, RobotPosition(x, y, theta), getPolygonCenter(gate),
-                                      getVictimPoints(victimList), config.getPruneThreshold(), config.getVictimBonus());
+                                      getVictimPoints(victimList), config);
             }
 
             // execute the planning (sort victims + dijkstra + best_theta with collision detection)

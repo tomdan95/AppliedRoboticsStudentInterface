@@ -2,6 +2,7 @@
 #define STUDENT_PROJECT_MISSION1_H
 
 #include "MissionSolver.h"
+#include "../Config.h"
 
 using namespace std;
 
@@ -10,8 +11,8 @@ namespace student {
     class Mission1 : public MissionSolver {
     public:
         Mission1(const student::CollisionDetector *collisionDetector, student::Graph *cleanestPaths,
-                 const RobotPosition &start, const Point &gate, const vector<pair<int, Point>>& victims, double pruneThreshold)
-                : MissionSolver(collisionDetector, cleanestPaths, start, gate, victims, pruneThreshold) { }
+                 const RobotPosition &start, const Point &gate, const vector<pair<int, Point>>& victims,Config &config)
+                : MissionSolver(collisionDetector, cleanestPaths, start, gate, victims, config) { }
 
         boost::optional<vector<DubinsCurve>> solve() override;
 

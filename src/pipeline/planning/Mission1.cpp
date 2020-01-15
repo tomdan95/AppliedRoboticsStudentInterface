@@ -28,7 +28,6 @@ boost::optional<vector<DubinsCurve>> Mission1::solve() {
     DebugImage::showAndWait();
 
     // we execute best_theta to find the best list of not-colliding DubinsCurves
-    BestThetaFinder finder(10, start.theta, collisionDetector);
     return finder.findBestDubinsCurves(shortestPath);
 }
 
