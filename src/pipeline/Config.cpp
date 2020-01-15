@@ -15,6 +15,7 @@ Config::Config(string configFolder) {
     }
     numberTemplatesFolder = jsonConfig["numberTemplatesFolder"];
     autoFindArenaEdges = jsonConfig["autoFindArenaEdges"];
+    pruneThreshold = jsonConfig["pruneThreshold"];
 }
 
 string getConfigFileName(string configFolder) {

@@ -10,8 +10,8 @@ namespace student {
     class Mission1 : public MissionSolver {
     public:
         Mission1(const student::CollisionDetector *collisionDetector, student::Graph *cleanestPaths,
-                 const RobotPosition &start, const Point &gate, const vector<pair<int, Point>>& victims)
-                : MissionSolver(collisionDetector, cleanestPaths, start, gate, victims) { }
+                 const RobotPosition &start, const Point &gate, const vector<pair<int, Point>>& victims, double pruneThreshold)
+                : MissionSolver(collisionDetector, cleanestPaths, start, gate, victims), pruneThreshold(pruneThreshold) { }
 
         boost::optional<vector<DubinsCurve>> solve() override;
 
@@ -19,6 +19,7 @@ namespace student {
         vector<Point> sortedVictims;
         vector<Point *> toReach;
         vector<Point *> shortestPath;
+        const double pruneThreshold;
 
         void sortVictimsByTheirNumber();
 

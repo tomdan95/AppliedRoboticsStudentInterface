@@ -17,6 +17,7 @@ namespace student {
         int victimBonus;
         string numberTemplatesFolder;
         bool autoFindArenaEdges;
+        double pruneThreshold;
 
         static json loadJsonFile(string configFolder);
 
@@ -42,6 +43,10 @@ namespace student {
 
         bool getAutoFindArenaEdges() {
             return autoFindArenaEdges;
+        }
+
+        double getPruneThreshold () {
+            return pruneThreshold;
         }
     };
 }

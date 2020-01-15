@@ -61,7 +61,7 @@ namespace student {
             MissionSolver *solver;
             if (config.getMission() == 1) {
                 solver = new Mission1(detector, &cleanestPaths, RobotPosition(x, y, theta), getPolygonCenter(gate),
-                                      getVictimPoints(victimList));
+                                      getVictimPoints(victimList), config.getPruneThreshold());
             } else {
                 solver = new Mission2(detector, &cleanestPaths, RobotPosition(x, y, theta), getPolygonCenter(gate),
                                       getVictimPoints(victimList), config.getVictimBonus());
