@@ -17,7 +17,6 @@ namespace student {
 
     private:
         vector<Point> sortedVictims;
-
         void sortVictimsByTheirNumber();
     };
 

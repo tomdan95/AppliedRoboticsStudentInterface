@@ -52,6 +52,7 @@ void MissionSolver::prunePath(vector<Point *> *path, vector<Point *> toReach, do
  * we can execute Dijkstra)
  */
 void MissionSolver::addRobotVictimsAndGateToCleanestPathsGraph(const vector<Point>& sortedVictims) {
+    toReach.clear();
     toReach.push_back(cleanestPaths->addAndConnectToNearNotCollidingPoints(Point(start.x, start.y), collisionDetector));
     for (const auto &victim:sortedVictims) {
         Point *copyOfVictim = cleanestPaths->addAndConnectToNearNotCollidingPoints(victim, collisionDetector);
@@ -70,6 +71,7 @@ void MissionSolver::addRobotVictimsAndGateToCleanestPathsGraph(const vector<Poin
  * - victim n to gate
  */
 void MissionSolver::computeShortestPath() {
+    shortestPath.clear();
     vector<Point *> lastGeneratedPath;
     for (int i = 0; i < toReach.size() - 1; i++) {
         vector<Point *> path = cleanestPaths->shortestPathFromTo(toReach[i], toReach[i + 1], lastGeneratedPath);
@@ -84,3 +86,7 @@ void MissionSolver::computeShortestPath() {
         lastGeneratedPath = path;
     }
 }
+
+
+
+

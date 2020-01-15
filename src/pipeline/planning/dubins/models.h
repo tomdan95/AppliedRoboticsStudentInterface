@@ -42,7 +42,7 @@ public:
 class DubinsCurve {
 public:
     DubinsArc a1, a2, a3;
-    double length() {
+    double length() const {
         return a1.length + a2.length + a3.length;
     }
 
