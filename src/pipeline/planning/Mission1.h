@@ -11,21 +11,14 @@ namespace student {
     public:
         Mission1(const student::CollisionDetector *collisionDetector, student::Graph *cleanestPaths,
                  const RobotPosition &start, const Point &gate, const vector<pair<int, Point>>& victims, double pruneThreshold)
-                : MissionSolver(collisionDetector, cleanestPaths, start, gate, victims), pruneThreshold(pruneThreshold) { }
+                : MissionSolver(collisionDetector, cleanestPaths, start, gate, victims, pruneThreshold) { }
 
         boost::optional<vector<DubinsCurve>> solve() override;
 
     private:
         vector<Point> sortedVictims;
-        vector<Point *> toReach;
-        vector<Point *> shortestPath;
-        const double pruneThreshold;
 
         void sortVictimsByTheirNumber();
-
-        void addRobotVictimsAndGateToCleanestPathsGraph();
-
-        void computeShortestPath();
     };
 
 }

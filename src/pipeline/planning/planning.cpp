@@ -64,7 +64,7 @@ namespace student {
                                       getVictimPoints(victimList), config.getPruneThreshold());
             } else {
                 solver = new Mission2(&detector, &cleanestPaths, RobotPosition(x, y, theta), getPolygonCenter(gate),
-                                      getVictimPoints(victimList), config.getVictimBonus());
+                                      getVictimPoints(victimList), config.getPruneThreshold(), config.getVictimBonus());
             }
 
             // execute the planning (sort victims + dijkstra + best_theta with collision detection)

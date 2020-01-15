@@ -11,8 +11,8 @@ namespace student {
         const int victimBonus;
     public:
         Mission2(const CollisionDetector *collisionDetector, Graph *cleanestPaths, const RobotPosition &start,
-                 const Point &gate, const vector<pair<int, Point>> &victims, int victimBonus) : MissionSolver(
-                collisionDetector, cleanestPaths, start, gate, victims), victimBonus(victimBonus) {}
+                 const Point &gate, const vector<pair<int, Point>> &victims,double pruneThreshold, int victimBonus) : MissionSolver(
+                collisionDetector, cleanestPaths, start, gate, victims, pruneThreshold), victimBonus(victimBonus) {}
 
         boost::optional<vector<DubinsCurve>> solve() override;
     };

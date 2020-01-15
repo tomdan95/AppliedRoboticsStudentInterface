@@ -23,6 +23,13 @@ namespace student {
         const RobotPosition start;
         const Point gate;
         const vector<pair<int, Point>> victims;
+        vector<Point *> toReach;
+        vector<Point *> shortestPath;
+        const double pruneThreshold;
+
+        void addRobotVictimsAndGateToCleanestPathsGraph(const vector<Point>& sortedVictims);
+
+        void computeShortestPath();
 
         void prunePath(vector<Point *> *path, vector<Point *> toReach, double threshold);
 
@@ -31,13 +38,12 @@ namespace student {
         MissionSolver(const CollisionDetector *collisionDetector, Graph *cleanestPaths,
                       const RobotPosition &start,
                       const Point &gate,
-                      const vector<pair<int, Point>> victims) : collisionDetector(collisionDetector),
+                      const vector<pair<int, Point>> victims,double pruneThreshold) : collisionDetector(collisionDetector),
                                                                    cleanestPaths(cleanestPaths),
                                                                    start(start), gate(gate),
-                                                                   victims(victims) {}
+                                                                   victims(victims),pruneThreshold(pruneThreshold) {}
 
         virtual boost::optional<vector<DubinsCurve>> solve() = 0;
-
 
     };
 }
