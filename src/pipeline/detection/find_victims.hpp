@@ -30,7 +30,7 @@ namespace student {
                                    const cv::Mat &hsvImage, const cv::Mat &filteredImage) override;
 
     public:
-        VictimDetector(const cv::Mat &rgbImage, const Config &config) : ShapeDetector(10), digitClassifier(config),
+        VictimDetector(const cv::Mat &rgbImage, const Config &config) : ShapeDetector(3), digitClassifier(config),
                                                                  rgbImage(rgbImage) {}
     };
 }

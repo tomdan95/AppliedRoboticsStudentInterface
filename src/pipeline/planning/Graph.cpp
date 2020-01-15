@@ -73,6 +73,7 @@ vector<Point *> student::Graph::shortestPathFromTo(Point *from, Point *to, const
         for (auto *v:adjacentPoints) {
             double weight = distanceBetween(*u, *v);
 
+            
             for (auto pointToAvoid : disadvantage) {
                 if (pointToAvoid == v) {
                     weight += 1.0;
@@ -80,6 +81,7 @@ vector<Point *> student::Graph::shortestPathFromTo(Point *from, Point *to, const
                     break;
                 }
             }
+
 
             if (distances[v] > distances[u] + weight) {
                 distances[v] = distances[u] + weight;

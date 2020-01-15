@@ -86,13 +86,13 @@ target_link_libraries(student
 ###### END OF demo_dilatation_erosion #####
 ##
 ###### START OF demo_hsv_filter #####
-##add_executable(demo_hsv_filter
-##        src/demos/demo_shape_detection/demo_hsv_filter.cpp
-##        )
-##
-##target_link_libraries(demo_hsv_filter
-##        ${OpenCV_LIBRARIES}
-##        )
+add_executable(demo_hsv_filter
+        src/demos/demo_shape_detection/demo_hsv_filter.cpp
+        )
+
+target_link_libraries(demo_hsv_filter
+        ${OpenCV_LIBRARIES}
+        )
 ###### START OF demo_hsv_filter #####
 #
 ###### START OF demo_smoothing #####

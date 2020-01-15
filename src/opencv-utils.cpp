@@ -1,6 +1,6 @@
 #include "opencv-utils.h"
 
-//#define SHOW_IMAGES
+#define SHOW_IMAGES
 
 using namespace std;
 

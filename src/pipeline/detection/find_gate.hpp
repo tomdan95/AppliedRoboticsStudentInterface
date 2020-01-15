@@ -16,7 +16,7 @@ namespace student {
                                    const cv::Mat &hsvImage, const cv::Mat &filteredImage) override;
 
     public:
-        GateDetector() : ShapeDetector(10) {}
+        GateDetector() : ShapeDetector(3) {}
     };
 }
 

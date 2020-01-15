@@ -4,7 +4,7 @@
 
 namespace student {
     cv::Mat VictimDetector::applyColorMask(const cv::Mat &hsvImage) {
-        cv::Mat greenMask;
+        cv::Mat green_mask;
         // works on simulator
         //cv::inRange(hsvImage, cv::Scalar(45, 50, 50), cv::Scalar(75, 255, 255), greenMask);
         
@@ -13,10 +13,18 @@ namespace student {
 
         // works in simulator
         // TODO: Check if it also works on the real arena
-        cv::inRange(hsvImage, cv::Scalar(40, 40, 50), cv::Scalar(75, 255, 255), greenMask);
-        //showImageAndWaitKeyPress(greenMask);
+        //cv::inRange(hsvImage, cv::Scalar(40, 40, 50), cv::Scalar(75, 255, 255), green_mask);
+        //showImageAndWaitKeyPress(green_mask);
 
-        return greenMask;
+        cv::inRange(hsvImage, cv::Scalar(45, 50, 26), cv::Scalar(100, 255, 255), green_mask);
+        
+        /*cv::erode(green_mask, green_mask, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)));
+        cv::dilate(green_mask, green_mask, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(33, 33)));
+        cv::dilate(green_mask, green_mask, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(15, 15)));
+        cv::erode(green_mask, green_mask, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(15, 15)));
+        cv::erode(green_mask, green_mask, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(25, 25)));
+*/
+        return green_mask;
     }
 
     vector<vector<cv::Point>> VictimDetector::filterContours(const vector<vector<cv::Point>> &contours) {

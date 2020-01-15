@@ -5,10 +5,12 @@
 namespace student {
     cv::Mat GateDetector::applyColorMask(const cv::Mat &hsvImage) {
         // Find green regions
-        cv::Mat green_mask;
-        cv::inRange(hsvImage, cv::Scalar(40, 40, 50), cv::Scalar(75, 255, 255), green_mask);
 
-        //showImageAndWaitKeyPress(green_mask);
+        cv::Mat green_mask;
+        
+        //cv::inRange(hsvImage, cv::Scalar(60, 45, 40), cv::Scalar(80, 215, 180), green_mask);
+        cv::inRange(hsvImage, cv::Scalar(45, 50, 26), cv::Scalar(100, 255, 255), green_mask);
+        //showImageAndWait(green_mask);
 
         return green_mask;
     }
@@ -17,9 +19,14 @@ namespace student {
         vector<vector<cv::Point>> filtered;
         for (auto &contour : contours) {
             double area = cv::contourArea(contour);
-            if (area > 500 && area<5000) {
+            //cout << "n lati =" << contour.size() << endl;
+            if (contour.size() == 4) {
                 filtered.push_back(contour);
             }
+            /*
+            if (area > 500 && area < 5000) {
+                filtered.push_back(contour);
+            }*/
         }
         return filtered;
     }

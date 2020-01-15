@@ -40,6 +40,8 @@ namespace student {
     cv::Mat RobotDetector::applyColorMask(const cv::Mat &hsvImage) {
         cv::Mat blueMask;
         cv::inRange(hsvImage, cv::Scalar(90, 50, 50), cv::Scalar(140, 255, 255), blueMask);
+        //cv::inRange(hsvImage, cv::Scalar(110, 120,150), cv::Scalar(130, 255, 255), blueMask);
+        //showImageAndWait(blueMask);
         return blueMask;
     }
 
