@@ -27,7 +27,7 @@ boost::optional<vector<DubinsCurve>> Mission1::solve() {
     DebugImage::drawPath(shortestPath, cv::Scalar(150, 150, 150));
     DebugImage::showAndWait();
 
-    // we execute best_thet to find the best list of not-colliding DubinsCurves
+    // we execute best_theta to find the best list of not-colliding DubinsCurves
     BestThetaFinder finder(10, start.theta, collisionDetector);
     return finder.findBestDubinsCurves(shortestPath);
 }
@@ -55,8 +55,9 @@ void Mission1::addRobotVictimsAndGateToCleanestPathsGraph() {
  * - victim n to gate
  */
 void Mission1::computeShortestPath() {
+    vector<Point *> lastGeneratedPath;
     for (int i = 0; i < toReach.size() - 1; i++) {
-        vector<Point *> path = cleanestPaths->shortestPathFromTo(toReach[i], toReach[i + 1]);
+        vector<Point *> path = cleanestPaths->shortestPathFromTo(toReach[i], toReach[i + 1], lastGeneratedPath);
 
         // skip the first path point if this is not the path that start from the start position (to avoid
         // duplicates on the list of paths)
@@ -65,6 +66,7 @@ void Mission1::computeShortestPath() {
         } else {
             shortestPath.insert(shortestPath.end(), path.begin() + 1, path.end());
         }
+        lastGeneratedPath = path;
     }
 }
 

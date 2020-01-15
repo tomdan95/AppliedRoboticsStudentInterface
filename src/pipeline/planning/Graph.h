@@ -23,10 +23,10 @@ namespace student {
          */
         Point * addAndConnectToNearNotCollidingPoints(Point point, const CollisionDetector *collisionDetector);
 
-        vector<Point *> shortestPathFromTo(Point *a, Point *b);
-
+        vector<Point *> shortestPathFromTo(Point *a, Point *b, const vector<Point *>& disadvantage);
 
         static double distanceBetween(Point a, Point b);
+
     private:
         Point* findOrAddPoint(Point p);
         Point* getNearestPointTo(Point point);

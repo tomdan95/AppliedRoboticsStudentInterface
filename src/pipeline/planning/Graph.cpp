@@ -52,7 +52,7 @@ Point *student::Graph::findOrAddPoint(Point p) {
 // TODO: Explain better
 typedef pair<double, Point *> PointWithDistance;
 
-vector<Point *> student::Graph::shortestPathFromTo(Point *from, Point *to) {
+vector<Point *> student::Graph::shortestPathFromTo(Point *from, Point *to, const vector<Point *>& disadvantage) {
     map<Point *, Point *> predecessorOf;
     predecessorOf[from] = NULL;
 
@@ -69,12 +69,17 @@ vector<Point *> student::Graph::shortestPathFromTo(Point *from, Point *to) {
         auto *u = toVisit.top().second;
         toVisit.pop();
 
-        // TODO: Change structure of the graph
         vector<Point *> adjacentPoints = edges[u];
         for (auto *v:adjacentPoints) {
-
-
             double weight = distanceBetween(*u, *v);
+
+            for (auto pointToAvoid : disadvantage) {
+                if (pointToAvoid == v) {
+                    weight += 1.0;
+                    cout << "[DIJKSTRA] weight increased to avoid back path" << endl;
+                    break;
+                }
+            }
 
             if (distances[v] > distances[u] + weight) {
                 distances[v] = distances[u] + weight;
