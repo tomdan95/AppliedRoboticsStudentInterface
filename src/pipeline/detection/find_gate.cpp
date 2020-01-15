@@ -10,7 +10,7 @@ namespace student {
         
         //cv::inRange(hsvImage, cv::Scalar(60, 45, 40), cv::Scalar(80, 215, 180), green_mask);
         cv::inRange(hsvImage, cv::Scalar(45, 50, 26), cv::Scalar(100, 255, 255), green_mask);
-        //showImageAndWait(green_mask);
+        showImageAndWait(green_mask);
 
         return green_mask;
     }
@@ -19,8 +19,8 @@ namespace student {
         vector<vector<cv::Point>> filtered;
         for (auto &contour : contours) {
             double area = cv::contourArea(contour);
-            //cout << "n lati =" << contour.size() << endl;
-            if (contour.size() == 4) {
+            cout << "n lati =" << contour.size() << endl;
+            if (contour.size() == 4 ||contour.size() == 5) {
                 filtered.push_back(contour);
             }
             /*

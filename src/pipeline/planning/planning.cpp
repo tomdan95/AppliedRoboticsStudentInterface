@@ -40,11 +40,11 @@ namespace student {
             auto inflatedObstaclesAndDeflatedBorders = resizeObstaclesAndBorders(obstacleList, borders, robotSize);
 
             // instantiate collision detector. The intatiation is slow, so we do it only once here, and then we share the instance
-            CollisionDetector *detector = new ShadowCollisionDetector(defaultedBorders[0], inflatedObstacles, gate,
-                                                                      getVictimPolygons(victimList));
+            ShadowCollisionDetector detector(defaultedBorders[0], inflatedObstacles, gate,
+                                             getVictimPolygons(victimList));
 
             // execute Voronoi to get the cleanest paths graph
-            Graph cleanestPaths = findCleanestPaths(inflatedObstaclesAndDeflatedBorders, detector);
+            Graph cleanestPaths = findCleanestPaths(inflatedObstaclesAndDeflatedBorders, &detector);
 
             // draw map for debugging purposes
             DebugImage::clear();
@@ -60,17 +60,18 @@ namespace student {
             // create the MissionSolver accordingly to the configuration file
             MissionSolver *solver;
             if (config.getMission() == 1) {
-                solver = new Mission1(detector, &cleanestPaths, RobotPosition(x, y, theta), getPolygonCenter(gate),
+                solver = new Mission1(&detector, &cleanestPaths, RobotPosition(x, y, theta), getPolygonCenter(gate),
                                       getVictimPoints(victimList), config.getPruneThreshold());
             } else {
-                solver = new Mission2(detector, &cleanestPaths, RobotPosition(x, y, theta), getPolygonCenter(gate),
+                solver = new Mission2(&detector, &cleanestPaths, RobotPosition(x, y, theta), getPolygonCenter(gate),
                                       getVictimPoints(victimList), config.getVictimBonus());
             }
 
             // execute the planning (sort victims + dijkstra + best_theta with collision detection)
             solution = solver->solve();
             if (!solution) {
-                cout << "[PLANNING] Planning with robot size = " << robotSize << " failed. Trying again" << endl << endl;
+                cout << "[PLANNING] Planning with robot size = " << robotSize << " failed. Trying again" << endl
+                     << endl;
                 robotSize -= 0.01;
             }
         } while (!solution && robotSize > 0);

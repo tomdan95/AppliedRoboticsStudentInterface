@@ -77,7 +77,6 @@ vector<Point *> student::Graph::shortestPathFromTo(Point *from, Point *to, const
             for (auto pointToAvoid : disadvantage) {
                 if (pointToAvoid == v) {
                     weight += 1.0;
-                    cout << "[DIJKSTRA] weight increased to avoid back path" << endl;
                     break;
                 }
             }
