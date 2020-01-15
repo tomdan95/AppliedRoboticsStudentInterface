@@ -70,7 +70,7 @@ namespace student {
             // execute the planning (sort victims + dijkstra + best_theta with collision detection)
             solution = solver->solve();
             if (!solution) {
-                cout << "[PLANNING] Planning with robot size = " << robotSize << " failed. Trying again" << endl;
+                cout << "[PLANNING] Planning with robot size = " << robotSize << " failed. Trying again" << endl << endl;
                 robotSize -= 0.01;
             }
         } while (!solution && robotSize > 0);

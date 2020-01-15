@@ -1,6 +1,6 @@
-
-
 #include "opencv-utils.h"
+
+//#define SHOW_IMAGES
 
 using namespace std;
 
@@ -30,9 +30,11 @@ cv::Mat rotateImage(const cv::Mat &image, int degrees) {
 }
 
 void showImageAndWait(const cv::Mat &image, int wait, const string& name) {
+#ifdef SHOW_IMAGES
     cv::namedWindow(name);
     cv::imshow(name, image);
     cv::waitKey(wait);
     cv::destroyWindow(name);
     cv::waitKey(1);
+#endif
 }
