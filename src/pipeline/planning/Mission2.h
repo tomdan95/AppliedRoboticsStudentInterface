@@ -9,13 +9,15 @@ namespace student {
     class Mission2 : public MissionSolver {
     private:
         const int victimBonus;
+        const double robotSpeed;
 
         vector<vector<pair<int, Point>>> generatePermutations();
 
     public:
         Mission2(const CollisionDetector *collisionDetector, Graph *cleanestPaths, const RobotPosition &start,
                  const Point &gate, const vector<pair<int, Point>> &victims, Config &config) : MissionSolver(
-                collisionDetector, cleanestPaths, start, gate, victims, config), victimBonus(config.getVictimBonus()) {}
+                collisionDetector, cleanestPaths, start, gate, victims, config), victimBonus(config.getVictimBonus()),
+                                                                                               robotSpeed(config.getRobotSpeed()) {}
 
         boost::optional<vector<DubinsCurve>> solve() override;
     };

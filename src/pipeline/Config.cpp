@@ -18,6 +18,7 @@ Config::Config(string configFolder) {
     pruneThreshold = jsonConfig["pruneThreshold"];
     bestThetaSteps = jsonConfig["bestThetaSteps"];
     maxK = jsonConfig["maxK"];
+    robotSpeed = jsonConfig["robotSpeedM/s"];
 }
 
 string getConfigFileName(string configFolder) {

@@ -14,7 +14,7 @@ bool canSkip(vector<Point *> toReach, Point *p) {
 
 
 void MissionSolver::prunePath(vector<Point *> *path, vector<Point *> toReach, double threshold) {
-    cout << "[PATH-PRUNING] Original path nodes = " << path->size() << endl;
+    //cout << "[PATH-PRUNING] Original path nodes = " << path->size() << endl;
     auto it = path->begin() + 1;
     while (it + 1 != path->end()) {
         auto previous = it - 1;
@@ -43,7 +43,7 @@ void MissionSolver::prunePath(vector<Point *> *path, vector<Point *> toReach, do
         }
 
     }
-    cout << "[PATH-PRUNING] PATH POINTS AFTER = " << path->size() << endl;
+    //cout << "[PATH-PRUNING] PATH POINTS AFTER = " << path->size() << endl;
 }
 
 

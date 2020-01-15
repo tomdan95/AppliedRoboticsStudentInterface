@@ -35,11 +35,17 @@ namespace student {
     boost::optional<vector<DubinsCurve>> Mission2::solve() {
         auto permutations = generatePermutations();
 
+        double bonusAsLength = ((double)victimBonus) * robotSpeed;
+        cout << "[MISSION-2] Bonus as length = " << bonusAsLength << endl;
+
         double shortestLength = INFINITY;
         boost::optional<vector<DubinsCurve>> shortestSolution;
 
         for (int i = 0; i < permutations.size(); i++){
-            cout << "[MISSION-2] Generating path " << i << " / " << permutations.size() << endl;
+            if (i % 10 == 0) {
+                cout << "[MISSION-2] Generating path " << i << " / " << permutations.size() << endl;
+            }
+
             const auto& permutation = permutations[i];
             vector<Point> victimPoints;
             for (const auto v:permutation) {
@@ -51,13 +57,18 @@ namespace student {
             auto solution = finder.findBestDubinsCurves(shortestPath);
 
             if (solution) {
+                // TODO: Split in function
                 double length = 0;
                 for (const auto curve : *solution) {
                     length += curve.length();
                 }
+
+                length -= bonusAsLength * permutation.size();
+
                 if(length < shortestLength) {
                     shortestLength = length;
                     shortestSolution = solution;
+                    cout << "[MISSION-2] Found better path of length = " << length << endl;
                 }
             }
         }

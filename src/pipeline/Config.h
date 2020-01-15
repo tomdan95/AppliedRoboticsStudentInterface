@@ -20,6 +20,7 @@ namespace student {
         double pruneThreshold;
         int bestThetaSteps;
         int maxK;
+        double robotSpeed;
 
         static json loadJsonFile(string configFolder);
 
@@ -57,6 +58,10 @@ namespace student {
 
         int getBestThetaSteps(){
             return bestThetaSteps;
+        }
+
+        double getRobotSpeed(){
+            return robotSpeed;
         }
     };
 }
