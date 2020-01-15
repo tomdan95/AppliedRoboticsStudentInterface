@@ -2,5 +2,6 @@
   "robotSize": 0.06,
   "mission": 1,
   "numberTemplatesFolder": "/home/lar2019/robot/AppliedRoboticsStudentInterface/src/victim_templates",
-  "autoFindArenaEdges": true
+  "autoFindArenaEdges": true,
+  "pruneThreshold": 0.075
 }

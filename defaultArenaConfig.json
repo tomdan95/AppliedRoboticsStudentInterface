@@ -2,5 +2,6 @@
   "robotSize": 0.06,
   "mission": 1,
   "numberTemplatesFolder": "/home/robotics/workspace/bender/src/victim_templates",
-  "autoFindArenaEdges": false
+  "autoFindArenaEdges": false,
+  "pruneThreshold": 0.075
 }
