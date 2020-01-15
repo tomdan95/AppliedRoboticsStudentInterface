@@ -63,7 +63,7 @@ ShadowCollisionDetector::ShadowCollisionDetector(
     }
     cv::fillPoly(obstaclesShadow, victimPolygons, cv::Scalar(255, 255, 255));
 
-    showImageAndWaitKeyPress(obstaclesShadow);
+    showImageAndWait(obstaclesShadow, 0, "collision shadow");
 }
 
 

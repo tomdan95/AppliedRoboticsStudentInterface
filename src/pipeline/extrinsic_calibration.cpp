@@ -5,6 +5,7 @@
 #include "student_image_elab_interface.hpp"
 #include "student_planning_interface.hpp"
 #include "Config.h"
+#include "../opencv-utils.h"
 
 #include <stdexcept>
 #include <sstream>
@@ -98,14 +99,8 @@ namespace student {
             }
         }
 
-        //show immage user check and return found edges
-        name = "Check if correct";
-        //int i = sizeof(approximatedContours);
-        //name = std::to_string(i);
-        cv::imshow(name.c_str(), final_img);
-        cv::namedWindow(name.c_str());
-        cv::waitKey(0);
-        cv::destroyWindow(name.c_str());
+        // show image user check and return found edges
+        showImageAndWait(final_img, 0, "Check if correct");
         return result;
     }
 

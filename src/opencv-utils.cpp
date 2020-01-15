@@ -21,8 +21,6 @@ cv::Mat loadImage(string fileName) {
     return image;
 }
 
-
-
 cv::Mat rotateImage(const cv::Mat &image, int degrees) {
     cv::Point2f src_center(image.cols / 2.0F, image.rows / 2.0F);
     cv::Mat rot_mat = getRotationMatrix2D(src_center, degrees, 1.0);
@@ -31,10 +29,10 @@ cv::Mat rotateImage(const cv::Mat &image, int degrees) {
     return rotated_image;
 }
 
-void showImageAndWaitKeyPress(const cv::Mat &image) {
-    string name = "debug";
-    cv::imshow(name.c_str(), image);
-    cv::namedWindow(name.c_str());
-    cv::waitKey(0);
-    cv::destroyWindow(name.c_str());
+void showImageAndWait(const cv::Mat &image, int wait, const string& name) {
+    cv::namedWindow(name);
+    cv::imshow(name, image);
+    cv::waitKey(wait);
+    cv::destroyWindow(name);
+    cv::waitKey(1);
 }

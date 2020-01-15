@@ -236,7 +236,9 @@ add_executable(planning_demo
         src/pipeline/planning/best_theta/BestThetaFinder.h
         src/pipeline/planning/dubins/models.cpp src/pipeline/planning/dubins/models.h
         src/pipeline/planning/MissionSolver.h src/pipeline/planning/Mission1.cpp
-        src/pipeline/planning/Mission1.h src/pipeline/planning/MissionSolver.cpp src/pipeline/planning/Mission2.cpp src/pipeline/planning/Mission2.h src/pipeline/planning/collision_detection/CollisionDetector.h src/pipeline/Config.cpp src/pipeline/Config.h)
+        src/pipeline/planning/Mission1.h src/pipeline/planning/MissionSolver.cpp src/pipeline/planning/Mission2.cpp src/pipeline/planning/Mission2.h src/pipeline/planning/collision_detection/CollisionDetector.h src/pipeline/Config.cpp src/pipeline/Config.h
+        src/opencv-utils.cpp
+        src/opencv-utils.h)
 
 target_link_libraries(planning_demo
         ${OpenCV_LIBRARIES}

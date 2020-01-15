@@ -11,11 +11,7 @@ cv::Mat DebugImage::image(1000, 1280, CV_8UC3, cv::Scalar(0, 0, 255));
 
 
 void student::DebugImage::showAndWait(int wait) {
-    string name = "planing";
-    cv::imshow(name.c_str(), image);
-    cv::namedWindow(name.c_str());
-    cv::waitKey(wait);
-    cv::destroyWindow(name.c_str());
+    showImageAndWait(image, wait);
 }
 
 
@@ -51,7 +47,6 @@ void DebugImage::drawPath(vector<Point *> path, cv::Scalar color) {
 }
 
 void DebugImage::drawPoint(Point point, cv::Scalar color) {
-
     cv::circle(image, cv::Point(point.x * DEFAULT_MULTIPLY, point.y * DEFAULT_MULTIPLY), 5, color, 3);
 }
 
