@@ -3,7 +3,7 @@
   "mission": 1,
   "numberTemplatesFolder": "/home/lar2019/robot/AppliedRoboticsStudentInterface/src/victim_templates",
   "autoFindArenaEdges": true,
-  "pruneThreshold": 0.1,
+  "pruneThreshold": 0.075,
   "maxK": 10,
   "bestThetaSteps": 32,
   "victimBonus": 10,
