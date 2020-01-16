@@ -2,6 +2,10 @@
   "robotSize": 0.06,
   "mission": 1,
   "numberTemplatesFolder": "/home/robotics/workspace/bender/src/victim_templates",
-  "autoFindArenaEdges": false,
-  "pruneThreshold": 0.075
+  "autoFindArenaEdges": true,
+  "pruneThreshold": 0.1,
+  "maxK": 10,
+  "bestThetaSteps": 32,
+  "victimBonus": 10,
+  "robotSpeedM/s": 0.1
 }
